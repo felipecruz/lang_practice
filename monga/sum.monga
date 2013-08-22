@@ -1,0 +1,8 @@
+12902       /* TK_NUMBER */
+10          /* TK_NUMBER */
+
+a           /* TK_ID */
+
+0xFF        /* TK_HEXA */
+0x00        /* TK_HEXA */
+0xGG        /* TK_NUMBER ; TK_ID */
