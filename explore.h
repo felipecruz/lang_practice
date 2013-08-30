@@ -1,6 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "hash.c"
+
+#define _(a, b) \
+    printf (a, b)
+
 #define $(name) \
     *((int*)resolve(#name))
 
@@ -19,28 +24,25 @@ int sum (int a, int b)
     return a + b;
 }
 
-int *resolve (char *key) {
-    static int first = 0;
-    static int *a, *b, *c;
-    switch (first) {
-        case 0: goto L0;
-        case 1: goto L1;
+static hash *HEAP;
+
+void init_heap ()
+{
+    HEAP = hash_init (1024);
+}
+
+int *resolve (uint8_t *key) {
+    int *pt;
+    helem *el;
+
+    el = hash_get (HEAP, key);
+
+    if (!el) {
+        pt = malloc (sizeof (int));
+        hash_put (HEAP, key, pt, sizeof (int*));
+    } else {
+        return el->value;
     }
 
-L0:
-    a = malloc (sizeof (int));
-    b = malloc (sizeof (int));
-    c = malloc (sizeof (int));
-    first = 1;
-
-L1:
-    if (strcmp(key, "a") == 0)
-        return a;
-    if (strcmp(key, "b") == 0)
-        return b;
-    if (strcmp(key, "c") == 0)
-        return c;
-
-
-    return 0;
+    return pt;
 }
