@@ -5,3 +5,11 @@ int b = 100;
 int d = 0xF1;
 
 12902
+
+a = 1
+a + a
+a = 1 + a
+
+b = (c + b)
+
+a = new Space();
