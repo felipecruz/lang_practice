@@ -55,9 +55,9 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 {H} { printf("TK_HEXA: %s\n", yytext); }
 {STRING} { printf("TK_STRING: %s\n", yytext); }
 
-{COMMENTS} { }
+{COMMENTS} { printf("TK_COMMENT: %s\n", yytext); }
 
 [ \t\n] ;
-. {}
+. { printf("UNMATCHED: %s\n", yytext); }
 
 %%
