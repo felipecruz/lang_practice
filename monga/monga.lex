@@ -18,6 +18,17 @@
 #define TK_RETURN 330
 #define TK_NEW 331
 
+#define TK_UNMATCHED 350
+
+union {
+    int ival;
+    long int hval;
+    char cval;
+    float fval;
+    char *sval;
+} ELEMENT;
+
+
 %}
 
 VOID    "void"
@@ -40,24 +51,62 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 
 %%
 
-{VOID}    { return TK_TYPE_VOID; }
-{CHAR}    { return TK_TYPE_CHAR; }
-{FLOAT}   { return TK_TYPE_FLOAT; }
-{INT}     { return TK_TYPE_INT; }
-{IF}      { return TK_IF; }
-{ELSE}    { return TK_ELSE; }
-{WHILE}   { return TK_WHILE; }
-{RETURN}  { return TK_RETURN; }
-{NEW}     { return TK_NEW; }
+{VOID}    { printf ("\nK_TYPE_VOID: %s", yytext);   return TK_TYPE_VOID; }
+{CHAR}    { printf ("\nK_TYPE_CHAR: %s", yytext);   return TK_TYPE_CHAR; }
+{FLOAT}   { printf ("\nK_TYPE_FLOAT: %s", yytext);  return TK_TYPE_FLOAT; }
+{INT}     { printf ("\nTK_TYPE_INT: %s", yytext);   return TK_TYPE_INT; }
+{IF}      { printf ("\nK_IF: %s", yytext);          return TK_IF; }
+{ELSE}    { printf ("\nK_ELSE: %s", yytext);        return TK_ELSE; }
+{WHILE}   { printf ("\nK_WHILE: %s", yytext);       return TK_WHILE; }
+{RETURN}  { printf ("\nK_RETURN: %s", yytext);      return TK_RETURN; }
+{NEW}     { printf ("\nK_NEW: %s", yytext);         return TK_NEW;}
 
-{ID} { printf("TK_ID: %s\n", yytext); }
-{N} { printf("TK_NUMBER: %s\n", yytext); }
-{H} { printf("TK_HEXA: %s\n", yytext); }
-{STRING} { printf("TK_STRING: %s\n", yytext); }
+{N}     {
+            ELEMENT.ival = atoi (yytext);
+            printf ("\nTK_NUMBER: %d", ELEMENT.ival);
+            return TK_NUMBER;
+        }
 
-{COMMENTS} { printf("TK_COMMENT: %s\n", yytext); }
+{ID}    {
+            ELEMENT.sval = malloc (sizeof (char) * yyleng);
+            memcpy (ELEMENT.sval, yytext, yyleng);
+            printf ("\nTK_ID: %s", ELEMENT.sval);
+            bzero (ELEMENT.sval, yyleng);
+            free (ELEMENT.sval);
+        }
 
-[ \t\n] ;
-. { printf("UNMATCHED: %s\n", yytext); }
+{H}     {
+            ELEMENT.hval = strtol (yytext, NULL, 0);
+            printf ("\nTK_HEXA: 0x%lX", ELEMENT.hval);
+        }
+
+{STRING}    {
+                ELEMENT.sval = malloc (sizeof (char) * yyleng);
+                memcpy (ELEMENT.sval, yytext, yyleng);
+                printf ("\nTK_STRING: %s", ELEMENT.sval);
+                bzero (ELEMENT.sval, yyleng);
+                free (ELEMENT.sval);
+            }
+
+{COMMENTS}  {
+                printf ("\nTK_COMMENT: %s", yytext);
+            }
+
+[ \t\n]     { ECHO; };
+
+.           {
+                printf ("\nUNMATCHED: %s", yytext); return TK_UNMATCHED;
+            }
 
 %%
+
+void yyerror (char *error)
+{
+    fprintf (stderr, "Error: %s\n", error);
+}
+
+int main (int argc, char **argv)
+{
+    while (yylex () != EOF) {  }
+    return 0;
+}
