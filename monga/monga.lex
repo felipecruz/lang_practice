@@ -91,9 +91,7 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
                 free (ELEMENT.sval);
             }
 
-{COMMENTS}  {
-                printf ("\nTK_COMMENT: %s", yytext);
-            }
+{COMMENTS}  {  }
 
 [ \t\n]     { ECHO; };
 
