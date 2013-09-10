@@ -4,7 +4,8 @@
 #define TK_ID 300
 #define TK_NUMBER 301
 #define TK_HEXA 302
-#define TK_STRING 303
+#define TK_FLOAT 303
+#define TK_STRING 304
 
 #define TK_IF 304
 #define TK_ELSE 305
