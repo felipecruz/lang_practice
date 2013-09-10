@@ -19,7 +19,9 @@
 #define TK_RETURN 330
 #define TK_NEW 331
 
-#define TK_UNMATCHED 350
+#define ERR_UNMATCHED 600
+#define ERR_MALLOC 601
+#define ERR_VAL 602
 
 union {
     int ival;
