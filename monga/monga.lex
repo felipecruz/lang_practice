@@ -98,7 +98,7 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 [ \t\n]     { ECHO; };
 
 .           {
-                printf ("\nUNMATCHED: %s", yytext); return TK_UNMATCHED;
+                printf ("\nUNMATCHED: %s", yytext); return ERR_UNMATCHED;
             }
 
 %%
