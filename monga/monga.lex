@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <limits.h>
+#include <float.h>
 
 #define TK_ID 300
 #define TK_NUMBER 301
@@ -49,6 +50,7 @@ RETURN  "return"
 NEW     "new"
 
 N [0-9]+
+F [0-9]+"."[0-9]*([eE][+-]?[0-9]+)?
 H 0x[a-fA-F0-8]+
 ID [a-zA-Z_][a-zA-Z_0-9]*
 STRING "\""([^"\\\n]|(\\[nt\n"\\]))*"\""
@@ -68,10 +70,20 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 
 {N}     {
             ELEMENT.ival = atoi (yytext);
-            if (ELEMENT.ival == 0 && errno == ERANGE || (INT_MIN > ELEMENT.ival || ELEMENT.ival > INT_MAX))
+            if (ELEMENT.ival == -1 && errno == ERANGE || (ELEMENT.ival < INT_MIN ||
+                                                          ELEMENT.ival > INT_MAX))
                 return ERR_VAL;
             printf ("\nTK_NUMBER: %d", ELEMENT.ival);
             return TK_NUMBER;
+        }
+
+{F}     {
+            ELEMENT.fval = atof (yytext);
+            if (ELEMENT.fval == 0.0 && errno == ERANGE || (ELEMENT.fval < FLT_MIN ||
+                                                           ELEMENT.fval > FLT_MAX))
+                return ERR_VAL;
+            printf ("\nTK_FLOAT: %f", ELEMENT.fval);
+            return TK_FLOAT;
         }
 
 {ID}    {
