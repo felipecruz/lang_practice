@@ -1,5 +1,7 @@
 %{
 #include <stdio.h>
+#include <errno.h>
+#include <limits.h>
 
 #define TK_ID 300
 #define TK_NUMBER 301
@@ -66,6 +68,8 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 
 {N}     {
             ELEMENT.ival = atoi (yytext);
+            if (ELEMENT.ival == 0 && errno == ERANGE || (INT_MIN > ELEMENT.ival || ELEMENT.ival > INT_MAX))
+                return ERR_VAL;
             printf ("\nTK_NUMBER: %d", ELEMENT.ival);
             return TK_NUMBER;
         }
@@ -80,6 +84,8 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 
 {H}     {
             ELEMENT.hval = strtol (yytext, NULL, 0);
+            if (ELEMENT.hval == 0 && errno == ERANGE || (INT_MIN > ELEMENT.hval || ELEMENT.hval > INT_MAX))
+                return ERR_VAL;
             printf ("\nTK_HEXA: 0x%lX", ELEMENT.hval);
         }
 
