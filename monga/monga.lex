@@ -22,6 +22,27 @@
 #define TK_RETURN 330
 #define TK_NEW 331
 
+#define TK_DBL_EQ 350
+#define TK_LTE 351
+#define TK_GTE 352
+#define TK_LOG_AND 353
+#define TK_LOG_OR 354
+
+#define TK_SINGLE_EQ '='
+#define TK_MULTI '*'
+#define TK_DIV '/'
+#define TK_PLUS '+'
+#define TK_SINGLE_MINUS '-'
+#define TK_LT '<'
+#define TK_GT '>'
+#define TK_OPPAR '('
+#define TK_CLPAR ')'
+#define TK_OPBRA '{'
+#define TK_OPSQB '['
+#define TK_CLSQB ']'
+#define TK_SEMICOL ';'
+#define TK_LOGNEG '!'
+
 #define ERR_UNMATCHED 600
 #define ERR_MALLOC 601
 #define ERR_VAL 602
