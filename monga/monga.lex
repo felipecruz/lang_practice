@@ -72,6 +72,12 @@ NEW     "new"
 
 N [0-9]+
 F (([0-9]+"."[0-9]*)|("."[0-9]+))([eE][+-]?[0-9]+)?
+DBL_EQ "=="
+LTE "<="
+GTE ">="
+LOG_AND "&&"
+LOG_OR "||"
+
 H 0x[a-fA-F0-8]+
 ID [a-zA-Z_][a-zA-Z_0-9]*
 STRING "\""([^"\\\n]|(\\[nt\n"\\]))*"\""
@@ -81,6 +87,28 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 
 {VOID}    { printf ("\nK_TYPE_VOID: %s", yytext);   return TK_TYPE_VOID; }
 {CHAR}    { printf ("\nK_TYPE_CHAR: %s", yytext);   return TK_TYPE_CHAR; }
+[=]     { return TK_SINGLE_EQ; }
+[*]     { return TK_MULTI; }
+[/]     { return TK_DIV; }
+[+]     { return TK_PLUS; }
+[-]     { return TK_SINGLE_MINUS; }
+[<]     { return TK_LT; }
+[>]     { return TK_GT; }
+[(]     { return TK_OPPAR; }
+[)]     { return TK_CLPAR; }
+[{]     { return TK_OPBRA; }
+[[]     { return TK_OPSQB; }
+[]]     { return TK_CLSQB; }
+[;]     { return TK_SEMICOL; }
+[!]     { return TK_LOGNEG; }
+
+{DBL_EQ}    { return TK_DBL_EQ; }
+{LTE}       { return TK_LTE; }
+{GTE}       { return TK_GTE; }
+{LOG_AND}   { return TK_LOG_AND; }
+{LOG_OR}    { return TK_LOG_OR; }
+
+
 {FLOAT}   { printf ("\nK_TYPE_FLOAT: %s", yytext);  return TK_TYPE_FLOAT; }
 {INT}     { printf ("\nTK_TYPE_INT: %s", yytext);   return TK_TYPE_INT; }
 {IF}      { printf ("\nK_IF: %s", yytext);          return TK_IF; }
