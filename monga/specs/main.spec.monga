@@ -1,6 +1,5 @@
 void teste (int x, int y) {
     x = x + 1;
-    10000000000000000000000000000
     return x;
 }
 
