@@ -3,4 +3,4 @@ all:
 	gcc lex.yy.c -lfl -o monga
 
 run:
-	./monga < example.monga
+	@./run_specs.sh
