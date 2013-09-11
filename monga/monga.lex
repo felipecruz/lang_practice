@@ -230,9 +230,10 @@ int main (int argc, char **argv)
              tk != ERR_VAL &&
              tk != ERR_MALLOC);
 
-    if (tk == ERR_UNMATCHED)
+    if (tk == ERR_UNMATCHED) {
         fprintf (stderr, "Line:%d Error - Invalid token: %s\n", lines, yyval.sval);
         return -1;
+    }
 
     if (tk == ERR_VAL)
         return -1;
