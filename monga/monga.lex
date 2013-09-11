@@ -164,6 +164,10 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 
 {STRING}    {
                 ELEMENT.sval = malloc (sizeof (char) * yyleng);
+
+                if (!ELEMENT.sval)
+                    return ERR_MALLOC;
+
                 memcpy (ELEMENT.sval, yytext, yyleng);
                 printf ("\nTK_STRING: %s", ELEMENT.sval);
                 bzero (ELEMENT.sval, yyleng);
