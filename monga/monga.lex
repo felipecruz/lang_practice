@@ -55,7 +55,7 @@ union {
     char cval;
     float fval;
     char *sval;
-} ELEMENT;
+} yyval;
 
 
 %}
@@ -122,56 +122,56 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 {NEW}     { printf ("\nK_NEW: %s", yytext);         return TK_NEW;}
 
 {N}     {
-            ELEMENT.ival = strtol (yytext, NULL, 0);
-            if (errno == ERANGE || (ELEMENT.ival < INT_MIN || ELEMENT.ival > INT_MAX)) {
+            yyval.ival = strtol (yytext, NULL, 0);
+            if (errno == ERANGE || (yyval.ival < INT_MIN || yyval.ival > INT_MAX)) {
                 fprintf (stderr, "Line:%d Invalid Integer %s\n", lines, yytext);
                 return ERR_VAL;
             }
-            printf ("\nTK_NUMBER: %d", ELEMENT.ival);
+            printf ("\nTK_NUMBER: %d", yyval.ival);
             return TK_NUMBER;
         }
 
 {F}     {
-            ELEMENT.fval = strtof (yytext, NULL);
-            if (errno == ERANGE || (ELEMENT.fval < FLT_MIN || ELEMENT.fval > FLT_MAX)) {
+            yyval.fval = strtof (yytext, NULL);
+            if (errno == ERANGE || (yyval.fval < FLT_MIN || yyval.fval > FLT_MAX)) {
                 fprintf (stderr, "Line:%d Invalid Float: %s\n", lines, yytext);
                 return ERR_VAL;
             }
-            printf ("\nTK_FLOAT: %f", ELEMENT.fval);
+            printf ("\nTK_FLOAT: %f", yyval.fval);
             return TK_FLOAT;
         }
 
 {H}     {
-            ELEMENT.hval = strtol (yytext, NULL, 0);
-            if (errno == ERANGE || (ELEMENT.hval < INT_MIN || ELEMENT.hval > INT_MAX)) {
+            yyval.hval = strtol (yytext, NULL, 0);
+            if (errno == ERANGE || (yyval.hval < INT_MIN || yyval.hval > INT_MAX)) {
                 fprintf (stderr, "Line:%d Invalid Hexadecimal: %s\n", lines, yytext);
                 return ERR_VAL;
             }
-            printf ("\nTK_HEXA: 0x%lX", ELEMENT.hval);
+            printf ("\nTK_HEXA: 0x%lX", yyval.hval);
         }
 
 {ID}    {
-            ELEMENT.sval = malloc (sizeof (char) * yyleng);
+            yyval.sval = malloc (sizeof (char) * yyleng);
 
-            if (!ELEMENT.sval)
+            if (!yyval.sval)
                 return ERR_MALLOC;
 
-            memcpy (ELEMENT.sval, yytext, yyleng);
-            printf ("\nTK_ID: %s", ELEMENT.sval);
-            bzero (ELEMENT.sval, yyleng);
-            free (ELEMENT.sval);
+            memcpy (yyval.sval, yytext, yyleng);
+            printf ("\nTK_ID: %s", yyval.sval);
+            bzero (yyval.sval, yyleng);
+            free (yyval.sval);
         }
 
 {STRING}    {
-                ELEMENT.sval = malloc (sizeof (char) * yyleng);
+                yyval.sval = malloc (sizeof (char) * yyleng);
 
-                if (!ELEMENT.sval)
+                if (!yyval.sval)
                     return ERR_MALLOC;
 
-                memcpy (ELEMENT.sval, yytext, yyleng);
-                printf ("\nTK_STRING: %s", ELEMENT.sval);
-                bzero (ELEMENT.sval, yyleng);
-                free (ELEMENT.sval);
+                memcpy (yyval.sval, yytext, yyleng);
+                printf ("\nTK_STRING: %s", yyval.sval);
+                bzero (yyval.sval, yyleng);
+                free (yyval.sval);
             }
 
 {COMMENTS}  {  }
@@ -181,12 +181,12 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 [\n]      { lines++; ECHO; }
 
 .           {
-                ELEMENT.sval = malloc (sizeof (char) * yyleng);
+                yyval.sval = malloc (sizeof (char) * yyleng);
 
-                if (!ELEMENT.sval)
+                if (!yyval.sval)
                     return ERR_MALLOC;
 
-                memcpy (ELEMENT.sval, yytext, yyleng);
+                memcpy (yyval.sval, yytext, yyleng);
                 return ERR_UNMATCHED;
             }
 
@@ -206,7 +206,7 @@ int main (int argc, char **argv)
 {
     int tk;
 
-    ELEMENT.sval = NULL;
+    yyval.sval = NULL;
     lines = 1;
     yyin = fopen (argv[1], "r");
 
@@ -223,11 +223,11 @@ int main (int argc, char **argv)
              tk != ERR_MALLOC);
 
     if (tk == ERR_UNMATCHED)
-        fprintf (stderr, "Line:%d Error - Invalid token: %s\n", lines, ELEMENT.sval);
+        fprintf (stderr, "Line:%d Error - Invalid token: %s\n", lines, yyval.sval);
         return -1;
 
-    if (ELEMENT.sval)
-        free (ELEMENT.sval);
+    if (yyval.sval)
+        free (yyval.sval);
 
     fclose (yyin);
     return 0;
