@@ -181,7 +181,13 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 [\n]      { lines++; ECHO; }
 
 .           {
-                printf ("\nUNMATCHED: %s", yytext); return ERR_UNMATCHED;
+                ELEMENT.sval = malloc (sizeof (char) * yyleng);
+
+                if (!ELEMENT.sval)
+                    return ERR_MALLOC;
+
+                memcpy (ELEMENT.sval, yytext, yyleng);
+                return ERR_UNMATCHED;
             }
 
 %%
@@ -191,14 +197,38 @@ void yyerror (char *error)
     fprintf (stderr, "Error: %s\n", error);
 }
 
+int yywrap ()
+{
+    return 1;
+}
+
 int main (int argc, char **argv)
 {
+    int tk;
+
+    ELEMENT.sval = NULL;
+    lines = 1;
     yyin = fopen (argv[1], "r");
+
     if (yyin == NULL) {
         fprintf (stderr, "Bad file path: %s\n", argv[1]);
         return -1;
     }
-    while (yylex () != EOF) {  }
+
+    do {
+        tk = yylex ();
+    } while (tk != EOF &&
+             tk != ERR_UNMATCHED &&
+             tk != ERR_VAL &&
+             tk != ERR_MALLOC);
+
+    if (tk == ERR_UNMATCHED)
+        fprintf (stderr, "Line:%d Error - Invalid token: %s\n", lines, ELEMENT.sval);
+        return -1;
+
+    if (ELEMENT.sval)
+        free (ELEMENT.sval);
+
     fclose (yyin);
     return 0;
 }
