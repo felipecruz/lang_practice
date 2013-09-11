@@ -124,7 +124,7 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 {N}     {
             ELEMENT.ival = strtol (yytext, NULL, 0);
             if (errno == ERANGE || (ELEMENT.ival < INT_MIN || ELEMENT.ival > INT_MAX)) {
-                fprintf (stderr, "Invalid Integer %s\n", yytext);
+                fprintf (stderr, "Line:%d Invalid Integer %s\n", lines, yytext);
                 return ERR_VAL;
             }
             printf ("\nTK_NUMBER: %d", ELEMENT.ival);
@@ -134,7 +134,7 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 {F}     {
             ELEMENT.fval = strtof (yytext, NULL);
             if (errno == ERANGE || (ELEMENT.fval < FLT_MIN || ELEMENT.fval > FLT_MAX)) {
-                fprintf (stderr, "Invalid Float: %s\n", yytext);
+                fprintf (stderr, "Line:%d Invalid Float: %s\n", lines, yytext);
                 return ERR_VAL;
             }
             printf ("\nTK_FLOAT: %f", ELEMENT.fval);
@@ -144,7 +144,7 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 {H}     {
             ELEMENT.hval = strtol (yytext, NULL, 0);
             if (errno == ERANGE || (ELEMENT.hval < INT_MIN || ELEMENT.hval > INT_MAX)) {
-                fprintf (stderr, "Invalid Hexadecimal: %s\n", yytext);
+                fprintf (stderr, "Line:%d Invalid Hexadecimal: %s\n", lines, yytext);
                 return ERR_VAL;
             }
             printf ("\nTK_HEXA: 0x%lX", ELEMENT.hval);
@@ -172,7 +172,9 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 
 {COMMENTS}  {  }
 
-[ \t\n]     { ECHO; };
+[ \t]     { ECHO; };
+
+[\n]      { lines++; ECHO; }
 
 .           {
                 printf ("\nUNMATCHED: %s", yytext); return ERR_UNMATCHED;
