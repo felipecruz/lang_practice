@@ -126,6 +126,7 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
             if (errno == ERANGE || (ELEMENT.ival < INT_MIN || ELEMENT.ival > INT_MAX)) {
                 fprintf (stderr, "Invalid Integer %s\n", yytext);
                 return ERR_VAL;
+            }
             printf ("\nTK_NUMBER: %d", ELEMENT.ival);
             return TK_NUMBER;
         }
@@ -135,23 +136,30 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
             if (errno == ERANGE || (ELEMENT.fval < FLT_MIN || ELEMENT.fval > FLT_MAX)) {
                 fprintf (stderr, "Invalid Float: %s\n", yytext);
                 return ERR_VAL;
+            }
             printf ("\nTK_FLOAT: %f", ELEMENT.fval);
             return TK_FLOAT;
         }
 
+{H}     {
+            ELEMENT.hval = strtol (yytext, NULL, 0);
+            if (errno == ERANGE || (ELEMENT.hval < INT_MIN || ELEMENT.hval > INT_MAX)) {
+                fprintf (stderr, "Invalid Hexadecimal: %s\n", yytext);
+                return ERR_VAL;
+            }
+            printf ("\nTK_HEXA: 0x%lX", ELEMENT.hval);
+        }
+
 {ID}    {
             ELEMENT.sval = malloc (sizeof (char) * yyleng);
+
+            if (!ELEMENT.sval)
+                return ERR_MALLOC;
+
             memcpy (ELEMENT.sval, yytext, yyleng);
             printf ("\nTK_ID: %s", ELEMENT.sval);
             bzero (ELEMENT.sval, yyleng);
             free (ELEMENT.sval);
-        }
-
-{H}     {
-            ELEMENT.hval = strtol (yytext, NULL, 0);
-            if (ELEMENT.hval == 0 && errno == ERANGE || (INT_MIN > ELEMENT.hval || ELEMENT.hval > INT_MAX))
-                return ERR_VAL;
-            printf ("\nTK_HEXA: 0x%lX", ELEMENT.hval);
         }
 
 {STRING}    {
