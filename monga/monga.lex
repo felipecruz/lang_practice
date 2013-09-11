@@ -87,8 +87,6 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 
 %%
 
-{VOID}    { printf ("\nK_TYPE_VOID: %s", yytext);   return TK_TYPE_VOID; }
-{CHAR}    { printf ("\nK_TYPE_CHAR: %s", yytext);   return TK_TYPE_CHAR; }
 [=]     { return TK_SINGLE_EQ; }
 [*]     { return TK_MULTI; }
 [/]     { return TK_DIV; }
@@ -113,6 +111,8 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 {LOG_OR}    { return TK_LOG_OR; }
 
 
+{VOID}    { printf ("\nK_TYPE_VOID: %s", yytext);   return TK_TYPE_VOID; }
+{CHAR}    { printf ("\nK_TYPE_CHAR: %s", yytext);   return TK_TYPE_CHAR; }
 {FLOAT}   { printf ("\nK_TYPE_FLOAT: %s", yytext);  return TK_TYPE_FLOAT; }
 {INT}     { printf ("\nTK_TYPE_INT: %s", yytext);   return TK_TYPE_INT; }
 {IF}      { printf ("\nK_IF: %s", yytext);          return TK_IF; }
