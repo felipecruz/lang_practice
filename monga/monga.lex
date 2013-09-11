@@ -49,6 +49,8 @@
 #define ERR_MALLOC 601
 #define ERR_VAL 602
 
+static int lines;
+
 union {
     int ival;
     long int hval;
