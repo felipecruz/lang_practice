@@ -241,9 +241,6 @@ int main (int argc, char **argv)
     if (tk == ERR_MALLOC)
         return -1;
 
-    if (yyval.sval)
-        free (yyval.sval);
-
     fclose (yyin);
     return 0;
 }
