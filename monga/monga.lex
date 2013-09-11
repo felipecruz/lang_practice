@@ -150,6 +150,7 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
                 return ERR_VAL;
             }
             printf ("\nTK_HEXA: 0x%lX", yyval.hval);
+            return TK_HEXA;
         }
 
 {ID}    {
@@ -162,6 +163,8 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
             printf ("\nTK_ID: %s", yyval.sval);
             bzero (yyval.sval, yyleng);
             free (yyval.sval);
+
+            return TK_ID;
         }
 
 {STRING}    {
@@ -174,6 +177,8 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
                 printf ("\nTK_STRING: %s", yyval.sval);
                 bzero (yyval.sval, yyleng);
                 free (yyval.sval);
+
+                return TK_STRING;
             }
 
 {COMMENTS}  {  }
