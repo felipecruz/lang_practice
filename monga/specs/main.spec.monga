@@ -1,15 +1,25 @@
-identificador
+void teste (int x, int y) {
+    x = x + 1;
+    10000000000000000000000000000
+    return x;
+}
 
-int a = 10;
-int b = 100;
-int d = 0xF1;
+int main (int argc, char *argv) {
+    int array[] = {0, 1, 2};
 
-12902
+    int a = 10;
+    int b = 100;
+    int d = 0xF1;
+    int x = 1.2E+09;
+    int d = .9;
+    int y = 1.2;
 
-a = 1
-a + a
-a = 1 + a
+    a = 1;
+    a + a;
+    a = 1 + a;
 
-b = (c + b)
+    b = (c + b);
 
-a = new Space();
+    a = new Space();
+}
+
