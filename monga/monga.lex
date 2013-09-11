@@ -122,18 +122,18 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 {NEW}     { printf ("\nK_NEW: %s", yytext);         return TK_NEW;}
 
 {N}     {
-            ELEMENT.ival = atoi (yytext);
-            if (ELEMENT.ival == -1 && errno == ERANGE || (ELEMENT.ival < INT_MIN ||
-                                                          ELEMENT.ival > INT_MAX))
+            ELEMENT.ival = strtol (yytext, NULL, 0);
+            if (errno == ERANGE || (ELEMENT.ival < INT_MIN || ELEMENT.ival > INT_MAX)) {
+                fprintf (stderr, "Invalid Integer %s\n", yytext);
                 return ERR_VAL;
             printf ("\nTK_NUMBER: %d", ELEMENT.ival);
             return TK_NUMBER;
         }
 
 {F}     {
-            ELEMENT.fval = atof (yytext);
-            if (ELEMENT.fval == 0.0 && errno == ERANGE || (ELEMENT.fval < FLT_MIN ||
-                                                           ELEMENT.fval > FLT_MAX))
+            ELEMENT.fval = strtof (yytext, NULL);
+            if (errno == ERANGE || (ELEMENT.fval < FLT_MIN || ELEMENT.fval > FLT_MAX)) {
+                fprintf (stderr, "Invalid Float: %s\n", yytext);
                 return ERR_VAL;
             printf ("\nTK_FLOAT: %f", ELEMENT.fval);
             return TK_FLOAT;
