@@ -194,6 +194,7 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
                     return ERR_MALLOC;
 
                 memcpy (yyval.sval, yytext, yyleng);
+                free  (yyval.sval);
                 return ERR_UNMATCHED;
             }
 
