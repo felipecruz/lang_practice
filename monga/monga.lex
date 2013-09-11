@@ -175,6 +175,8 @@ void yyerror (char *error)
 
 int main (int argc, char **argv)
 {
+    yyin = fopen (argv[1], "r");
     while (yylex () != EOF) {  }
+    fclose (yyin);
     return 0;
 }
