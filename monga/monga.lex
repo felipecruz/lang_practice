@@ -224,13 +224,19 @@ int main (int argc, char **argv)
 
     do {
         tk = yylex ();
-    } while (tk != EOF &&
+    } while (tk != 0 &&
              tk != ERR_UNMATCHED &&
              tk != ERR_VAL &&
              tk != ERR_MALLOC);
 
     if (tk == ERR_UNMATCHED)
         fprintf (stderr, "Line:%d Error - Invalid token: %s\n", lines, yyval.sval);
+        return -1;
+
+    if (tk == ERR_VAL)
+        return -1;
+
+    if (tk == ERR_MALLOC)
         return -1;
 
     if (yyval.sval)
