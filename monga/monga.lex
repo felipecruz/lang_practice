@@ -38,10 +38,12 @@
 #define TK_OPPAR '('
 #define TK_CLPAR ')'
 #define TK_OPBRA '{'
+#define TK_CLBRA '}'
 #define TK_OPSQB '['
 #define TK_CLSQB ']'
 #define TK_SEMICOL ';'
 #define TK_LOGNEG '!'
+#define TK_COMMA ','
 
 #define ERR_UNMATCHED 600
 #define ERR_MALLOC 601
@@ -97,10 +99,12 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 [(]     { return TK_OPPAR; }
 [)]     { return TK_CLPAR; }
 [{]     { return TK_OPBRA; }
+[}]     { return TK_CLBRA; }
 [[]     { return TK_OPSQB; }
 []]     { return TK_CLSQB; }
 [;]     { return TK_SEMICOL; }
 [!]     { return TK_LOGNEG; }
+[,]     { return TK_COMMA; }
 
 {DBL_EQ}    { return TK_DBL_EQ; }
 {LTE}       { return TK_LTE; }
