@@ -176,6 +176,10 @@ void yyerror (char *error)
 int main (int argc, char **argv)
 {
     yyin = fopen (argv[1], "r");
+    if (yyin == NULL) {
+        fprintf (stderr, "Bad file path: %s\n", argv[1]);
+        return -1;
+    }
     while (yylex () != EOF) {  }
     fclose (yyin);
     return 0;
