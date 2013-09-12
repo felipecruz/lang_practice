@@ -1,0 +1,18 @@
+# Parser Monga 0.1
+
+## Comandos
+
+### Compilando o arquivo da gramática
+
+$ make
+
+### Rodando os testes
+
+$ make test
+
+### Gerando arquivos "expected"
+
+Esses arquivos são o output de uma execução do parser com todos os arquivos
+dentro da pasta specs. A idéia é que em um determinado momento esse arquivos
+sejam gerados pelo próprio parser para garantir que os efeitos colaterais das
+mudanças sejam decectados.
