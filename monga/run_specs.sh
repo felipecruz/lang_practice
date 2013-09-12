@@ -8,9 +8,9 @@ do
     OUT=$?
 
     if [ $OUT -eq 0 ]; then
-        echo "... Valid File"
+        echo "... Valid Syntax\c"
     else
-        echo "... Invalid File"
+        echo "... Invalid Syntax\c"
     fi
 
     CHECK_FILE=${filename/monga/expected}
@@ -24,6 +24,5 @@ do
         echo "... Test Error"
     fi
 
-    echo ""
     rm temp_output.out
 done
