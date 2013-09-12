@@ -4,6 +4,3 @@ all:
 
 test:
 	@./run_specs.sh
-
-gen_output:
-	-@./generate_outputs.sh > /dev/null 2>&1
