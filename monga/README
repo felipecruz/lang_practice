@@ -10,9 +10,17 @@ $ make
 
 $ make test
 
+Arquivo válido: Significa que a sintáxe é compatível com a da linguagem Monga.
+Arquivo inválido: Significa que a sintáxe está incompatível com a da linguagem Monga.
+
+Tests OK: Significa que o output da execução de monga é igual ao output esperado para um arquivo .monga
+Tests Error: Significa que o output da execução é diferente do esperado.
+
 ### Gerando arquivos "expected"
 
 Esses arquivos são o output de uma execução do parser com todos os arquivos
 dentro da pasta specs. A idéia é que em um determinado momento esse arquivos
 sejam gerados pelo próprio parser para garantir que os efeitos colaterais das
 mudanças sejam decectados.
+
+$ ./generate_outputs.sh
