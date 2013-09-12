@@ -359,8 +359,8 @@ static void yy_fatal_error (yyconst char msg[]  );
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 17
-#define YY_END_OF_BUFFER 18
+#define YY_NUM_RULES 40
+#define YY_END_OF_BUFFER 41
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -368,14 +368,17 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[59] =
+static yyconst flex_int16_t yy_accept[88] =
     {   0,
-        0,    0,   18,   16,   15,   15,   16,   16,   10,   10,
-       11,   11,   11,   11,   11,   11,   11,   11,   11,    0,
-       13,    0,    0,   10,    0,   11,   11,   11,   11,    5,
-       11,   11,   11,   11,   11,    0,    0,   12,   11,   11,
-       11,    4,    9,   11,   11,   11,   14,    2,    6,   11,
-       11,    1,   11,    3,   11,    7,    8,    0
+        0,    0,   41,   39,   37,   38,   15,   39,   39,    8,
+        9,    2,    4,   16,    5,   39,    3,   31,   31,   14,
+        6,    1,    7,   34,   12,   13,   34,   34,   34,   34,
+       34,   34,   34,   34,   10,   39,   11,    0,   35,    0,
+       20,   32,    0,   32,   31,    0,   18,   17,   19,   34,
+       34,   34,   34,   26,   34,   34,   34,   34,   34,   21,
+        0,    0,    0,   32,   33,   34,   34,   34,   25,   30,
+       34,   34,   34,    0,   32,   36,   23,   27,   34,   34,
+       22,   34,   24,   34,   28,   29,    0
     } ;
 
 static yyconst flex_int32_t yy_ec[256] =
@@ -383,17 +386,17 @@ static yyconst flex_int32_t yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    2,    1,    4,    1,    1,    1,    1,    1,    1,
-        1,    5,    1,    1,    1,    1,    6,    7,    8,    8,
-        8,    8,    8,    8,    8,    8,    9,    1,    1,    1,
-        1,    1,    1,    1,   10,   10,   10,   10,   10,   10,
-       11,   11,   11,   11,   11,   11,   11,   11,   11,   11,
-       11,   11,   11,   11,   11,   11,   11,   11,   11,   11,
-        1,   12,    1,    1,   11,    1,   13,   10,   14,   15,
+        1,    2,    4,    5,    1,    1,    1,    6,    1,    7,
+        8,    9,   10,   11,   12,   13,   14,   15,   16,   16,
+       16,   16,   16,   16,   16,   16,   17,    1,   18,   19,
+       20,   21,    1,    1,   22,   22,   22,   22,   23,   22,
+       24,   24,   24,   24,   24,   24,   24,   24,   24,   24,
+       24,   24,   24,   24,   24,   24,   24,   24,   24,   24,
+       25,   26,   27,    1,   24,    1,   28,   22,   29,   30,
 
-       16,   17,   11,   18,   19,   11,   11,   20,   11,   21,
-       22,   11,   11,   23,   24,   25,   26,   27,   28,   29,
-       11,   11,    1,    1,    1,    1,    1,    1,    1,    1,
+       31,   32,   24,   33,   34,   24,   24,   35,   24,   36,
+       37,   24,   24,   38,   39,   40,   41,   42,   43,   44,
+       24,   24,   45,   46,   47,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -410,69 +413,95 @@ static yyconst flex_int32_t yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static yyconst flex_int32_t yy_meta[30] =
+static yyconst flex_int32_t yy_meta[48] =
     {   0,
-        1,    1,    2,    3,    1,    1,    4,    4,    5,    4,
-        5,    6,    4,    4,    4,    4,    4,    5,    5,    5,
-        7,    5,    5,    5,    7,    5,    5,    5,    5
+        1,    1,    2,    1,    3,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    4,    4,    5,    1,    1,    1,
+        1,    4,    4,    5,    1,    1,    1,    4,    4,    4,
+        4,    4,    5,    5,    5,    5,    5,    5,    5,    5,
+        5,    5,    5,    5,    1,    1,    1
     } ;
 
-static yyconst flex_int16_t yy_base[64] =
+static yyconst flex_int16_t yy_base[92] =
     {   0,
-        0,    0,   96,   97,   97,   97,   26,   90,   24,   27,
-        0,   76,   73,   72,   20,   75,   74,   67,   70,   35,
-       97,    0,   82,   35,    0,    0,   73,   61,   62,    0,
-       58,   54,   56,   61,   60,   73,   42,    0,   50,   52,
-       54,    0,    0,   37,   40,   32,   97,    0,    0,   26,
-       27,    0,   33,    0,   24,    0,    0,   97,   53,   57,
-       63,   70,   36
+        0,    0,  147,  148,  148,  148,  148,   43,  140,  148,
+      148,  148,  148,  148,  148,   34,  136,   39,   44,  148,
+      124,  123,  122,    0,  148,  148,  108,  105,  104,   26,
+      107,  106,   99,  102,  148,   88,  148,   48,  148,   60,
+      148,   56,  124,   61,   51,    0,  148,  148,  148,    0,
+      104,   92,   93,    0,   89,   85,   87,   92,   89,  148,
+       78,  106,   75,   82,    0,   74,   80,   82,    0,    0,
+       68,   74,   56,   86,   91,  148,    0,    0,   45,   44,
+        0,   50,    0,   39,    0,    0,  148,  113,  115,  120,
+       66
+
     } ;
 
-static yyconst flex_int16_t yy_def[64] =
+static yyconst flex_int16_t yy_def[92] =
     {   0,
-       58,    1,   58,   58,   58,   58,   59,   58,   58,   58,
-       60,   60,   60,   60,   60,   60,   60,   60,   60,   59,
-       58,   61,   62,   58,   63,   60,   60,   60,   60,   60,
-       60,   60,   60,   60,   60,   62,   62,   63,   60,   60,
-       60,   60,   60,   60,   60,   60,   58,   60,   60,   60,
-       60,   60,   60,   60,   60,   60,   60,    0,   58,   58,
-       58,   58,   58
+       87,    1,   87,   87,   87,   87,   87,   88,   87,   87,
+       87,   87,   87,   87,   87,   87,   87,   87,   87,   87,
+       87,   87,   87,   89,   87,   87,   89,   89,   89,   89,
+       89,   89,   89,   89,   87,   87,   87,   88,   87,   87,
+       87,   87,   90,   87,   87,   91,   87,   87,   87,   89,
+       89,   89,   89,   89,   89,   89,   89,   89,   89,   87,
+       87,   90,   90,   87,   91,   89,   89,   89,   89,   89,
+       89,   89,   89,   87,   87,   87,   89,   89,   89,   89,
+       89,   89,   89,   89,   89,   89,    0,   87,   87,   87,
+       87
+
     } ;
 
-static yyconst flex_int16_t yy_nxt[127] =
+static yyconst flex_int16_t yy_nxt[196] =
     {   0,
-        4,    5,    6,    7,    4,    8,    9,   10,   10,   11,
-       11,    4,   11,   12,   11,   13,   14,   11,   15,   11,
-       16,   11,   17,   11,   11,   11,   18,   19,   11,   21,
-       24,   24,   24,   24,   24,   24,   30,   22,   21,   38,
-       31,   24,   24,   24,   57,   36,   22,   47,   56,   55,
-       54,   53,   25,   20,   52,   20,   20,   20,   20,   20,
-       26,   26,   51,   26,   20,   20,   50,   49,   20,   20,
-       36,   36,   48,   36,   36,   36,   36,   37,   46,   45,
-       44,   43,   42,   41,   40,   39,   37,   35,   34,   33,
-       32,   29,   28,   27,   23,   58,    3,   58,   58,   58,
+        4,    5,    6,    7,    8,    9,   10,   11,   12,   13,
+       14,   15,   16,   17,   18,   19,   19,   20,   21,   22,
+       23,   24,   24,   24,   25,    4,   26,   24,   27,   24,
+       28,   29,   24,   30,   24,   31,   24,   32,   24,   24,
+       24,   33,   34,   24,   35,   36,   37,   39,   42,   42,
+       42,   44,   39,   45,   45,   45,   44,   54,   45,   45,
+       45,   55,   38,   44,   38,   45,   45,   45,   40,   65,
+       42,   42,   42,   40,   86,   64,   64,   64,   61,   62,
+       85,   84,   46,   61,   83,   38,   61,   74,   76,   74,
+       82,   61,   75,   75,   75,   38,   64,   64,   64,   38,
 
-       58,   58,   58,   58,   58,   58,   58,   58,   58,   58,
-       58,   58,   58,   58,   58,   58,   58,   58,   58,   58,
-       58,   58,   58,   58,   58,   58
+       75,   75,   75,   81,   61,   75,   75,   75,   80,   79,
+       78,   77,   61,   38,   63,   38,   38,   38,   50,   50,
+       62,   62,   73,   62,   62,   72,   71,   70,   69,   68,
+       67,   66,   63,   60,   59,   58,   57,   56,   53,   52,
+       51,   49,   48,   47,   43,   41,   87,    3,   87,   87,
+       87,   87,   87,   87,   87,   87,   87,   87,   87,   87,
+       87,   87,   87,   87,   87,   87,   87,   87,   87,   87,
+       87,   87,   87,   87,   87,   87,   87,   87,   87,   87,
+       87,   87,   87,   87,   87,   87,   87,   87,   87,   87,
+       87,   87,   87,   87,   87
+
     } ;
 
-static yyconst flex_int16_t yy_chk[127] =
+static yyconst flex_int16_t yy_chk[196] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    7,
-        9,    9,    9,   10,   10,   10,   15,    7,   20,   63,
-       15,   24,   24,   24,   55,   37,   20,   37,   53,   51,
-       50,   46,    9,   59,   45,   59,   59,   59,   59,   59,
-       60,   60,   44,   60,   61,   61,   41,   40,   61,   61,
-       62,   62,   39,   62,   62,   62,   62,   36,   35,   34,
-       33,   32,   31,   29,   28,   27,   23,   19,   18,   17,
-       16,   14,   13,   12,    8,    3,   58,   58,   58,   58,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    8,   16,   16,
+       16,   18,   38,   18,   18,   18,   19,   30,   19,   19,
+       19,   30,   40,   45,   40,   45,   45,   45,    8,   91,
+       42,   42,   42,   38,   84,   44,   44,   44,   42,   63,
+       82,   80,   18,   44,   79,   40,   42,   61,   63,   61,
+       73,   44,   61,   61,   61,   40,   64,   64,   64,   40,
 
-       58,   58,   58,   58,   58,   58,   58,   58,   58,   58,
-       58,   58,   58,   58,   58,   58,   58,   58,   58,   58,
-       58,   58,   58,   58,   58,   58
+       74,   74,   74,   72,   64,   75,   75,   75,   71,   68,
+       67,   66,   64,   88,   62,   88,   88,   88,   89,   89,
+       90,   90,   59,   90,   90,   58,   57,   56,   55,   53,
+       52,   51,   43,   36,   34,   33,   32,   31,   29,   28,
+       27,   23,   22,   21,   17,    9,    3,   87,   87,   87,
+       87,   87,   87,   87,   87,   87,   87,   87,   87,   87,
+       87,   87,   87,   87,   87,   87,   87,   87,   87,   87,
+       87,   87,   87,   87,   87,   87,   87,   87,   87,   87,
+       87,   87,   87,   87,   87,   87,   87,   87,   87,   87,
+       87,   87,   87,   87,   87
+
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -492,11 +521,15 @@ char *yytext;
 #line 1 "monga.lex"
 #line 2 "monga.lex"
 #include <stdio.h>
+#include <errno.h>
+#include <limits.h>
+#include <float.h>
 
 #define TK_ID 300
 #define TK_NUMBER 301
 #define TK_HEXA 302
-#define TK_STRING 303
+#define TK_FLOAT 303
+#define TK_STRING 304
 
 #define TK_IF 304
 #define TK_ELSE 305
@@ -510,7 +543,36 @@ char *yytext;
 #define TK_RETURN 330
 #define TK_NEW 331
 
-#define TK_UNMATCHED 350
+#define TK_DBL_EQ 350
+#define TK_LTE 351
+#define TK_GTE 352
+#define TK_LOG_AND 353
+#define TK_LOG_OR 354
+
+#define TK_SINGLE_EQ '='
+#define TK_MULTI '*'
+#define TK_DIV '/'
+#define TK_PLUS '+'
+#define TK_SINGLE_MINUS '-'
+#define TK_LT '<'
+#define TK_GT '>'
+#define TK_OPPAR '('
+#define TK_CLPAR ')'
+#define TK_OPBRA '{'
+#define TK_CLBRA '}'
+#define TK_OPSQB '['
+#define TK_CLSQB ']'
+#define TK_SEMICOL ';'
+#define TK_LOGNEG '!'
+#define TK_COMMA ','
+
+#define ERR_UNMATCHED 600
+#define ERR_MALLOC 601
+#define ERR_VAL 602
+
+static int lines;
+
+/* http://en.wikipedia.org/wiki/Operators_in_C_and_C%2B%2B */
 
 union {
     int ival;
@@ -518,10 +580,10 @@ union {
     char cval;
     float fval;
     char *sval;
-} ELEMENT;
+} yyval;
 
 
-#line 525 "lex.yy.c"
+#line 587 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -703,10 +765,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 52 "monga.lex"
+#line 92 "monga.lex"
 
 
-#line 710 "lex.yy.c"
+#line 772 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -759,13 +821,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 59 )
+				if ( yy_current_state >= 88 )
 					yy_c = yy_meta[(unsigned int) yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 97 );
+		while ( yy_base[yy_current_state] != 148 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -791,116 +853,265 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 54 "monga.lex"
-{ printf ("\nK_TYPE_VOID: %s", yytext); }
+#line 94 "monga.lex"
+{ return TK_SINGLE_EQ; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 55 "monga.lex"
-{ printf ("\nK_TYPE_CHAR: %s", yytext); }
+#line 95 "monga.lex"
+{ return TK_MULTI; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 56 "monga.lex"
-{ printf ("\nK_TYPE_FLOAT: %s", yytext); }
+#line 96 "monga.lex"
+{ return TK_DIV; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 57 "monga.lex"
-{ printf ("\nTK_TYPE_INT: %s", yytext); }
+#line 97 "monga.lex"
+{ return TK_PLUS; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 58 "monga.lex"
-{ printf ("\nK_IF: %s", yytext); }
+#line 98 "monga.lex"
+{ return TK_SINGLE_MINUS; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 59 "monga.lex"
-{ printf ("\nK_ELSE: %s", yytext); }
+#line 99 "monga.lex"
+{ return TK_LT; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 60 "monga.lex"
-{ printf ("\nK_WHILE: %s", yytext); }
+#line 100 "monga.lex"
+{ return TK_GT; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 61 "monga.lex"
-{ printf ("\nK_RETURN: %s", yytext); }
+#line 101 "monga.lex"
+{ return TK_OPPAR; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 62 "monga.lex"
-{ printf ("\nK_NEW: %s", yytext); }
+#line 102 "monga.lex"
+{ return TK_CLPAR; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 64 "monga.lex"
-{
-            ELEMENT.ival = atoi (yytext);
-            printf ("\nTK_NUMBER: %d", ELEMENT.ival); 
-            return TK_NUMBER;
-        }
+#line 103 "monga.lex"
+{ return TK_OPBRA; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 70 "monga.lex"
-{ 
-            ELEMENT.sval = malloc (sizeof (char) * yyleng);
-            memcpy (ELEMENT.sval, yytext, yyleng);
-            printf ("\nTK_ID: %s", ELEMENT.sval);
-            bzero (ELEMENT.sval, yyleng);
-            free (ELEMENT.sval);
-        }
+#line 104 "monga.lex"
+{ return TK_CLBRA; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 78 "monga.lex"
-{ 
-            ELEMENT.hval = strtol (yytext, NULL, 0);
-            printf ("\nTK_HEXA: 0x%lX", ELEMENT.hval); 
-        }
+#line 105 "monga.lex"
+{ return TK_OPSQB; }
 	YY_BREAK
 case 13:
-/* rule 13 can match eol */
 YY_RULE_SETUP
-#line 83 "monga.lex"
-{ 
-                ELEMENT.sval = malloc (sizeof (char) * yyleng);
-                memcpy (ELEMENT.sval, yytext, yyleng);
-                printf ("\nTK_STRING: %s", ELEMENT.sval); 
-                bzero (ELEMENT.sval, yyleng);
-                free (ELEMENT.sval);
-            }
+#line 106 "monga.lex"
+{ return TK_CLSQB; }
 	YY_BREAK
 case 14:
-/* rule 14 can match eol */
 YY_RULE_SETUP
-#line 91 "monga.lex"
-{ 
-                printf ("\nTK_COMMENT: %s", yytext);
-            }
+#line 107 "monga.lex"
+{ return TK_SEMICOL; }
 	YY_BREAK
 case 15:
-/* rule 15 can match eol */
 YY_RULE_SETUP
-#line 95 "monga.lex"
-{ ECHO; };
+#line 108 "monga.lex"
+{ return TK_LOGNEG; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 97 "monga.lex"
-{ 
-                printf ("\nUNMATCHED: %s", yytext); return TK_UNMATCHED;
-            }
+#line 109 "monga.lex"
+{ return TK_COMMA; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 101 "monga.lex"
+#line 111 "monga.lex"
+{ return TK_DBL_EQ; }
+	YY_BREAK
+case 18:
+YY_RULE_SETUP
+#line 112 "monga.lex"
+{ return TK_LTE; }
+	YY_BREAK
+case 19:
+YY_RULE_SETUP
+#line 113 "monga.lex"
+{ return TK_GTE; }
+	YY_BREAK
+case 20:
+YY_RULE_SETUP
+#line 114 "monga.lex"
+{ return TK_LOG_AND; }
+	YY_BREAK
+case 21:
+YY_RULE_SETUP
+#line 115 "monga.lex"
+{ return TK_LOG_OR; }
+	YY_BREAK
+case 22:
+YY_RULE_SETUP
+#line 118 "monga.lex"
+{ printf ("\nK_TYPE_VOID: %s", yytext);   return TK_TYPE_VOID; }
+	YY_BREAK
+case 23:
+YY_RULE_SETUP
+#line 119 "monga.lex"
+{ printf ("\nK_TYPE_CHAR: %s", yytext);   return TK_TYPE_CHAR; }
+	YY_BREAK
+case 24:
+YY_RULE_SETUP
+#line 120 "monga.lex"
+{ printf ("\nK_TYPE_FLOAT: %s", yytext);  return TK_TYPE_FLOAT; }
+	YY_BREAK
+case 25:
+YY_RULE_SETUP
+#line 121 "monga.lex"
+{ printf ("\nTK_TYPE_INT: %s", yytext);   return TK_TYPE_INT; }
+	YY_BREAK
+case 26:
+YY_RULE_SETUP
+#line 122 "monga.lex"
+{ printf ("\nK_IF: %s", yytext);          return TK_IF; }
+	YY_BREAK
+case 27:
+YY_RULE_SETUP
+#line 123 "monga.lex"
+{ printf ("\nK_ELSE: %s", yytext);        return TK_ELSE; }
+	YY_BREAK
+case 28:
+YY_RULE_SETUP
+#line 124 "monga.lex"
+{ printf ("\nK_WHILE: %s", yytext);       return TK_WHILE; }
+	YY_BREAK
+case 29:
+YY_RULE_SETUP
+#line 125 "monga.lex"
+{ printf ("\nK_RETURN: %s", yytext);      return TK_RETURN; }
+	YY_BREAK
+case 30:
+YY_RULE_SETUP
+#line 126 "monga.lex"
+{ printf ("\nK_NEW: %s", yytext);         return TK_NEW;}
+	YY_BREAK
+case 31:
+YY_RULE_SETUP
+#line 128 "monga.lex"
+{
+            yyval.ival = strtol (yytext, NULL, 0);
+            if (errno == ERANGE || (yyval.ival < INT_MIN || yyval.ival > INT_MAX)) {
+                fprintf (stderr, "Line:%d Invalid Integer %s\n", lines, yytext);
+                return ERR_VAL;
+            }
+            printf ("\nTK_NUMBER: %d", yyval.ival);
+            return TK_NUMBER;
+        }
+	YY_BREAK
+case 32:
+YY_RULE_SETUP
+#line 138 "monga.lex"
+{
+            yyval.fval = strtof (yytext, NULL);
+            if (errno == ERANGE || (yyval.fval < FLT_MIN || yyval.fval > FLT_MAX)) {
+                fprintf (stderr, "Line:%d Invalid Float: %s\n", lines, yytext);
+                return ERR_VAL;
+            }
+            printf ("\nTK_FLOAT: %f", yyval.fval);
+            return TK_FLOAT;
+        }
+	YY_BREAK
+case 33:
+YY_RULE_SETUP
+#line 148 "monga.lex"
+{
+            yyval.hval = strtol (yytext, NULL, 0);
+            if (errno == ERANGE || (yyval.hval < INT_MIN || yyval.hval > INT_MAX)) {
+                fprintf (stderr, "Line:%d Invalid Hexadecimal: %s\n", lines, yytext);
+                return ERR_VAL;
+            }
+            printf ("\nTK_HEXA: 0x%lX", yyval.hval);
+            return TK_HEXA;
+        }
+	YY_BREAK
+case 34:
+YY_RULE_SETUP
+#line 158 "monga.lex"
+{
+            yyval.sval = malloc (sizeof (char) * yyleng);
+
+            if (!yyval.sval)
+                return ERR_MALLOC;
+
+            memcpy (yyval.sval, yytext, yyleng);
+            printf ("\nTK_ID: %s", yyval.sval);
+            bzero (yyval.sval, yyleng);
+            free (yyval.sval);
+
+            return TK_ID;
+        }
+	YY_BREAK
+case 35:
+/* rule 35 can match eol */
+YY_RULE_SETUP
+#line 172 "monga.lex"
+{
+                yyval.sval = malloc (sizeof (char) * yyleng);
+
+                if (!yyval.sval)
+                    return ERR_MALLOC;
+
+                memcpy (yyval.sval, yytext, yyleng);
+                printf ("\nTK_STRING: %s", yyval.sval);
+                bzero (yyval.sval, yyleng);
+                free (yyval.sval);
+
+                return TK_STRING;
+            }
+	YY_BREAK
+case 36:
+/* rule 36 can match eol */
+YY_RULE_SETUP
+#line 186 "monga.lex"
+{  }
+	YY_BREAK
+case 37:
+YY_RULE_SETUP
+#line 188 "monga.lex"
+{ ECHO; };
+	YY_BREAK
+case 38:
+/* rule 38 can match eol */
+YY_RULE_SETUP
+#line 190 "monga.lex"
+{ lines++; ECHO; }
+	YY_BREAK
+case 39:
+YY_RULE_SETUP
+#line 192 "monga.lex"
+{
+                yyval.sval = malloc (sizeof (char) * yyleng);
+
+                if (!yyval.sval)
+                    return ERR_MALLOC;
+
+                memcpy (yyval.sval, yytext, yyleng);
+                free  (yyval.sval);
+                return ERR_UNMATCHED;
+            }
+	YY_BREAK
+case 40:
+YY_RULE_SETUP
+#line 203 "monga.lex"
 ECHO;
 	YY_BREAK
-#line 904 "lex.yy.c"
+#line 1115 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1192,7 +1403,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 59 )
+			if ( yy_current_state >= 88 )
 				yy_c = yy_meta[(unsigned int) yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
@@ -1220,11 +1431,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 59 )
+		if ( yy_current_state >= 88 )
 			yy_c = yy_meta[(unsigned int) yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-	yy_is_jam = (yy_current_state == 58);
+	yy_is_jam = (yy_current_state == 87);
 
 	return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1897,7 +2108,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 101 "monga.lex"
+#line 203 "monga.lex"
 
 
 
@@ -1906,9 +2117,43 @@ void yyerror (char *error)
     fprintf (stderr, "Error: %s\n", error);
 }
 
+int yywrap ()
+{
+    return 1;
+}
+
 int main (int argc, char **argv)
 {
-    while (yylex () != EOF) {  }
+    int tk;
+
+    yyval.sval = NULL;
+    lines = 1;
+    yyin = fopen (argv[1], "r");
+
+    if (yyin == NULL) {
+        fprintf (stderr, "Bad file path: %s\n", argv[1]);
+        return -1;
+    }
+
+    do {
+        tk = yylex ();
+    } while (tk != 0 &&
+             tk != ERR_UNMATCHED &&
+             tk != ERR_VAL &&
+             tk != ERR_MALLOC);
+
+    if (tk == ERR_UNMATCHED) {
+        fprintf (stderr, "Line:%d Error - Invalid token: %s\n", lines, yyval.sval);
+        return -1;
+    }
+
+    if (tk == ERR_VAL)
+        return -1;
+
+    if (tk == ERR_MALLOC)
+        return -1;
+
+    fclose (yyin);
     return 0;
 }
 
