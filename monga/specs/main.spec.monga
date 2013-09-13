@@ -1,6 +1,18 @@
 void teste (int x, int y) {
+    a = new Space();
     x = x + 1;
     return x;
+}
+
+int quickort (int array[], int length)
+{
+    int middle = length / 2;
+    int pivot = array[middle];
+
+    left = partition (array, pivot, "lesser");
+    right = partition (array, pivot, "greater");
+
+    return join (quickort (left), {pivot}, quickort (right));
 }
 
 int main (int argc, char *argv) {
@@ -18,7 +30,8 @@ int main (int argc, char *argv) {
     a = 1 + a;
 
     b = (c + b);
+    b = (a * b) + ((c + b) * f);
 
-    a = new Space();
+    a = (1 == 2) ? 2 : 3;
 }
 

@@ -6,12 +6,58 @@ TK_ID: x
 TK_TYPE_INT: int 
 TK_ID: y 
     
+TK_ID: a  
+K_NEW: new 
+TK_ID: Space
+    
 TK_ID: x  
 TK_ID: x  
 TK_NUMBER: 1
     
 K_RETURN: return 
 TK_ID: x
+
+
+
+TK_TYPE_INT: int 
+TK_ID: quickort 
+TK_TYPE_INT: int 
+TK_ID: array 
+TK_TYPE_INT: int 
+TK_ID: length
+
+    
+TK_TYPE_INT: int 
+TK_ID: middle  
+TK_ID: length  
+TK_NUMBER: 2
+    
+TK_TYPE_INT: int 
+TK_ID: pivot  
+TK_ID: array
+TK_ID: middle
+
+    
+TK_ID: left  
+TK_ID: partition 
+TK_ID: array 
+TK_ID: pivot 
+TK_STRING: "lesser"
+    
+TK_ID: right  
+TK_ID: partition 
+TK_ID: array 
+TK_ID: pivot 
+TK_STRING: "greater"
+
+    
+K_RETURN: return 
+TK_ID: join 
+TK_ID: quickort 
+TK_ID: left 
+TK_ID: pivot 
+TK_ID: quickort 
+TK_ID: right
 
 
 
@@ -68,10 +114,19 @@ TK_ID: a
 TK_ID: b  
 TK_ID: c  
 TK_ID: b
+    
+TK_ID: b  
+TK_ID: a  
+TK_ID: b  
+TK_ID: c  
+TK_ID: b  
+TK_ID: f
 
     
 TK_ID: a  
-K_NEW: new 
-TK_ID: Space
+TK_NUMBER: 1  
+TK_NUMBER: 2  
+TK_NUMBER: 2  
+TK_NUMBER: 3
 
 
