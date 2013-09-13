@@ -44,6 +44,9 @@
 #define TK_SEMICOL ';'
 #define TK_LOGNEG '!'
 #define TK_COMMA ','
+#define TK_COLON ':'
+#define TK_QUESTION '?'
+#define TK_PERIOD '.'
 
 #define ERR_UNMATCHED 600
 #define ERR_MALLOC 601
@@ -105,6 +108,9 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 [;]     { return TK_SEMICOL; }
 [!]     { return TK_LOGNEG; }
 [,]     { return TK_COMMA; }
+[:]     { return TK_COLON; }
+[?]     { return TK_QUESTION; }
+[.]     { return TK_PERIOD; }
 
 {DBL_EQ}    { return TK_DBL_EQ; }
 {LTE}       { return TK_LTE; }
