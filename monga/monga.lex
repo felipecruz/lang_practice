@@ -56,8 +56,7 @@ static int lines;
 
 union {
     int ival;
-    long int hval;
-    char cval;
+    long hval;
     float fval;
     char *sval;
 } yyval;
