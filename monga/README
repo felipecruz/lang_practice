@@ -2,19 +2,35 @@
 
 ## Comandos
 
-### Compilando o arquivo da gramática
+### Compilando.
 
 $ make
+
+### Usando
+
+$ ./monga arquivo.monga
+
+Se a última linha da saída for "Valid file" o arquivo é válido. Existem
+erros de sintáxe ou de valor (inteiros muito grandes por exemplo). Os erros
+de sintáxe caem em 'stderr' com 'Invalid token' e os erros de valor caem também
+em 'stderr' mas com outras mensagens específicas.
+
+Alguns tokens saem em 'stdout'. Esse output permite alguns testes.
 
 ### Rodando os testes
 
 $ make test
 
-Arquivo válido: Significa que a sintáxe é compatível com a da linguagem Monga.
-Arquivo inválido: Significa que a sintáxe está incompatível com a da linguagem Monga.
+Saída: A saída informa se o arquivo tem a sintáxe válida ou não e se os testes rodaram
+como esperado. Alguns arquivos geram erros de propósito para que seja testado se o
+tratamento é sempre o mesmo. Os erros podem ser de sintáxe ou de valor.
 
-Tests OK: Significa que o output da execução de monga é igual ao output esperado para um arquivo .monga
-Tests Error: Significa que o output da execução é diferente do esperado.
+# Decisões de Projeto
+
+* Foi deixado para um outro momento a criação de arquivos auxiliares como tokens.h
+* Foi limitado o tamanho máximo dos identificadores em 31.
+* O output padrão foi feito apenas para testes.
+* O número de linhas é contado para ajudar a localização dos erros de sintáxe.
 
 ### Gerando arquivos "expected"
 
