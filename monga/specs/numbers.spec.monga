@@ -1,3 +1,10 @@
+1
+2
+3
+100
+100000
+100000000
+0xFFFFFFF
 /* Hex decimal tokens tests */
 
 0x00        /* TK_HEXA */

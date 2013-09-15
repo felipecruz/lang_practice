@@ -33,5 +33,9 @@ int main (int argc, char *argv) {
     b = (a * b) + ((c + b) * f);
 
     a = (1 == 2) ? 2 : 3;
+
+    while (1 == 2 || b > x - 2) {
+        printf ("%");
+    }
 }
 

@@ -129,4 +129,16 @@ TK_NUMBER: 2
 TK_NUMBER: 2  
 TK_NUMBER: 3
 
+    
+K_WHILE: while 
+TK_NUMBER: 1  
+TK_NUMBER: 2  
+TK_ID: b  
+TK_ID: x  
+TK_NUMBER: 2 
+        
+TK_ID: printf 
+TK_STRING: "%"
+    
+
 

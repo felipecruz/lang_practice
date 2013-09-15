@@ -1,5 +1,5 @@
 ./monga specs/condicionais.spec.monga > specs/condicionais.spec.expected
-./monga specs/hexa.spec.monga > specs/hexa.spec.expected
+./monga specs/numbers.spec.monga > specs/numbers.spec.expected
 ./monga specs/main.spec.monga > specs/main.spec.expected
 ./monga specs/example.spec.monga > specs/example.spec.expected
 ./monga specs/string.spec.monga > specs/string.spec.expected
