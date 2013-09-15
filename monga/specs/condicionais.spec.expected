@@ -1,13 +1,12 @@
 
-TK_ID: a  
-TK_NUMBER: 1
-
-
 K_IF: if 
-TK_ID: a
+TK_ID: a  
+TK_ID: x  
+TK_NUMBER: 1 
 
-K_ELSE: else 
-TK_ID: b
+K_ELSE: else  
+K_RETURN: return 
+TK_ID: b 
 
 
 K_IF: if 
@@ -20,3 +19,10 @@ K_ELSE: else
     
 TK_NUMBER: 2
 
+
+
+TK_ID: a  
+TK_NUMBER: 1  
+TK_NUMBER: 1  
+TK_NUMBER: 1  
+TK_NUMBER: 0
