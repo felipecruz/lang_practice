@@ -54,6 +54,8 @@
 
 static int lines;
 
+/* http://en.wikipedia.org/wiki/Operators_in_C_and_C%2B%2B */
+
 union {
     int ival;
     long hval;
@@ -251,6 +253,8 @@ int main (int argc, char **argv)
 
     if (tk == ERR_MALLOC)
         return -1;
+
+    fprintf(stdout, "Valid file\n");
 
     fclose (yyin);
     return 0;
