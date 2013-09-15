@@ -7,3 +7,4 @@
 ./monga specs/errors/error_invalid_hexa.monga > specs/errors/error_invalid_hexa.expected
 ./monga specs/errors/error_invalid_float.monga > specs/errors/error_invalid_float.expected
 ./monga specs/errors/error_invalid_string.monga > specs/errors/error_invalid_string.expected
+./monga specs/errors/error_invalid_string_long.monga > specs/errors/error_invalid_string_long.expected
