@@ -160,6 +160,12 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
         }
 
 {ID}    {
+            /* http://publications.gbdirect.co.uk/c_book/chapter2/keywords_and_identifiers.html */
+            if (yyleng > 31) {
+                fprintf (stderr, "Line:%d Identificer too long: %s\n", lines, yytext);
+                return ERR_VAL;
+            }
+
             yyval.sval = malloc (sizeof (char) * yyleng);
 
             if (!yyval.sval)
