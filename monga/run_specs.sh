@@ -3,14 +3,14 @@
 find specs -name "*.monga" |
 while read filename
 do
-    echo "Evaluating $filename: \c"
+    echo -n "Evaluating $filename: "
     ./monga "$filename" > "temp_output.out" 2> /dev/null
     OUT=$?
 
     if [ $OUT -eq 0 ]; then
-        echo "... Valid Syntax\c"
+        echo -n "... Valid Syntax"
     else
-        echo "... Invalid Syntax\c"
+        echo -n "... Invalid Syntax"
     fi
 
     CHECK_FILE=${filename/monga/expected}
