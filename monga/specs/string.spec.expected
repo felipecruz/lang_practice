@@ -8,3 +8,4 @@ TK_STRING: "valid string with \\ "
 TK_STRING: "valid string with \t "
 
 TK_STRING: "valid string with \""
+Valid file
