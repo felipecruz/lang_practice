@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 find specs -name "*.monga" |
 while read filename
