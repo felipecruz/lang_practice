@@ -579,14 +579,13 @@ static int lines;
 
 union {
     int ival;
-    long int hval;
-    char cval;
+    long hval;
     float fval;
     char *sval;
 } yyval;
 
 
-#line 590 "lex.yy.c"
+#line 589 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -768,10 +767,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 95 "monga.lex"
+#line 94 "monga.lex"
 
 
-#line 775 "lex.yy.c"
+#line 774 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -856,172 +855,172 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 97 "monga.lex"
+#line 96 "monga.lex"
 { return TK_SINGLE_EQ; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 98 "monga.lex"
+#line 97 "monga.lex"
 { return TK_MULTI; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 99 "monga.lex"
+#line 98 "monga.lex"
 { return TK_DIV; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 100 "monga.lex"
+#line 99 "monga.lex"
 { return TK_PLUS; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 101 "monga.lex"
+#line 100 "monga.lex"
 { return TK_SINGLE_MINUS; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 102 "monga.lex"
+#line 101 "monga.lex"
 { return TK_LT; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 103 "monga.lex"
+#line 102 "monga.lex"
 { return TK_GT; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 104 "monga.lex"
+#line 103 "monga.lex"
 { return TK_OPPAR; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 105 "monga.lex"
+#line 104 "monga.lex"
 { return TK_CLPAR; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 106 "monga.lex"
+#line 105 "monga.lex"
 { return TK_OPBRA; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 107 "monga.lex"
+#line 106 "monga.lex"
 { return TK_CLBRA; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 108 "monga.lex"
+#line 107 "monga.lex"
 { return TK_OPSQB; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 109 "monga.lex"
+#line 108 "monga.lex"
 { return TK_CLSQB; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 110 "monga.lex"
+#line 109 "monga.lex"
 { return TK_SEMICOL; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 111 "monga.lex"
+#line 110 "monga.lex"
 { return TK_LOGNEG; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 112 "monga.lex"
+#line 111 "monga.lex"
 { return TK_COMMA; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 113 "monga.lex"
+#line 112 "monga.lex"
 { return TK_COLON; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 114 "monga.lex"
+#line 113 "monga.lex"
 { return TK_QUESTION; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 115 "monga.lex"
+#line 114 "monga.lex"
 { return TK_PERIOD; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 117 "monga.lex"
+#line 116 "monga.lex"
 { return TK_DBL_EQ; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 118 "monga.lex"
+#line 117 "monga.lex"
 { return TK_LTE; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 119 "monga.lex"
+#line 118 "monga.lex"
 { return TK_GTE; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 120 "monga.lex"
+#line 119 "monga.lex"
 { return TK_LOG_AND; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 121 "monga.lex"
+#line 120 "monga.lex"
 { return TK_LOG_OR; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 124 "monga.lex"
+#line 123 "monga.lex"
 { printf ("\nK_TYPE_VOID: %s", yytext);   return TK_TYPE_VOID; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 125 "monga.lex"
+#line 124 "monga.lex"
 { printf ("\nK_TYPE_CHAR: %s", yytext);   return TK_TYPE_CHAR; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 126 "monga.lex"
+#line 125 "monga.lex"
 { printf ("\nK_TYPE_FLOAT: %s", yytext);  return TK_TYPE_FLOAT; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 127 "monga.lex"
+#line 126 "monga.lex"
 { printf ("\nTK_TYPE_INT: %s", yytext);   return TK_TYPE_INT; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 128 "monga.lex"
+#line 127 "monga.lex"
 { printf ("\nK_IF: %s", yytext);          return TK_IF; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 129 "monga.lex"
+#line 128 "monga.lex"
 { printf ("\nK_ELSE: %s", yytext);        return TK_ELSE; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 130 "monga.lex"
+#line 129 "monga.lex"
 { printf ("\nK_WHILE: %s", yytext);       return TK_WHILE; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 131 "monga.lex"
+#line 130 "monga.lex"
 { printf ("\nK_RETURN: %s", yytext);      return TK_RETURN; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 132 "monga.lex"
+#line 131 "monga.lex"
 { printf ("\nK_NEW: %s", yytext);         return TK_NEW;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 134 "monga.lex"
+#line 133 "monga.lex"
 {
             yyval.ival = strtol (yytext, NULL, 0);
             if (errno == ERANGE || (yyval.ival < INT_MIN || yyval.ival > INT_MAX)) {
@@ -1034,7 +1033,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 144 "monga.lex"
+#line 143 "monga.lex"
 {
             yyval.fval = strtof (yytext, NULL);
             if (errno == ERANGE || (yyval.fval < FLT_MIN || yyval.fval > FLT_MAX)) {
@@ -1047,7 +1046,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 154 "monga.lex"
+#line 153 "monga.lex"
 {
             yyval.hval = strtol (yytext, NULL, 0);
             if (errno == ERANGE || (yyval.hval < INT_MIN || yyval.hval > INT_MAX)) {
@@ -1060,8 +1059,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 164 "monga.lex"
+#line 163 "monga.lex"
 {
+            /* http://publications.gbdirect.co.uk/c_book/chapter2/keywords_and_identifiers.html */
+            if (yyleng > 31) {
+                fprintf (stderr, "Line:%d Identificer too long: %s\n", lines, yytext);
+                return ERR_VAL;
+            }
+
             yyval.sval = malloc (sizeof (char) * yyleng);
 
             if (!yyval.sval)
@@ -1078,7 +1083,7 @@ YY_RULE_SETUP
 case 38:
 /* rule 38 can match eol */
 YY_RULE_SETUP
-#line 178 "monga.lex"
+#line 183 "monga.lex"
 {
                 yyval.sval = malloc (sizeof (char) * yyleng);
 
@@ -1096,23 +1101,23 @@ YY_RULE_SETUP
 case 39:
 /* rule 39 can match eol */
 YY_RULE_SETUP
-#line 192 "monga.lex"
+#line 197 "monga.lex"
 {  }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 194 "monga.lex"
+#line 199 "monga.lex"
 { ECHO; };
 	YY_BREAK
 case 41:
 /* rule 41 can match eol */
 YY_RULE_SETUP
-#line 196 "monga.lex"
+#line 201 "monga.lex"
 { lines++; ECHO; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 198 "monga.lex"
+#line 203 "monga.lex"
 {
                 yyval.sval = malloc (sizeof (char) * yyleng);
 
@@ -1126,10 +1131,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 209 "monga.lex"
+#line 214 "monga.lex"
 ECHO;
 	YY_BREAK
-#line 1133 "lex.yy.c"
+#line 1138 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2126,7 +2131,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 209 "monga.lex"
+#line 214 "monga.lex"
 
 
 
