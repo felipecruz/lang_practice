@@ -19,8 +19,10 @@ Tests Error: Significa que o output da execução é diferente do esperado.
 ### Gerando arquivos "expected"
 
 Esses arquivos são o output de uma execução do parser com todos os arquivos
-dentro da pasta specs. A idéia é que em um determinado momento esse arquivos
-sejam gerados pelo próprio parser para garantir que os efeitos colaterais das
-mudanças sejam decectados.
+dentro da pasta specs. Esse script foi criado por conveniência para facilitar
+a criação de mais specs
 
 $ ./generate_outputs.sh
+
+Felipe Cruz
+fcruz@inf.puc-rio.br
