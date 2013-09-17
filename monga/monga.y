@@ -1,23 +1,81 @@
 %{
 #include <stdio.h>
-#include <string.h>
- 
-void yyerror(const char *str)
-{
-        fprintf(stderr,"error: %s\n",str);
-}
- 
-int yywrap()
-{
-        return 1;
-} 
-  
-main()
-{
-        yyparse();
-} 
-
+#include "y.tab.h"
+void yyerror (char *);
 %}
 
-%token TK_ID TK_NUMBER TK_HEXA TK_FLOAT TK_STRING TK_IF TK_ELSE TK_WHILE TK_TYPE_VOID TK_TYPE_INT TK_TYPE_FLOAT TK_TYPE_CHAR TK_RETURN TK_NEW TK_DBL_EQ TK_LTE TK_GTE TK_LOG_AND TK_LOG_OR TK_SINGLE_EQ TK_MULTI TK_DIV TK_PLUS TK_SINGLE_MINUS TK_LT TK_GT TK_OPPAR TK_CLPAR TK_OPBRA TK_CLBRA TK_OPSQB TK_CLSQB TK_SEMICOL TK_LOGNEG TK_COMMA TK_COLON TK_QUESTION TK_PERIOD ERR_UNMATCHED ERR_MALLOC ERR_VAL
+%start PROGRAM
 
+%token TK_ID 300
+%token TK_NUMBER 301
+%token TK_HEXA 302
+%token TK_FLOAT 303
+%token TK_STRING 304
+
+%token TK_IF 305
+%token TK_ELSE 306
+%token TK_WHILE 307
+
+%token TK_TYPE_VOID 320
+%token TK_TYPE_INT 321
+%token TK_TYPE_FLOAT 322
+%token TK_TYPE_CHAR 323
+
+%token TK_RETURN 330
+%token TK_NEW 331
+
+%token TK_DBL_EQ 350
+%token TK_LTE 351
+%token TK_GTE 352
+%token TK_LOG_AND 353
+%token TK_LOG_OR 354
+
+%token TK_SINGLE_EQ '='
+%token TK_MULTI '*'
+%token TK_DIV '/'
+%token TK_PLUS '+'
+%token TK_SINGLE_MINUS '-'
+%token TK_LT '<'
+%token TK_GT '>'
+%token TK_OPPAR '('
+%token TK_CLPAR ')'
+%token TK_OPBRA '{'
+%token TK_CLBRA '}'
+%token TK_OPSQB '['
+%token TK_CLSQB ']'
+%token TK_SEMICOL ';'
+%token TK_LOGNEG '!'
+%token TK_COMMA ','
+%token TK_COLON ':'
+%token TK_QUESTION '?'
+%token TK_PERIOD '.'
+
+%token ERR_UNMATCHED 600
+%token ERR_MALLOC 601
+%token ERR_VAL 602
+
+%%
+
+PROGRAM: DECL_VAR
+       | DECL_FUNC
+       ;
+
+TYPE: TK_TYPE_CHAR
+    | TK_TYPE_FLOAT
+    | TK_TYPE_INT
+    | TK_TYPE_VOID
+    ;
+
+DECL_VAR: TYPE TK_ID '(' ')'
+DECL_FUNC: TYPE TK_ID';'
+
+%%
+
+void yyerror (char *s) {
+    fprintf (stderr, "%s\n", s);
+}
+
+int main (void) {
+    yyparse ();
+    return 0;
+}
