@@ -1,5 +1,5 @@
 LEX=flex
-YACC=yacc -yd
+YACC=yacc -d -y
 CC=gcc
 
 all: y.tab.o lex.yy.o
