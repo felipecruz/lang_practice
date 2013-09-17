@@ -1,0 +1,23 @@
+%{
+#include <stdio.h>
+#include <string.h>
+ 
+void yyerror(const char *str)
+{
+        fprintf(stderr,"error: %s\n",str);
+}
+ 
+int yywrap()
+{
+        return 1;
+} 
+  
+main()
+{
+        yyparse();
+} 
+
+%}
+
+%token TK_ID TK_NUMBER TK_HEXA TK_FLOAT TK_STRING TK_IF TK_ELSE TK_WHILE TK_TYPE_VOID TK_TYPE_INT TK_TYPE_FLOAT TK_TYPE_CHAR TK_RETURN TK_NEW TK_DBL_EQ TK_LTE TK_GTE TK_LOG_AND TK_LOG_OR TK_SINGLE_EQ TK_MULTI TK_DIV TK_PLUS TK_SINGLE_MINUS TK_LT TK_GT TK_OPPAR TK_CLPAR TK_OPBRA TK_CLBRA TK_OPSQB TK_CLSQB TK_SEMICOL TK_LOGNEG TK_COMMA TK_COLON TK_QUESTION TK_PERIOD ERR_UNMATCHED ERR_MALLOC ERR_VAL
+
