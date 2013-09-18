@@ -66,53 +66,45 @@ extern int yylineno;
 %token ERR_MALLOC
 %token ERR_VAL
 
-%union {
-    int ival;
-    long hval;
-    float fval;
-    char *sval;
-};
-
 %%
 
-program
-    : decl
-    | program decl
-    ;
+program: { printf ("PROGRAM\n"); }
+       | decl
+       | program decl
+       ;
 
-decl
-    : decl_var
+decl: decl_var
     | decl_func
     ;
 
-decl_var: type name_list ';' ;
+decl_var: type name_list SEMICOL
+          { printf ("DECL_VAR\n"); } ;
 
-name_list
-    : single_name
-    | ID ',' ID
+decl_func: return_type ID OPPAR CLPAR block
+           { printf ("DECL_FUNC\n"); } ;
+
+name_list: { printf ("NAME_LIST\n"); }
+      ID
+    | name_list COMMA ID
     ;
 
-single_name: ID ;
+type : base_type | array_type ;
 
-type : base_type | type '[' ']' ;
+array_type: base_type OPSQB CLSQB { printf ("ARRAY_TYPE\n"); } ;
 
-base_type : TYPE_INT | TYPE_CHAR | TYPE_FLOAT ;
+base_type : { printf ("BASE_TYPE\n"); } TYPE_INT | TYPE_CHAR | TYPE_FLOAT ;
 
-decl_func : return_type ID '(' params ')' block ;
+return_type : TYPE_VOID { printf ("RETURN_TYPE\n"); } | type ;
 
-return_type : TYPE_VOID ;
-
-params : /* vazio */
+block : { printf ("BLOCK\n"); } OPBRA CLBRA ;
+/*
+params :
        | param
        | multi_param
        ;
-
 multi_param: param ',' param ;
-
 param : type ID ;
 
-block : '{' decl '}'
-      ;
 
 /*
 var : ID
@@ -156,7 +148,8 @@ exp_many: exp ',' exp ;
 %%
 
 void yyerror (char *s) {
-    fprintf (stderr, "%s\n", s);
+    fprintf (stderr, "Line:%d - %s", yylineno, s);
+    exit(-1);
 }
 
 int main (int argc, char **argv) {
@@ -170,24 +163,7 @@ int main (int argc, char **argv) {
         return -1;
     }
 
-    do {
-        tk = yylex ();
-    } while (tk != 0 &&
-             tk != ERR_UNMATCHED &&
-             tk != ERR_VAL &&
-             tk != ERR_MALLOC);
-
-    if (tk == ERR_UNMATCHED) {
-        fprintf (stderr, "Line:%d Error - Invalid token: %s\n", yylineno, yylval.sval);
-        return -1;
-    }
-
-    if (tk == ERR_VAL)
-        return -1;
-
-    if (tk == ERR_MALLOC)
-        return -1;
-
-    fprintf(stdout, "Valid file\n");
+    yyparse ();
     fclose (yyin);
+    exit(0);
 }
