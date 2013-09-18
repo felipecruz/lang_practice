@@ -13,6 +13,8 @@
 
 %}
 
+%option yylineno
+
 VOID    "void"
 CHAR    "char"
 INT     "int"
