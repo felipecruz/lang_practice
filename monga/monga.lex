@@ -145,9 +145,9 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 
 {COMMENTS}  {  }
 
-[ \t]     { ECHO; };
+[ \t]     { };
 
-[\n]      { ECHO; }
+[\n]      { }
 
 .           {
                 yylval.sval = malloc (sizeof (char) * yyleng);
