@@ -1,4 +1,5 @@
 %{
+#include <stdlib.h>
 #include <stdio.h>
 #include "y.tab.h"
 void yyerror (char *);
@@ -10,11 +11,18 @@ extern int yylineno;
 
 %start program
 
-%token ID
-%token NUMBER
-%token HEXA
-%token FLOAT
-%token STRING
+%union {
+    int ival;
+    long hval;
+    float fval;
+    char *sval;
+};
+
+%token <sval> ID
+%token <ival> NUMBER
+%token <hval> HEXA
+%token <fval> FLOAT
+%token <sval> STRING
 
 %token IF
 %token ELSE
