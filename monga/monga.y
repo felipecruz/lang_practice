@@ -7,53 +7,60 @@ int main (int argc, char **argv);
 
 %start program
 
-%token ID 300
-%token NUMBER 301
-%token HEXA 302
-%token FLOAT 303
-%token STRING 304
+%token ID
+%token NUMBER
+%token HEXA
+%token FLOAT
+%token STRING
 
-%token IF 305
-%token ELSE 306
-%token WHILE 307
+%token IF
+%token ELSE
+%token WHILE
 
-%token VOID 320
-%token INT 321
-%token FLOAT 322
-%token CHAR 323
+%token TYPE_VOID
+%token TYPE_INT
+%token TYPE_FLOAT
+%token TYPE_CHAR
 
-%token RETURN 330
-%token NEW 331
+%token RETURN
+%token NEW
 
-%token DBL_EQ 350
-%token LTE 351
-%token GTE 352
-%token LOG_AND 353
-%token LOG_OR 354
+%token DBL_EQ
+%token LTE
+%token GTE
+%token LOG_AND
+%token LOG_OR
 
-%token SINGLE_EQ '='
-%token MULTI '*'
-%token DIV '/'
-%token PLUS '+'
-%token SINGLE_MINUS '-'
-%token LT '<'
-%token GT '>'
-%token OPPAR '('
-%token CLPAR ')'
-%token OPBRA '{'
-%token CLBRA '}'
-%token OPSQB '['
-%token CLSQB ']'
-%token SEMICOL ';'
-%token LOGNEG '!'
-%token COMMA ','
-%token COLON ':'
-%token QUESTION '?'
-%token PERIOD '.'
+%token SINGLE_EQ
+%token MULTI
+%token DIV
+%token PLUS
+%token SINGLE_MINUS
+%token LT
+%token GT
+%token OPPAR
+%token CLPAR
+%token OPBRA
+%token CLBRA
+%token OPSQB
+%token CLSQB
+%token SEMICOL
+%token LOGNEG
+%token COMMA
+%token COLON
+%token QUESTION
+%token PERIOD
 
-%token ERR_UNMATCHED 600
-%token ERR_MALLOC 601
-%token ERR_VAL 602
+%token ERR_UNMATCHED
+%token ERR_MALLOC
+%token ERR_VAL
+
+%union {
+    int ival;
+    long hval;
+    float fval;
+    char *sval;
+};
 
 %%
 
