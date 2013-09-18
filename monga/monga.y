@@ -66,20 +66,20 @@ extern FILE *yyin;
 
 %%
 
-program 
+program
     : decl
     | program decl
     ;
 
-decl 
-    : decl_var 
-    | decl_func 
+decl
+    : decl_var
+    | decl_func
     ;
 
-decl_varc: type name_list ';' ;
+decl_var: type name_list ';' ;
 
-name_list 
-    : single_name 
+name_list
+    : single_name
     | ID ',' ID
     ;
 
@@ -87,11 +87,11 @@ single_name: ID ;
 
 type : base_type | type '[' ']' ;
 
-base_type : 'int' | 'char' | 'float' ;
+base_type : TYPE_INT | TYPE_CHAR | TYPE_FLOAT ;
 
 decl_func : return_type ID '(' params ')' block ;
 
-return_type : type | 'void' ;
+return_type : TYPE_VOID ;
 
 params : /* vazio */
        | param
@@ -104,18 +104,19 @@ param : type ID ;
 
 block : '{' decl '}'
       ;
-      
 
-var : ID 
+/*
+var : ID
     | exp '[' exp ']'
     ;
 
-exp : N
-    | H
+exp : NUMBER
+    | HEXA
+    | FLOAT
     | STRING
     | ID
 	| var
-	/*| '(' exp ')'
+	| '(' exp ')'
 	| call
 	| 'new' type '[' exp ']'
 	| '-' exp
@@ -130,17 +131,18 @@ exp : N
 	| exp '>' exp
 	| '!' exp
 	| exp '&&' exp
-	| exp '||' exp*/
+	| exp '||' exp
     ;
-    
+
 call: ID '(' exp_list ')' ;
 
-exp_list : /* vazio */ 
+exp_list : vazio
          | exp
          | exp_many
          ;
 
 exp_many: exp ',' exp ;
+*/
 
 %%
 
