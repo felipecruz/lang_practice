@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "y.tab.h"
 void yyerror (char *);
+int main (void);
 %}
 
 %start PROGRAM
@@ -67,7 +68,7 @@ TYPE: TK_TYPE_CHAR
     ;
 
 DECL_VAR: TYPE TK_ID '(' ')'
-DECL_FUNC: TYPE TK_ID';'
+DECL_FUNC: TYPE TK_ID TK_SEMICOL
 
 %%
 

@@ -6,7 +6,6 @@
 #include "y.tab.h"
 
 static int lines;
-int yylex(void);
 
 /* http://en.wikipedia.org/wiki/Operators_in_C_and_C%2B%2B */
 
@@ -167,16 +166,11 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 
 %%
 
-void yyerror (char *error)
-{
-    fprintf (stderr, "Error: %s\n", error);
-}
-
 int yywrap ()
 {
     return 1;
 }
-
+/*
 int main (int argc, char **argv)
 {
     int tk;
@@ -212,4 +206,4 @@ int main (int argc, char **argv)
 
     fclose (yyin);
     return 0;
-}
+}*/
