@@ -3,6 +3,8 @@
 #include "y.tab.h"
 void yyerror (char *);
 int main (int argc, char **argv);
+
+extern FILE *yyin;
 %}
 
 %start program
@@ -147,6 +149,34 @@ void yyerror (char *s) {
 }
 
 int main (int argc, char **argv) {
-    yyparse ();
-    return 0;
+    int tk;
+
+    yylval.sval = NULL;
+    yyin = fopen (argv[1], "r");
+
+    if (yyin == NULL) {
+        fprintf (stderr, "Bad file path: %s\n", argv[1]);
+        return -1;
+    }
+
+    do {
+        tk = yylex ();
+    } while (tk != 0 &&
+             tk != ERR_UNMATCHED &&
+             tk != ERR_VAL &&
+             tk != ERR_MALLOC);
+
+    if (tk == ERR_UNMATCHED) {
+        fprintf (stderr, "Line:%d Error - Invalid token: %s\n", yylineno, yylval.sval);
+        return -1;
+    }
+
+    if (tk == ERR_VAL)
+        return -1;
+
+    if (tk == ERR_MALLOC)
+        return -1;
+
+    fprintf(stdout, "Valid file\n");
+    fclose (yyin);
 }
