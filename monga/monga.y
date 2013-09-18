@@ -5,6 +5,7 @@ void yyerror (char *);
 int main (int argc, char **argv);
 
 extern FILE *yyin;
+extern int yylineno;
 %}
 
 %start program
