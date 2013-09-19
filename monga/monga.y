@@ -7,6 +7,8 @@ int main (int argc, char **argv);
 
 extern FILE *yyin;
 extern int yylineno;
+
+#define YYDEBUG 1
 %}
 
 %start program
@@ -68,7 +70,7 @@ extern int yylineno;
 
 %%
 
-program: { printf ("PROGRAM\n"); }
+program:
        | decl
        | program decl
        ;
@@ -77,32 +79,37 @@ decl: decl_var
     | decl_func
     ;
 
-decl_var: type name_list SEMICOL
-          { printf ("DECL_VAR\n"); } ;
+decl_var: type name_list SEMICOL ;
 
-decl_func: return_type ID OPPAR CLPAR block
-           { printf ("DECL_FUNC\n"); } ;
+decl_func: type ID OPPAR params CLPAR block
+         | TYPE_VOID ID OPPAR params CLPAR block;
 
-name_list: { printf ("NAME_LIST\n"); }
+type : array_type
+     | base_type
+     ;
+
+name_list:
       ID
     | name_list COMMA ID
     ;
 
-type : base_type | array_type ;
+base_type : TYPE_INT | TYPE_CHAR | TYPE_FLOAT ;
+array_type: base_type OPSQB CLSQB ;
 
-array_type: base_type OPSQB CLSQB { printf ("ARRAY_TYPE\n"); } ;
+block : OPBRA CLBRA
+      | OPBRA decl_list CLBRA ;
 
-base_type : { printf ("BASE_TYPE\n"); } TYPE_INT | TYPE_CHAR | TYPE_FLOAT ;
+decl_list: decl
+         | decl_list decl;
 
-return_type : TYPE_VOID { printf ("RETURN_TYPE\n"); } | type ;
-
-block : { printf ("BLOCK\n"); } OPBRA CLBRA ;
-/*
-params :
-       | param
+params : /* vazio */
        | multi_param
        ;
-multi_param: param ',' param ;
+
+multi_param: param
+           | multi_param COMMA param
+           ;
+
 param : type ID ;
 
 
@@ -153,9 +160,10 @@ void yyerror (char *s) {
 }
 
 int main (int argc, char **argv) {
-    int tk;
+#if YYDEBUG
+    yydebug = 1;
+#endif
 
-    yylval.sval = NULL;
     yyin = fopen (argv[1], "r");
 
     if (yyin == NULL) {
