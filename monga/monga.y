@@ -146,20 +146,15 @@ exp : NUMBER
 	| exp SINGLE_MINUS exp
 	| exp MULTI exp
 	| exp DIV exp
+	| exp DBL_EQ exp
+	| exp LTE exp
+	| exp GTE exp
+	| exp LT exp
+	| exp GT exp
+	| LOGNEG exp
+	| exp LOG_AND exp
+	| exp LOG_OR exp
     ;
-
-/*
-	| exp '==' exp
-	| exp '<=' exp
-	| exp '>=' exp
-	| exp '<' exp
-	| exp '>' exp
-	| '!' exp
-	| exp '&&' exp
-	| exp '||' exp
-    ;
-
-*/
 
 call: ID OPPAR exp_list CLPAR
 
