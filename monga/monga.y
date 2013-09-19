@@ -131,7 +131,7 @@ return: RETURN SEMICOL
 
 else_part: /* empty */ | ELSE command
 
-var : ID | var OPSQB CLSQB;
+var : ID | var OPSQB exp CLSQB;
 
 exp : NUMBER
     | HEXA
@@ -141,20 +141,14 @@ exp : NUMBER
     | call
 	| OPPAR exp CLPAR
 	| NEW base_type OPSQB exp CLSQB
+	| SINGLE_MINUS exp
+	| exp PLUS exp
+	| exp SINGLE_MINUS exp
+	| exp MULTI exp
+	| exp DIV exp
     ;
 
-call: ID OPPAR exp_list CLPAR
-
-exp_list: /* empty */
-        | exp
-        | exp_list COMMA exp
-        ;
 /*
-	| '-' exp
-	| exp '+' exp
-	| exp '-' exp
-	| exp '*' exp
-	| exp '/' exp
 	| exp '==' exp
 	| exp '<=' exp
 	| exp '>=' exp
@@ -166,6 +160,13 @@ exp_list: /* empty */
     ;
 
 */
+
+call: ID OPPAR exp_list CLPAR
+
+exp_list: /* empty */
+        | exp
+        | exp_list COMMA exp
+        ;
 
 %%
 
