@@ -97,9 +97,11 @@ base_type : TYPE_INT | TYPE_CHAR | TYPE_FLOAT ;
 array_type: base_type OPSQB CLSQB ;
 
 block : OPBRA CLBRA
-      | OPBRA decl_list CLBRA ;
+      | OPBRA decl_list commands CLBRA
+      ;
 
-decl_list: decl
+decl_list: /* empty */
+         | decl
          | decl_list decl;
 
 params : /* vazio */
@@ -112,18 +114,41 @@ multi_param: param
 
 param : type ID ;
 
+commands: /* empty */
+        | command
+        | commands command
+        ;
 
-/*
-var : ID
-    | exp '[' exp ']'
-    ;
+command: IF OPPAR exp CLPAR command else_part
+       | WHILE OPPAR exp CLPAR command
+       | var SINGLE_EQ exp SEMICOL
+       | return
+       | call
+       | block
+
+return: RETURN SEMICOL
+      | RETURN exp SEMICOL
+
+else_part: /* empty */ | ELSE command
+
+var : ID | var OPSQB CLSQB;
 
 exp : NUMBER
     | HEXA
     | FLOAT
     | STRING
-    | ID
-	| var
+    | var
+    | call
+    ;
+
+call: ID OPPAR exp_list CLPAR SEMICOL
+
+exp_list: /* empty */
+        | exp
+        | exp_list COMMA exp
+        ;
+/*
+    | var
 	| '(' exp ')'
 	| call
 	| 'new' type '[' exp ']'
