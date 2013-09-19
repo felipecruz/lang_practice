@@ -123,7 +123,7 @@ command: IF OPPAR exp CLPAR command else_part
        | WHILE OPPAR exp CLPAR command
        | var SINGLE_EQ exp SEMICOL
        | return
-       | call
+       | call SEMICOL
        | block
 
 return: RETURN SEMICOL
@@ -141,7 +141,7 @@ exp : NUMBER
     | call
     ;
 
-call: ID OPPAR exp_list CLPAR SEMICOL
+call: ID OPPAR exp_list CLPAR
 
 exp_list: /* empty */
         | exp
