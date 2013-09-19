@@ -139,6 +139,8 @@ exp : NUMBER
     | STRING
     | var
     | call
+	| OPPAR exp CLPAR
+	| NEW base_type OPSQB exp CLSQB
     ;
 
 call: ID OPPAR exp_list CLPAR
@@ -148,10 +150,6 @@ exp_list: /* empty */
         | exp_list COMMA exp
         ;
 /*
-    | var
-	| '(' exp ')'
-	| call
-	| 'new' type '[' exp ']'
 	| '-' exp
 	| exp '+' exp
 	| exp '-' exp
@@ -167,14 +165,6 @@ exp_list: /* empty */
 	| exp '||' exp
     ;
 
-call: ID '(' exp_list ')' ;
-
-exp_list : vazio
-         | exp
-         | exp_many
-         ;
-
-exp_many: exp ',' exp ;
 */
 
 %%
