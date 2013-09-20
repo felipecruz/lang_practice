@@ -7,6 +7,7 @@ int main (int argc, char **argv);
 
 extern FILE *yyin;
 extern int yylineno;
+extern char* yytext;
 
 #define YYDEBUG 1
 %}
@@ -68,11 +69,19 @@ extern int yylineno;
 %token ERR_MALLOC
 %token ERR_VAL
 
+%left LOG_AND LOG_OR
+%left DBL_EQ
+%left GTE LTE GT LT
+%left PLUS SINGLE_MINUS
+%left MULTI DIV
+
+%nonassoc IFX
+%nonassoc ELSE
+
 %%
 
 program:
-       | decl
-       | program decl
+       | decl program
        ;
 
 decl: decl_var
@@ -96,13 +105,11 @@ name_list:
 base_type : TYPE_INT | TYPE_CHAR | TYPE_FLOAT ;
 array_type: base_type OPSQB CLSQB ;
 
-block : OPBRA CLBRA
-      | OPBRA decl_list commands CLBRA
-      ;
+block : OPBRA decl_list commands CLBRA ;
 
 decl_list: /* empty */
-         | decl
-         | decl_list decl;
+         | decl_list decl
+         ;
 
 params : /* vazio */
        | multi_param
@@ -115,21 +122,21 @@ multi_param: param
 param : type ID ;
 
 commands: /* empty */
-        | command
         | commands command
         ;
 
-command: IF OPPAR exp CLPAR command else_part
+command: if_cmd
        | WHILE OPPAR exp CLPAR command
        | var SINGLE_EQ exp SEMICOL
        | return
        | call SEMICOL
        | block
 
+if_cmd: IF OPPAR exp CLPAR command %prec IFX
+      | IF OPPAR exp CLPAR command ELSE command
+
 return: RETURN SEMICOL
       | RETURN exp SEMICOL
-
-else_part: /* empty */ | ELSE command
 
 var : ID | var OPSQB exp CLSQB;
 
@@ -141,7 +148,7 @@ exp : NUMBER
     | call
 	| OPPAR exp CLPAR
 	| NEW base_type OPSQB exp CLSQB
-	| SINGLE_MINUS exp
+	| SINGLE_MINUS exp %prec MULTI
 	| exp PLUS exp
 	| exp SINGLE_MINUS exp
 	| exp MULTI exp
@@ -151,7 +158,7 @@ exp : NUMBER
 	| exp GTE exp
 	| exp LT exp
 	| exp GT exp
-	| LOGNEG exp
+	| LOGNEG exp %prec MULTI
 	| exp LOG_AND exp
 	| exp LOG_OR exp
     ;
@@ -166,7 +173,7 @@ exp_list: /* empty */
 %%
 
 void yyerror (char *s) {
-    fprintf (stderr, "Line:%d - %s", yylineno, s);
+    fprintf (stderr, "Line:%d - Token: %s- %s", yylineno, yytext, s);
     exit(-1);
 }
 
