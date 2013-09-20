@@ -58,9 +58,6 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 [;]     { return SEMICOL; }
 [!]     { return LOGNEG; }
 [,]     { return COMMA; }
-[:]     { return COLON; }
-[?]     { return QUESTION; }
-[.]     { return PERIOD; }
 
 {DBL_EQ}    { return DBL_EQ; }
 {LTE}       { return LTE; }

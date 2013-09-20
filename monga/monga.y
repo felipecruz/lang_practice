@@ -61,9 +61,6 @@ extern char* yytext;
 %token SEMICOL
 %token LOGNEG
 %token COMMA
-%token COLON
-%token QUESTION
-%token PERIOD
 
 %token ERR_UNMATCHED
 %token ERR_MALLOC
