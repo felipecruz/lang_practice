@@ -100,7 +100,7 @@ name_list:
     ;
 
 base_type : TYPE_INT | TYPE_CHAR | TYPE_FLOAT ;
-array_type: base_type OPSQB CLSQB ;
+array_type: type OPSQB CLSQB ;
 
 block : OPBRA decl_list commands CLBRA ;
 
@@ -144,7 +144,7 @@ exp : NUMBER
     | var
     | call
 	| OPPAR exp CLPAR
-	| NEW base_type OPSQB exp CLSQB
+	| NEW type OPSQB exp CLSQB
 	| SINGLE_MINUS exp %prec MULTI
 	| exp PLUS exp
 	| exp SINGLE_MINUS exp
