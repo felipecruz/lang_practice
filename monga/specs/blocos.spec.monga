@@ -1,0 +1,16 @@
+void func () {
+    {
+        {
+        int[] a;
+        int[] a;
+        int[] a;
+        return;
+        }
+    }
+}
+
+int func () {
+    int[] a;
+    a[0] = 1;
+    return a;
+}

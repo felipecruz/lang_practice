@@ -8,3 +8,7 @@
 ./monga specs/errors/error_invalid_float.monga > specs/errors/error_invalid_float.expected
 ./monga specs/errors/error_invalid_string.monga > specs/errors/error_invalid_string.expected
 ./monga specs/errors/error_invalid_string_long.monga > specs/errors/error_invalid_string_long.expected
+./monga specs/errors/error_invalid_bloco.monga > specs/errors/error_invalid_bloco.expected
+./monga specs/declaracoes.spec.monga > specs/declaracoes.spec.expected
+./monga specs/blocos.spec.monga > specs/blocos.spec.expected
+./monga specs/comandos.spec.monga > specs/comandos.spec.expected

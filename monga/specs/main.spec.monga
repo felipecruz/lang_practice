@@ -1,38 +1,39 @@
 void teste (int x, int y) {
-    a = new Space();
+    a = new int[10];
     x = x + 1;
     return x;
 }
 
-int quickort (int array[], int length)
-{
-    int middle = length / 2;
-    int pivot = array[middle];
+int quickort (int[] array, int length) {
+
+    int middle;
+    int pivot;
+
+    middle = length / 2;
+    pivot = array[middle];
 
     left = partition (array, pivot, "lesser");
     right = partition (array, pivot, "greater");
 
-    return join (quickort (left), {pivot}, quickort (right));
+    return join (quickort (left), pivot, quickort (right));
 }
 
-int main (int argc, char *argv) {
-    int array[] = {0, 1, 2};
+int main (int argc, char[] argv) {
+    int[] array;
 
-    int a = 10;
-    int b = 100;
-    int d = 0xF1;
-    int x = 1.2E+09;
-    int d = .9;
-    int y = 1.2;
+    a = 10;
+    b = 100;
+    d = 0xF1;
+    x = 1.2E+09;
+    d = .9;
+    y = 1.2;
 
     a = 1;
-    a + a;
+    x = a + a;
     a = 1 + a;
 
     b = (c + b);
     b = (a * b) + ((c + b) * f);
-
-    a = (1 == 2) ? 2 : 3;
 
     while (1 == 2 || b > x - 2) {
         printf ("%");

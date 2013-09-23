@@ -1,5 +1,9 @@
-"valid string"
-"valid string with \n "
-"valid string with \\ "
-"valid string with \t "
-"valid string with \""
+char[] func () {
+    string = "valid string";
+    string = "valid string with \n ";
+    string = "valid string with \\ ";
+    string = "valid string with \t ";
+    string = "valid string with \"";
+
+    return string;
+}

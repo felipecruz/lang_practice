@@ -1,9 +1,0 @@
-[main:int][argc:int, argv:char{}]
-    [printf "Monga Versão: %d\n" MONGA_VERSION]       
-
-[quicksort:int{}][array{}:int, length:int]
-    [let    [pivot = [get array [div length 2]]] 
-            [left = [partition array > pivot]]
-            [right = [partition array < pivot]]
-     [[quicksort left [len left]].[pivot].[quicksort right [len right]]]
-    ]

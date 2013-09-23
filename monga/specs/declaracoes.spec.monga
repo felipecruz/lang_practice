@@ -1,0 +1,12 @@
+int a;
+int b;
+
+void func (int a, int b) {}
+int[] get_array (int[] array) {}
+
+int x, y, z;
+
+int[] a, b;
+
+char[] a;
+float[] floats;

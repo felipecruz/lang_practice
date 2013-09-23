@@ -1,9 +1,7 @@
-12902       /* TK_NUMBER */
-10          /* TK_NUMBER */
-0xGG        /* TK_NUMBER ; TK_ID */
+void f () {
+    a = 12902;       /* TK_NUMBER */
 
-a           /* TK_ID */
+    a = 1;           /* TK_ID */
 
-"string simples" /* TK_STRING */
-"string com \n barra n" /* TK_STRING */
-"string com \t barra t" /* TK_STRING *
+    st = "string simples"; /* TK_STRING */
+}
