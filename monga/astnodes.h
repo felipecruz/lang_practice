@@ -1,7 +1,9 @@
+#ifndef _ASTNODES_H_
+#define _ASTNODES_H_
 typedef enum {
-    DelcVar,
-    DelcFunc
-} Decl;
+    DeclVar,
+    DeclFunc
+} DeclType;
 
 typedef enum {
     TypeInt,
@@ -56,6 +58,32 @@ typedef enum {
     Arith_Log_And,
     Arith_Log_Or
 } BinArithOps;
+
+typedef struct NameList {
+    char *id;
+    struct NameList *next;
+} NameList;
+
+typedef struct Params {
+    struct Type *type;
+    char *id;
+    struct Params *next;
+} Params;
+
+typedef struct Decl {
+    DeclType type;
+    union {
+        struct {
+            struct Type *type;
+            struct NameList *names;
+        } dv;
+        struct {
+            int void_type;
+            struct Type *type;
+            struct Params *params;
+        } df;
+    } u;
+} Decl;
 
 typedef struct Exp {
     ExpType type;
@@ -144,3 +172,4 @@ typedef struct Var {
         } va;
     } u;
 } Var;
+#endif
