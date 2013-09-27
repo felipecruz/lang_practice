@@ -1,4 +1,18 @@
 typedef enum {
+    DelcVar,
+    DelcFunc
+} Decl;
+
+typedef enum {
+    TypeInt,
+    TypeFloat,
+    TypeString,
+    TypeIntArray,
+    TypeFloatArray,
+    TypeStringArray
+} Type;
+
+typedef enum {
     CmdIf,
     CmdWhile,
     CmdAss,
@@ -8,9 +22,9 @@ typedef enum {
 } CmdType;
 
 typedef enum {
-    ExpConsInt,
-    ExpConsFloat,
-    ExpConsString,
+    ExpConstInt,
+    ExpConstFloat,
+    ExpConstString,
     ExpVar,
     ExpCall,
     ExpNew,
@@ -18,6 +32,11 @@ typedef enum {
     BinExpArith,
     LogNegExp
 } ExpType;
+
+typedef enum {
+    VarSingle,
+    VarArray
+} VarType;
 
 typedef enum {
     UnaArith_Minus,
@@ -112,3 +131,16 @@ typedef struct Cmd {
         } cb;
     } u;
 } Cmd;
+
+typedef struct Var {
+    VarType type;
+    union {
+        struct {
+            char *id;
+        } vs;
+        struct {
+            char *id;
+            struct Exp *exp;
+        } va;
+    } u;
+} Var;
