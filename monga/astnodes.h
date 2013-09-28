@@ -59,6 +59,10 @@ typedef enum {
     Arith_Log_Or
 } BinArithOps;
 
+typedef struct Program {
+    struct Decl *decl;
+}
+
 typedef struct NameList {
     char *id;
     struct NameList *next;
@@ -72,6 +76,7 @@ typedef struct Params {
 
 typedef struct Decl {
     DeclType type;
+    struct Decl *next;
     union {
         struct {
             struct Type *type;
