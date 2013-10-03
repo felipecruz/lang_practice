@@ -87,7 +87,7 @@ decl: decl_var
     | decl_func
     ;
 
-decl_var: type name_list SEMICOL ;
+decl_var: type name_list SEMICOL { $$ =  new_Decl ($1, $2); } ;
 
 decl_func: type ID OPPAR params CLPAR block
          | TYPE_VOID ID OPPAR params CLPAR block;
