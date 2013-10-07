@@ -8,11 +8,9 @@ typedef enum {
 typedef enum {
     TypeInt,
     TypeFloat,
-    TypeString,
-    TypeIntArray,
-    TypeFloatArray,
-    TypeStringArray
-} Type;
+    TypeChar,
+    TypeVoid
+} TypeType;
 
 typedef enum {
     CmdIf,
@@ -61,7 +59,12 @@ typedef enum {
 
 typedef struct Program {
     struct Decl *decl;
-}
+} Program;
+
+typedef struct Type {
+    TypeType type;
+    int array;
+} Type;
 
 typedef struct NameList {
     char *id;
@@ -83,12 +86,17 @@ typedef struct Decl {
             struct NameList *names;
         } dv;
         struct {
-            int void_type;
             struct Type *type;
             struct Params *params;
+            struct Block *block;
         } df;
     } u;
 } Decl;
+
+typedef struct Block {
+    struct Decl *decl;
+    struct Cmd *cmd;
+} Block;
 
 typedef struct Exp {
     ExpType type;
@@ -133,6 +141,7 @@ typedef struct Exp {
 
 typedef struct Cmd {
     CmdType type;
+    struct Cmd *next;
     union {
         struct {
             /* if then else */
@@ -177,4 +186,9 @@ typedef struct Var {
         } va;
     } u;
 } Var;
+
+Type *new_Type (TypeType typetype, int array) ;
+NameList *new_Name_List (char *id, NameList *next);
+Decl* new_Decl_Var (Type *type, NameList *name_list);
+Decl* new_Decl_Func (Type *type, char *id, Params *params, Block *block);
 #endif

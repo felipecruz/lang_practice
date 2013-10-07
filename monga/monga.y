@@ -11,6 +11,8 @@ extern FILE *yyin;
 extern int yylineno;
 extern char* yytext;
 
+static Program *program;
+
 #define YYDEBUG 1
 %}
 
@@ -21,6 +23,13 @@ extern char* yytext;
     long hval;
     float fval;
     char *sval;
+
+    struct Program *program;
+    struct Decl *decl;
+    struct NameList *name_list;
+    struct Type *type;
+    struct Params *params;
+    struct Block *block;
 };
 
 %token <sval> ID
@@ -28,6 +37,14 @@ extern char* yytext;
 %token <hval> HEXA
 %token <fval> FLOAT
 %token <sval> STRING
+
+%type<program> program;
+%type<decl> decl decl_var decl_func;
+%type<name_list> name_list;
+%type<type> type base_type array_type;
+%type<params> params;
+%type<block> block;
+
 
 %token IF
 %token ELSE
@@ -79,39 +96,48 @@ extern char* yytext;
 
 %%
 
-program:
-       | decl program
+program: { program = NULL; }
+       | decl program { program = new_Program ($1); }
        ;
 
 decl: decl_var
     | decl_func
     ;
 
-decl_var: type name_list SEMICOL { $$ =  new_Decl ($1, $2); } ;
+decl_var: type name_list SEMICOL { $$ = new_Decl_Var ($1, $2); };
 
-decl_func: type ID OPPAR params CLPAR block
-         | TYPE_VOID ID OPPAR params CLPAR block;
+decl_func: type ID OPPAR params CLPAR block 
+           { $$ = new_Decl_Func ($1, $2, $4, $6); }
+         | TYPE_VOID ID OPPAR params CLPAR block
+           { Type *type = new_Type (TypeVoid, 0);
+             $$ = new_Decl_Func (type, $2, $4, $6); };
 
 type : array_type
      | base_type
      ;
 
 name_list:
-      ID
-    | name_list COMMA ID
+      ID { $$ = new_Name_List ($1, NULL); }
+    | name_list COMMA ID { $$ = new_Name_List ($3, $1); }
     ;
 
-base_type : TYPE_INT | TYPE_CHAR | TYPE_FLOAT ;
-array_type: type OPSQB CLSQB ;
+base_type : TYPE_INT { $$ = new_Type (TypeInt, 0); }
+          | TYPE_CHAR { $$ = new_Type (TypeChar, 0); }
+          | TYPE_FLOAT { $$ = new_Type (TypeFloat, 0); };
 
-block : OPBRA decl_list commands CLBRA ;
+array_type: type OPSQB CLSQB { Type *type = (Type*)$1;
+                               type->array = 1;
+                               $$ = type; 
+                             };
 
-decl_list: /* empty */
+block : OPBRA decl_list commands CLBRA { $$ = NULL; } ;
+
+decl_list: /* vazio */
          | decl_list decl
          ;
 
-params : /* vazio */
-       | multi_param
+params : /* vazio */ { $$ = NULL; }
+       | multi_param { $$ = NULL; }
        ;
 
 multi_param: param
@@ -189,6 +215,9 @@ int main (int argc, char **argv) {
     }
 
     yyparse ();
+
+    dump_Program (program); 
+
     fclose (yyin);
     exit(0);
 }

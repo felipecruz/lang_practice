@@ -5,6 +5,12 @@
 static int indent = 0;
 static char spaces[2] = "  ";
 
+void error (const char *message)
+{
+    printf ("Error %s\n", message);
+    exit(-1);
+}
+
 void print_Exp (Exp *exp, int level)
 {
     printf ("EXP: ");
@@ -62,6 +68,88 @@ void print_Var (struct Var *var, int level)
     }
 }
 
+void print_Type (Type *type)
+{
+    switch (type->type) {
+        case TypeInt:
+            printf ("Int Type\n");
+            break;
+        case TypeChar:
+            printf ("Char Type\n");
+            break;
+        case TypeFloat:
+            printf ("Float Type\n");
+            break;
+        default:
+            error ("Invalid Type\n");
+    } 
+
+    if (type->array)
+        printf ("Array\n");
+}
+
+void print_NameList (NameList *name_list)
+{
+    NameList *list = name_list;
+    while (list) {
+        printf ("Name %s", list->id);
+        list = list->next;
+    }
+    printf ("\n");
+}
+
+void print_Block (Block *block)
+{
+    
+}
+
+void print_Params (Params *params)
+{
+
+}
+
+void print_Decl (Decl *decl)
+{
+    printf ("Decl: ");
+    
+    switch (decl->type) {
+        case DeclVar:
+            printf ("Declaration: Variable:");
+            print_Type (decl->u.dv.type);
+            print_NameList (decl->u.dv.names);
+        break;
+        case DeclFunc:
+            printf ("Declaration: Function:");
+            print_Type (decl->u.df.type);
+            print_Params (decl->u.df.params);
+            print_Block (decl->u.df.block);
+        break;
+        default:
+            error ("Invalid Declaration");
+        break;
+    }
+}
+
+void dump_Program (Program *program)
+{
+    Decl *decl;
+
+    if (program == NULL || program->decl == NULL) {
+        printf ("Empty Program");
+        return;
+    }
+
+    print_Decl (program->decl);
+    decl = program->decl;
+
+    while (decl) {
+        print_Decl (decl);
+        decl = decl->next;
+    }
+
+    printf ("\n");
+}
+
 #ifdef DUMP_TEST
 int main (int argc, char **argv)
 {
@@ -69,6 +157,10 @@ int main (int argc, char **argv)
     Cmd *cmd = malloc (sizeof (Cmd));
     Exp *exp = malloc (sizeof (Exp));
     Var *var = malloc (sizeof (Var));
+
+    Decl *decl;
+    NameList *name_list;
+    Type *type;
 
 
     cmd->type = CmdIf;
@@ -160,6 +252,14 @@ int main (int argc, char **argv)
     var->u.va.id = "array";
     var->u.va.exp = exp;
     print_Var (var, 0);
+
+
+    type
+    decl = new_Decl_Var ()
+
+    decl->type = DeclVar;
+    decl->u.dv.type = type;
+    decl->u.dv.names = name_list;
 
     printf ("\n\n");
     return 0;
