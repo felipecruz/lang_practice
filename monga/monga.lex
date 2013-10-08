@@ -14,6 +14,7 @@
 %}
 
 %option yylineno
+%x C_COMMENT
 
 VOID    "void"
 CHAR    "char"
@@ -38,9 +39,12 @@ F (([0-9]+"."[0-9]*)|("."[0-9]+))([eE][+-]?[0-9]+)?
 H 0x[a-fA-F0-8]+
 ID [a-zA-Z_][a-zA-Z_0-9]*
 STRING "\""([^"\\\n]|(\\[nt\n"\\]))*"\""
-COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 
 %%
+
+"/*"            { BEGIN(C_COMMENT); }
+<C_COMMENT>"*/" { BEGIN(INITIAL); }
+<C_COMMENT>.    { }
 
 [=]     { return SINGLE_EQ; }
 [*]     { return MULTI; }
@@ -139,8 +143,6 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 
                 return STRING;
             }
-
-{COMMENTS}  {  }
 
 [ \t]     { };
 
