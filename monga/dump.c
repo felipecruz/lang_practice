@@ -72,16 +72,19 @@ void print_Type (Type *type)
 {
     switch (type->type) {
         case TypeInt:
-            printf ("Int Type\n");
+            printf ("Int Type");
             break;
         case TypeChar:
-            printf ("Char Type\n");
+            printf ("Char Type");
             break;
         case TypeFloat:
-            printf ("Float Type\n");
+            printf ("Float Type");
+            break;
+        case TypeVoid:
+            printf ("Void Type");
             break;
         default:
-            error ("Invalid Type\n");
+            error ("Invalid Type");
     } 
 
     if (type->array)
@@ -103,9 +106,15 @@ void print_Block (Block *block)
     
 }
 
-void print_Params (Params *params)
+void print_Params (Params *_params)
 {
-
+    Params *params = _params;
+    while (params) {
+        printf ("Param %s ", params->id);
+        print_Type (params->type);
+        params = params->next;
+    }
+    printf ("\n");
 }
 
 void print_Decl (Decl *decl)

@@ -42,9 +42,8 @@ static Program *__program = NULL;
 %type<decl> decl decl_var decl_func;
 %type<name_list> name_list;
 %type<type> type base_type array_type;
-%type<params> params;
+%type<params> params multi_param;
 %type<block> block;
-
 
 %token IF
 %token ELSE
@@ -138,14 +137,12 @@ decl_list: /* vazio */
          ;
 
 params : /* vazio */ { $$ = NULL; }
-       | multi_param { $$ = NULL; }
+       | multi_param { }
        ;
 
-multi_param: param
-           | multi_param COMMA param
+multi_param: type ID { $$ = new_Param ($1, $2, NULL); }
+           | multi_param COMMA type ID { $$ = new_Param ($3, $4, $1); }
            ;
-
-param : type ID ;
 
 commands: /* empty */
         | commands command

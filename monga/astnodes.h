@@ -189,8 +189,9 @@ typedef struct Var {
 
 Program *new_Program ();
 Program *add_Decl (Program *program, Decl *decl);
-Type *new_Type (TypeType typetype, int array) ;
+Type *new_Type (TypeType typetype, int array);
 NameList *new_Name_List (char *id, NameList *next);
 Decl* new_Decl_Var (Type *type, NameList *name_list);
 Decl* new_Decl_Func (Type *type, char *id, Params *params, Block *block);
+Params *new_Param (Type *type, char *id, Params *param);
 #endif

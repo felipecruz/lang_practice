@@ -46,6 +46,15 @@ NameList *new_Name_List (char *id, NameList *next)
     return name_list;
 }
 
+Params *new_Param (Type *type, char *id, Params *params)
+{
+    Params *param = (Params*) malloc (sizeof (Params));
+    param->type = type;
+    param->id = strdup (id);
+    param->next = params;
+    return param;
+}
+
 Decl* new_Decl_Var (Type *type, NameList *name_list)
 {
     Decl *decl = (Decl*) malloc (sizeof (Decl));
