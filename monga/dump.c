@@ -92,7 +92,7 @@ void print_NameList (NameList *name_list)
 {
     NameList *list = name_list;
     while (list) {
-        printf ("Name %s", list->id);
+        printf ("Name %s ", list->id);
         list = list->next;
     }
     printf ("\n");
@@ -110,8 +110,6 @@ void print_Params (Params *params)
 
 void print_Decl (Decl *decl)
 {
-    printf ("Decl: ");
-    
     switch (decl->type) {
         case DeclVar:
             printf ("Declaration: Variable:");
@@ -134,12 +132,11 @@ void dump_Program (Program *program)
 {
     Decl *decl;
 
-    if (program == NULL || program->decl == NULL) {
+    if (program == NULL) {
         printf ("Empty Program");
         return;
     }
 
-    print_Decl (program->decl);
     decl = program->decl;
 
     while (decl) {
@@ -157,6 +154,7 @@ int main (int argc, char **argv)
     Cmd *cmd = malloc (sizeof (Cmd));
     Exp *exp = malloc (sizeof (Exp));
     Var *var = malloc (sizeof (Var));
+    Program *program = new_Program ();
 
     Decl *decl;
     NameList *name_list;
@@ -254,12 +252,7 @@ int main (int argc, char **argv)
     print_Var (var, 0);
 
 
-    type
-    decl = new_Decl_Var ()
-
-    decl->type = DeclVar;
-    decl->u.dv.type = type;
-    decl->u.dv.names = name_list;
+    program->decl = NULL;
 
     printf ("\n\n");
     return 0;

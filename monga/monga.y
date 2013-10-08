@@ -11,12 +11,12 @@ extern FILE *yyin;
 extern int yylineno;
 extern char* yytext;
 
-static Program *program;
+static Program *__program = NULL;
 
 #define YYDEBUG 1
 %}
 
-%start program
+%start main_program
 
 %union {
     int ival;
@@ -96,9 +96,10 @@ static Program *program;
 
 %%
 
-program: { program = NULL; }
-       | decl program { program = new_Program ($1); }
-       ;
+main_program: program { __program = $1; };
+
+program: { $$ = new_Program (); }
+       | decl program { $$ = add_Decl ($2, $1); };
 
 decl: decl_var
     | decl_func
@@ -117,8 +118,8 @@ type : array_type
      ;
 
 name_list:
-      ID { $$ = new_Name_List ($1, NULL); }
-    | name_list COMMA ID { $$ = new_Name_List ($3, $1); }
+      ID { $$ = new_Name_List (yylval.sval, NULL); }
+    | name_list COMMA ID { $$ = new_Name_List (yylval.sval, (NameList*)$1); }
     ;
 
 base_type : TYPE_INT { $$ = new_Type (TypeInt, 0); }
@@ -216,7 +217,7 @@ int main (int argc, char **argv) {
 
     yyparse ();
 
-    dump_Program (program); 
+    dump_Program (__program);
 
     fclose (yyin);
     exit(0);

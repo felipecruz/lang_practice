@@ -187,6 +187,8 @@ typedef struct Var {
     } u;
 } Var;
 
+Program *new_Program ();
+Program *add_Decl (Program *program, Decl *decl);
 Type *new_Type (TypeType typetype, int array) ;
 NameList *new_Name_List (char *id, NameList *next);
 Decl* new_Decl_Var (Type *type, NameList *name_list);

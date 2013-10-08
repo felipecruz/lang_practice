@@ -1,11 +1,19 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "astnodes.h"
 
-Program *new_Program (Decl *decl)
+Program* new_Program ()
 {
     Program *program = (Program*) malloc (sizeof (Program));
+    program->decl = NULL;
+    return program;
+}
+
+Program *add_Decl (Program *program, Decl *decl)
+{
+    decl->next = program->decl;
     program->decl = decl;
     return program;
 }
@@ -32,7 +40,7 @@ Type *new_Type (TypeType typetype, int array)
 
 NameList *new_Name_List (char *id, NameList *next)
 {
-    NameList *name_list = malloc (sizeof (NameList));
+    NameList *name_list = (NameList*) malloc (sizeof (NameList));
     name_list->next = next;
     name_list->id = strdup (id);
     return name_list;
@@ -42,6 +50,7 @@ Decl* new_Decl_Var (Type *type, NameList *name_list)
 {
     Decl *decl = (Decl*) malloc (sizeof (Decl));
     decl->type = DeclVar;
+    decl->next = NULL;
 
     assert (type->type != TypeVoid);
 
@@ -55,6 +64,7 @@ Decl* new_Decl_Func (Type *type, char *id, Params *params, Block *block)
 {
     Decl *decl = (Decl*) malloc (sizeof (Decl));
     decl->type = DeclFunc;
+    decl->next = NULL;
 
     decl->u.df.type = type;
     decl->u.df.params = params;
