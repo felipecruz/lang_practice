@@ -113,7 +113,7 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
                 return ERR_VAL;
             }
 
-            yylval.sval = malloc (sizeof (char) * yyleng);
+            yylval.sval = malloc (sizeof (char) * (yyleng + 1));
 
             if (!yylval.sval)
                 return ERR_MALLOC;
@@ -127,7 +127,7 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
         }
 
 {STRING}    {
-                yylval.sval = malloc (sizeof (char) * yyleng);
+                yylval.sval = malloc (sizeof (char) * (yyleng + 1));
 
                 if (!yylval.sval)
                     return ERR_MALLOC;
