@@ -7,13 +7,16 @@
 
 /* http://en.wikipedia.org/wiki/Operators_in_C_and_C%2B%2B */
 
-#ifndef DEBUG
-#define printf(...) /**/
+#ifdef DEBUG
+#define printdebug      printf
+#else
+#define printdebug(...) /**/
 #endif
 
 %}
 
 %option yylineno
+%x C_COMMENT
 
 VOID    "void"
 CHAR    "char"
@@ -35,12 +38,15 @@ LOG_OR "||"
 
 N [0-9]+
 F (([0-9]+"."[0-9]*)|("."[0-9]+))([eE][+-]?[0-9]+)?
-H 0x[a-fA-F0-8]+
+H 0x[a-fA-F0-9]+
 ID [a-zA-Z_][a-zA-Z_0-9]*
 STRING "\""([^"\\\n]|(\\[nt\n"\\]))*"\""
-COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 
 %%
+
+"/*"            { BEGIN(C_COMMENT); }
+<C_COMMENT>"*/" { BEGIN(INITIAL); }
+<C_COMMENT>.    { }
 
 [=]     { return SINGLE_EQ; }
 [*]     { return MULTI; }
@@ -66,15 +72,15 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
 {LOG_OR}    { return LOG_OR; }
 
 
-{VOID}    { printf ("\nK_TYPE_VOID: %s", yytext);   return TYPE_VOID; }
-{CHAR}    { printf ("\nK_TYPE_CHAR: %s", yytext);   return TYPE_CHAR; }
-{FLOAT}   { printf ("\nK_TYPE_FLOAT: %s", yytext);  return TYPE_FLOAT; }
-{INT}     { printf ("\nTYPE_INT: %s", yytext);      return TYPE_INT; }
-{IF}      { printf ("\nK_IF: %s", yytext);          return IF; }
-{ELSE}    { printf ("\nK_ELSE: %s", yytext);        return ELSE; }
-{WHILE}   { printf ("\nK_WHILE: %s", yytext);       return WHILE; }
-{RETURN}  { printf ("\nK_RETURN: %s", yytext);      return RETURN; }
-{NEW}     { printf ("\nK_NEW: %s", yytext);         return NEW;}
+{VOID}    { printdebug ("\nK_TYPE_VOID: %s", yytext);   return TYPE_VOID; }
+{CHAR}    { printdebug ("\nK_TYPE_CHAR: %s", yytext);   return TYPE_CHAR; }
+{FLOAT}   { printdebug ("\nK_TYPE_FLOAT: %s", yytext);  return TYPE_FLOAT; }
+{INT}     { printdebug ("\nTYPE_INT: %s", yytext);      return TYPE_INT; }
+{IF}      { printdebug ("\nK_IF: %s", yytext);          return IF; }
+{ELSE}    { printdebug ("\nK_ELSE: %s", yytext);        return ELSE; }
+{WHILE}   { printdebug ("\nK_WHILE: %s", yytext);       return WHILE; }
+{RETURN}  { printdebug ("\nK_RETURN: %s", yytext);      return RETURN; }
+{NEW}     { printdebug ("\nK_NEW: %s", yytext);         return NEW;}
 
 {N}     {
             yylval.ival = strtol (yytext, NULL, 0);
@@ -82,7 +88,7 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
                 fprintf (stderr, "Line:%d Invalid Integer %s\n", yylineno, yytext);
                 return ERR_VAL;
             }
-            printf ("\nNUMBER: %d", yylval.ival);
+            printdebug ("\nNUMBER: %d", yylval.ival);
             return NUMBER;
         }
 
@@ -92,7 +98,7 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
                 fprintf (stderr, "Line:%d Invalid Float: %s\n", yylineno, yytext);
                 return ERR_VAL;
             }
-            printf ("\nFLOAT: %f", yylval.fval);
+            printdebug ("\nFLOAT: %f", yylval.fval);
             return FLOAT;
         }
 
@@ -102,7 +108,7 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
                 fprintf (stderr, "Line:%d Invalid Hexadecimal: %s\n", yylineno, yytext);
                 return ERR_VAL;
             }
-            printf ("\nHEXA: 0x%lX", yylval.hval);
+            printdebug ("\nHEXA: 0x%lX", yylval.hval);
             return HEXA;
         }
 
@@ -113,34 +119,28 @@ COMMENTS "/*"([^"*"]|("*"[^/]))*?"*/"
                 return ERR_VAL;
             }
 
-            yylval.sval = malloc (sizeof (char) * yyleng);
+            yylval.sval = malloc (sizeof (char) * (yyleng + 1));
 
             if (!yylval.sval)
                 return ERR_MALLOC;
 
             memcpy (yylval.sval, yytext, yyleng);
-            printf ("\nID: %s", yylval.sval);
-            bzero (yylval.sval, yyleng);
-            free (yylval.sval);
+            printdebug ("\nID: %s", yylval.sval);
 
             return ID;
         }
 
 {STRING}    {
-                yylval.sval = malloc (sizeof (char) * yyleng);
+                yylval.sval = malloc (sizeof (char) * (yyleng + 1));
 
                 if (!yylval.sval)
                     return ERR_MALLOC;
 
                 memcpy (yylval.sval, yytext, yyleng);
-                printf ("\nSTRING: %s", yylval.sval);
-                bzero (yylval.sval, yyleng);
-                free (yylval.sval);
+                printdebug ("\nSTRING: %s", yylval.sval);
 
                 return STRING;
             }
-
-{COMMENTS}  {  }
 
 [ \t]     { };
 

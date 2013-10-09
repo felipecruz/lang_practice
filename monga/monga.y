@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "astnodes.h"
-#include "dump.c"
+#include "dump.h"
 #include "y.tab.h"
 void yyerror (char *);
 int main (int argc, char **argv);
@@ -11,16 +11,29 @@ extern FILE *yyin;
 extern int yylineno;
 extern char* yytext;
 
+static Program *__program = NULL;
+
 #define YYDEBUG 1
 %}
 
-%start program
+%start main_program
 
 %union {
     int ival;
     long hval;
     float fval;
     char *sval;
+
+    struct Program *program;
+    struct Decl *decl;
+    struct NameList *name_list;
+    struct Type *type;
+    struct Params *params;
+    struct Block *block;
+    struct Cmd *cmd;
+    struct Exp *exp;
+    struct Var *var;
+    struct Call *call;
 };
 
 %token <sval> ID
@@ -28,6 +41,17 @@ extern char* yytext;
 %token <hval> HEXA
 %token <fval> FLOAT
 %token <sval> STRING
+
+%type<program> program;
+%type<decl> decl decl_var decl_func decl_list;
+%type<name_list> name_list;
+%type<type> type base_type array_type;
+%type<params> params multi_param;
+%type<block> block;
+%type<cmd> commands command if_cmd return;
+%type<exp> exp exp_list;
+%type<var> var;
+%type<call> call;
 
 %token IF
 %token ELSE
@@ -79,94 +103,115 @@ extern char* yytext;
 
 %%
 
-program:
-       | decl program
-       ;
+main_program: program { __program = $1; };
+
+program: { $$ = new_Program (); }
+       | decl program { $$ = add_Decl ($2, $1); };
 
 decl: decl_var
     | decl_func
     ;
 
-decl_var: type name_list SEMICOL { $$ =  new_Decl ($1, $2); } ;
+decl_var: type name_list SEMICOL { $$ = new_Decl_Var ($1, $2); };
 
 decl_func: type ID OPPAR params CLPAR block
-         | TYPE_VOID ID OPPAR params CLPAR block;
+           { $$ = new_Decl_Func ($1, $2, $4, $6); }
+         | TYPE_VOID ID OPPAR params CLPAR block
+           { Type *type = new_Type (TypeVoid, 0);
+             $$ = new_Decl_Func (type, $2, $4, $6); };
 
 type : array_type
      | base_type
      ;
 
 name_list:
-      ID
-    | name_list COMMA ID
+      ID { $$ = new_Name_List (yylval.sval, NULL); }
+    | name_list COMMA ID { $$ = new_Name_List (yylval.sval, (NameList*)$1); }
     ;
 
-base_type : TYPE_INT | TYPE_CHAR | TYPE_FLOAT ;
-array_type: type OPSQB CLSQB ;
+base_type : TYPE_INT { $$ = new_Type (TypeInt, 0); }
+          | TYPE_CHAR { $$ = new_Type (TypeChar, 0); }
+          | TYPE_FLOAT { $$ = new_Type (TypeFloat, 0); };
 
-block : OPBRA decl_list commands CLBRA ;
+array_type: type OPSQB CLSQB { Type *type = (Type*)$1;
+                               type->array = 1;
+                               $$ = type;
+                             };
 
-decl_list: /* empty */
-         | decl_list decl
+block : OPBRA decl_list commands CLBRA { $$ = new_Block($2, $3); } ;
+
+decl_list: /* vazio */ { $$ = NULL; }
+         | decl_list decl { Decl *_decl = (Decl*) $2;
+                            _decl->next = $1;
+                            $$ = _decl;
+                          }
          ;
 
-params : /* vazio */
+params : /* vazio */ { $$ = NULL; }
        | multi_param
        ;
 
-multi_param: param
-           | multi_param COMMA param
+multi_param: type ID { $$ = new_Param ($1, $2, NULL); }
+           | multi_param COMMA type ID { $$ = new_Param ($3, $4, $1); }
            ;
 
-param : type ID ;
-
-commands: /* empty */
-        | commands command
+commands: /* empty */ { $$ = NULL; }
+        | commands command { Cmd *_cmd = (Cmd*) $2;
+                             _cmd->next = $1;
+                             $$ = _cmd;
+                           }
         ;
 
-command: if_cmd
-       | WHILE OPPAR exp CLPAR command
-       | var SINGLE_EQ exp SEMICOL
-       | return
-       | call SEMICOL
-       | block
+command: if_cmd { $$ = $1; }
+       | return { $$ = $1; }
+       | var SINGLE_EQ exp SEMICOL { $$ = new_Assign_Cmd ($1, $3); }
+       | call SEMICOL { $$ = new_Call_Cmd ($1); }
+       | block { $$ = new_Block_Cmd ($1); }
+       | WHILE OPPAR exp CLPAR command { $$ = new_While_Cmd ($3, $5); }
+       ;
 
-if_cmd: IF OPPAR exp CLPAR command %prec IFX
-      | IF OPPAR exp CLPAR command ELSE command
+if_cmd: IF OPPAR exp CLPAR command %prec IFX { $$ = new_If_Cmd ($3, $5, NULL); }
+      | IF OPPAR exp CLPAR command ELSE command { $$ = new_If_Cmd ($3, $5, $7); }
+      ;
 
-return: RETURN SEMICOL
-      | RETURN exp SEMICOL
+return: RETURN SEMICOL { $$ = new_Return_Cmd (NULL); }
+      | RETURN exp SEMICOL { $$ = new_Return_Cmd ($2); }
+      ;
 
-var : ID | var OPSQB exp CLSQB;
+var : ID { $$ = new_Var (yylval.sval, NULL); }
+    | var OPSQB exp CLSQB { $$ = new_Var (yylval.sval, $3); };
 
-exp : NUMBER
-    | HEXA
-    | FLOAT
-    | STRING
-    | var
-    | call
-	| OPPAR exp CLPAR
-	| NEW type OPSQB exp CLSQB
-	| SINGLE_MINUS exp %prec MULTI
-	| exp PLUS exp
-	| exp SINGLE_MINUS exp
-	| exp MULTI exp
-	| exp DIV exp
-	| exp DBL_EQ exp
-	| exp LTE exp
-	| exp GTE exp
-	| exp LT exp
-	| exp GT exp
-	| LOGNEG exp %prec MULTI
-	| exp LOG_AND exp
-	| exp LOG_OR exp
+exp : NUMBER { $$ = new_Exp_Int ($1, NULL); }
+    | HEXA { $$ = new_Exp_Hexa ($1, NULL); }
+    | FLOAT { $$ = new_Exp_Float ($1, NULL); }
+    | STRING { $$ = new_Exp_String ($1, NULL); }
+    | var { $$ = new_Exp_Var ($1, NULL); }
+    | call { $$ = new_Exp_Call ($1, NULL); }
+	| OPPAR exp CLPAR { $$ = $2; }
+	| NEW type OPSQB exp CLSQB { $$ = new_Exp_New ($2, $4, NULL); }
+	| SINGLE_MINUS exp %prec MULTI { $$ = new_Exp_Unary (UnaArith_Minus, $2, NULL); }
+	| LOGNEG exp %prec MULTI { $$ = new_Exp_Unary (UnaArith_Log_Neg, $2, NULL); }
+	| exp PLUS exp { $$ = new_Exp_Binary (Arith_Plus, $1, $3, NULL); }
+	| exp SINGLE_MINUS exp { $$ = new_Exp_Binary (Arith_Sub, $1, $3, NULL); }
+	| exp MULTI exp { $$ = new_Exp_Binary (Arith_Mul, $1, $3, NULL); }
+	| exp DIV exp { $$ = new_Exp_Binary (Arith_Div, $1, $3, NULL); }
+	| exp DBL_EQ exp { $$ = new_Exp_Binary (Arith_Dbl_EQ, $1, $3, NULL); }
+	| exp LTE exp { $$ = new_Exp_Binary (Arith_Lte, $1, $3, NULL); }
+	| exp GTE exp { $$ = new_Exp_Binary (Arith_Gte, $1, $3, NULL); }
+	| exp LT exp { $$ = new_Exp_Binary (Arith_Lt, $1, $3, NULL); }
+	| exp GT exp { $$ = new_Exp_Binary (Arith_Ge, $1, $3, NULL); }
+	| exp LOG_AND exp { $$ = new_Exp_Binary (Arith_Log_And, $1, $3, NULL); }
+	| exp LOG_OR exp { $$ = new_Exp_Binary (Arith_Log_Or, $1, $3, NULL); }
     ;
 
-call: ID OPPAR exp_list CLPAR
+call: ID OPPAR exp_list CLPAR { $$ = new_Call ($1, $3); }
 
-exp_list: /* empty */
+exp_list: /* empty */ { $$ = NULL; }
         | exp
-        | exp_list COMMA exp
+        | exp_list COMMA exp { Exp *_exp = (Exp*) $3;
+                               _exp->next = $1;
+                               $$ = _exp;
+                              }
         ;
 
 %%
@@ -177,6 +222,7 @@ void yyerror (char *s) {
 }
 
 int main (int argc, char **argv) {
+    int indent = 0;
 #if YYDEBUG
     yydebug = 0;
 #endif
@@ -189,6 +235,9 @@ int main (int argc, char **argv) {
     }
 
     yyparse ();
+
+    dump_Program (__program, indent);
+
     fclose (yyin);
     exit(0);
 }
