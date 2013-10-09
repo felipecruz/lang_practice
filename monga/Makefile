@@ -1,10 +1,10 @@
 LEX=flex
 YACC=yacc -d -y -v
-FLAGS=
+FLAGS=-g
 CC=gcc
 
 all: clean lex.yy.c y.tab.h
-	$(CC) astnodes.c lex.yy.c y.tab.c $(FLAGS) -o monga
+	$(CC) astnodes.c dump.c lex.yy.c y.tab.c $(FLAGS) -o monga
 
 y.tab.h:
 	$(YACC) monga.y
@@ -20,7 +20,7 @@ clean:
 	@rm -rf dump
 
 dump: clean
-	@gcc dump.c -Wall -o dump -DDUMP_TEST=1
+	@gcc astnodes.c dump.c -Wall -o dump -DDUMP_TEST=1
 	@./dump
 
 test:

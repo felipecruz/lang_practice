@@ -23,6 +23,7 @@ typedef enum {
 
 typedef enum {
     ExpConstInt,
+    ExpConstLong,
     ExpConstFloat,
     ExpConstString,
     ExpVar,
@@ -30,7 +31,6 @@ typedef enum {
     ExpNew,
     UnaExpArith,
     BinExpArith,
-    LogNegExp
 } ExpType;
 
 typedef enum {
@@ -100,11 +100,16 @@ typedef struct Block {
 
 typedef struct Exp {
     ExpType type;
+    struct Exp *next;
     union {
         struct {
             /* const int */;
             int val;
         } eci;
+        struct {
+            /* const long hexa */
+            long val;
+        } ech;
         struct {
             /* const float */
             float val;
@@ -163,9 +168,8 @@ typedef struct Cmd {
             struct Exp *exp;
         } cr;
         struct {
-            /* function call */
-            char *name;
-            struct Exp *exp;
+            /* call */
+            struct Call *call;
         } cc;
         struct {
             /* block */
@@ -187,11 +191,42 @@ typedef struct Var {
     } u;
 } Var;
 
+typedef struct Call {
+    char *id;
+    Exp *exp_list;
+} Call;
+
 Program *new_Program ();
 Program *add_Decl (Program *program, Decl *decl);
+
 Type *new_Type (TypeType typetype, int array);
 NameList *new_Name_List (char *id, NameList *next);
+
 Decl* new_Decl_Var (Type *type, NameList *name_list);
 Decl* new_Decl_Func (Type *type, char *id, Params *params, Block *block);
+
 Params *new_Param (Type *type, char *id, Params *param);
+
+Var *new_Var (char *id, Exp *exp);
+
+Block *new_Block (Decl* decl, Cmd *cmd);
+
+Cmd *new_If_Cmd (Exp *exp, Cmd *if_command, Cmd *else_cmd);
+Cmd *new_While_Cmd (Exp *exp, Cmd *command);
+Cmd *new_Return_Cmd (Exp *exp);
+Cmd *new_Assign_Cmd (Var *var, Exp *exp);
+Cmd *new_Call_Cmd (Call *call);
+Cmd *new_Block_Cmd (Block *block);
+
+Call *new_Call (char *id, Exp *exp_list);
+
+Exp *new_Exp_Int (int val, Exp *next);
+Exp *new_Exp_Hexa (long val, Exp *next);
+Exp *new_Exp_Float (float val, Exp *next);
+Exp *new_Exp_String (char *val, Exp *next);
+Exp *new_Exp_Var (Var *var, Exp *next);
+Exp *new_Exp_Call (Call *call, Exp *next);
+Exp *new_Exp_New (Type *type, Exp *exp, Exp *next);
+Exp *new_Exp_Unary (UnaArithOps op, Exp *exp, Exp *next);
+Exp *new_Exp_Binary (BinArithOps op, Exp *expl, Exp *expr, Exp *next);
 #endif
