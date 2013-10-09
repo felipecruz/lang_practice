@@ -1,3 +1,4 @@
+./monga specs/basic.spec.monga > specs/basic.spec.expected
 ./monga specs/condicionais.spec.monga > specs/condicionais.spec.expected
 ./monga specs/numbers.spec.monga > specs/numbers.spec.expected
 ./monga specs/main.spec.monga > specs/main.spec.expected

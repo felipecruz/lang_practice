@@ -22,6 +22,7 @@ do
         echo "... Tests OK"
     else
         echo "... Test Error"
+        exit
     fi
 
     rm temp_output.out
