@@ -16,7 +16,7 @@
 %}
 
 %option yylineno
-%x C_COMMENT
+%x IN_COMMENT
 
 VOID    "void"
 CHAR    "char"
@@ -44,9 +44,15 @@ STRING "\""([^"\\\n]|(\\[nt\n"\\]))*"\""
 
 %%
 
-"/*"            { BEGIN(C_COMMENT); }
-<C_COMMENT>"*/" { BEGIN(INITIAL); }
-<C_COMMENT>.    { }
+<INITIAL>{
+"/*"              BEGIN(IN_COMMENT);
+}
+<IN_COMMENT>{
+"*/"      BEGIN(INITIAL);
+[^*\n]+
+"*"
+\n        yylineno++;
+}
 
 [=]     { return SINGLE_EQ; }
 [*]     { return MULTI; }
