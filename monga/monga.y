@@ -178,8 +178,8 @@ return: RETURN SEMICOL { $$ = new_Return_Cmd (NULL); }
       | RETURN exp SEMICOL { $$ = new_Return_Cmd ($2); }
       ;
 
-var : ID { $$ = new_Var (yylval.sval, NULL); }
-    | var OPSQB exp CLSQB { $$ = new_Var (yylval.sval, $3); };
+var : ID { $$ = new_Var ($1, NULL); }
+    | var OPSQB exp CLSQB { $$ = new_Var_Array ($1, $3); };
 
 exp : NUMBER { $$ = new_Exp_Int ($1, NULL); }
     | HEXA { $$ = new_Exp_Hexa ($1, NULL); }

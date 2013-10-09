@@ -4,13 +4,13 @@ FLAGS=-g
 CC=gcc
 
 all: clean lex.yy.c y.tab.h
-	$(CC) astnodes.c dump.c lex.yy.c y.tab.c $(FLAGS) -o monga
+	@$(CC) astnodes.c dump.c lex.yy.c y.tab.c $(FLAGS) -o monga
 
 y.tab.h:
-	$(YACC) monga.y
+	@$(YACC) monga.y
 
 lex.yy.c:
-	$(LEX) monga.lex
+	@$(LEX) monga.lex
 
 clean:
 	@rm -f lex.yy.c

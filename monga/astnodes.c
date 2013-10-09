@@ -243,13 +243,16 @@ Call *new_Call (char *id, Exp *exp_list)
 Var *new_Var (char *id, Exp *exp)
 {
     Var *var = (Var*) malloc (sizeof (Var));
-    if (exp) {
-        var->type = VarArray;
-        var->u.va.id = strdup (id);
-        var->u.va.exp = exp;
-    } else {
-        var->type = VarSingle;
-        var->u.vs.id = strdup (id);
-    }
+    var->type = VarSingle;
+    var->u.vs.id = strdup (id);
+    return var;
+}
+
+Var *new_Var_Array (Var *_var, Exp *exp)
+{
+    Var *var = (Var*) malloc (sizeof (Var));
+    var->type = VarArray;
+    var->u.va.var = _var;
+    var->u.va.exp = exp;
     return var;
 }

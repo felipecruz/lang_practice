@@ -12,11 +12,13 @@ void error (const char *message)
 void print_Call (Call *call, int level)
 {
     Exp *exp;
-    printf ("Call: Name: %s\n", call->id);
+    printf ("\n%*s Call: %s ", level, "", call->id);
     exp = call->exp_list;
     while (exp) {
         print_Exp (exp, level);
         exp = exp->next;
+        if (exp)
+            printf (", ");
     }
 }
 
@@ -28,7 +30,7 @@ void print_Exp (Exp *exp, int level)
             printf ("Const int: %d", exp->u.eci.val);
             break;
         case ExpConstLong:
-            printf ("Const long: %l", exp->u.ech.val);
+            printf ("Const long: %ld", exp->u.ech.val);
             break;
         case ExpConstFloat:
             printf ("Const float: %f", exp->u.ecf.val);
@@ -37,17 +39,17 @@ void print_Exp (Exp *exp, int level)
             printf ("Const string: %s", exp->u.ecs.val);
             break;
         case ExpVar:
-            printf ("Var ");
             print_Var (exp->u.ev.var, level);
             break;
         case ExpCall:
-            printf ("Call ");
             print_Call (exp->u.ec.call, level);
             break;
         case ExpNew:
             printf ("New ");
             print_Type (exp->u.en.type, level);
+            printf ("[");
             print_Exp (exp->u.en.exp, level);
+            printf ("]");
             break;
         case UnaExpArith:
             printf ("Unary Exp ");
@@ -69,35 +71,40 @@ void print_Cmd (Cmd *cmd, int level)
     if (!cmd)
         return;
 
-    printf ("Command ");
     switch (cmd->type) {
         case CmdIf:
-            printf ("If");
+            printf ("\n%*s If ", level, "");
+            level += 1;
             print_Exp (cmd->u.cif.cond, level);
+            printf ("\n%*sThen: ", level, "");
             print_Cmd (cmd->u.cif.then, level);
-            print_Cmd (cmd->u.cif._else, level);
+            if (cmd->u.cif._else) {
+                printf ("\n%*sElse: ", level, "");
+                print_Cmd (cmd->u.cif._else, level);
+            }
             break;
         case CmdWhile:
-            printf ("While");
+            printf ("\n%*s While ", level, "");
             print_Exp (cmd->u.cw.cond, level);
             print_Cmd (cmd->u.cw.body, level);
             break;
         case CmdAss:
-            printf ("Assignment");
+            printf ("\n%*s Assignment ", level, "");
             print_Var (cmd->u.ca.var, level);
+            printf ("<- ");
             print_Exp (cmd->u.ca.exp, level);
             break;
         case CmdRet:
-            printf ("Return");
+            printf ("\n%*s Return ", level, "");
             print_Exp (cmd->u.cr.exp, level);
+            printf ("\n");
             break;
         case CmdCall:
-            printf ("Call");
             print_Call (cmd->u.cc.call, level);
             break;
         case CmdBlock:
-            printf ("Block");
             print_Block (cmd->u.cb.block, level);
+            printf ("AAAAAAA\n");
             break;
     }
 }
@@ -106,10 +113,11 @@ void print_Var (struct Var *var, int level)
 {
     switch (var->type) {
         case VarSingle:
-            printf ("Var name: %s", var->u.vs.id);
+            printf ("Var: %s ", var->u.vs.id);
             break;
         case VarArray:
-            printf ("Var array name: %s [", var->u.vs.id);
+            print_Var (var->u.va.var, level);
+            printf ("[");
             print_Exp (var->u.va.exp, level);
             printf ("]");
             break;
@@ -148,14 +156,17 @@ void print_NameList (NameList *name_list, int level)
         printf ("Name %s ", list->id);
         list = list->next;
     }
-    printf ("\n");
 }
 
 void print_Block (Block *block, int level)
 {
     Decl *decl;
     Cmd *cmd;
-    printf ("Block:\n");
+
+    if (!block)
+        return;
+
+    level += 1;
 
     decl = block->decl;
     while (decl) {
@@ -163,14 +174,12 @@ void print_Block (Block *block, int level)
         decl = decl->next;
     }
 
+
     cmd = block->cmd;
     while (cmd) {
         print_Cmd (cmd, level);
         cmd = cmd->next;
     }
-
-    printf ("\n");
-
 }
 
 void print_Params (Params *_params, int level)
@@ -183,21 +192,22 @@ void print_Params (Params *_params, int level)
         if (params)
             printf (", ");
     }
-    printf ("\n");
 }
 
 void print_Decl (Decl *decl, int level)
 {
     switch (decl->type) {
         case DeclVar:
-            printf ("Variable Decl ");
+            level += 1;
+            printf ("\n%*sVar Decl ", level, "");
             print_Type (decl->u.dv.type, level);
             print_NameList (decl->u.dv.names, level);
         break;
         case DeclFunc:
-            printf ("Function Decl - Return Type: ");
+            level += 1;
+            printf ("\nFunc Decl - Return Type: ");
             print_Type (decl->u.df.type, level);
-            printf ("\n              - Paramenters ");
+            printf ("\n          - Paramenters ");
             print_Params (decl->u.df.params, level);
             print_Block (decl->u.df.block, level);
         break;

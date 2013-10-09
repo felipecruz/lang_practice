@@ -185,7 +185,7 @@ typedef struct Var {
             char *id;
         } vs;
         struct {
-            char *id;
+            struct Var *var;
             struct Exp *exp;
         } va;
     } u;
@@ -208,6 +208,7 @@ Decl* new_Decl_Func (Type *type, char *id, Params *params, Block *block);
 Params *new_Param (Type *type, char *id, Params *param);
 
 Var *new_Var (char *id, Exp *exp);
+Var *new_Var_Array (Var *_var, Exp *exp);
 
 Block *new_Block (Decl* decl, Cmd *cmd);
 
