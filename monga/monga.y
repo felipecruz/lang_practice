@@ -141,8 +141,8 @@ array_type: type OPSQB CLSQB { Type *type = (Type*)$1;
 block : OPBRA decl_list commands CLBRA { $$ = new_Block($2, $3); } ;
 
 decl_list: /* vazio */ { $$ = NULL; }
-         | decl_list decl { Decl *_decl = (Decl*) $2;
-                            _decl->next = $1;
+         | decl decl_list { Decl *_decl = (Decl*) $1;
+                            _decl->next = $2;
                             $$ = _decl;
                           }
          ;
@@ -156,8 +156,8 @@ multi_param: type ID { $$ = new_Param ($1, $2, NULL); }
            ;
 
 commands: /* empty */ { $$ = NULL; }
-        | commands command { Cmd *_cmd = (Cmd*) $2;
-                             _cmd->next = $1;
+        | command commands { Cmd *_cmd = (Cmd*) $1;
+                             _cmd->next = $2;
                              $$ = _cmd;
                            }
         ;
@@ -208,8 +208,8 @@ call: ID OPPAR exp_list CLPAR { $$ = new_Call ($1, $3); }
 
 exp_list: /* empty */ { $$ = NULL; }
         | exp
-        | exp_list COMMA exp { Exp *_exp = (Exp*) $3;
-                               _exp->next = $1;
+        | exp COMMA exp_list { Exp *_exp = (Exp*) $1;
+                               _exp->next = $3;
                                $$ = _exp;
                               }
         ;
