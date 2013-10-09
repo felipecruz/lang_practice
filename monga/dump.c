@@ -96,7 +96,8 @@ void print_Cmd (Cmd *cmd, int level)
             break;
         case CmdRet:
             printf ("\n%*s Return ", level, "");
-            print_Exp (cmd->u.cr.exp, level);
+            if (cmd->u.cr.exp)
+                print_Exp (cmd->u.cr.exp, level);
             printf ("\n");
             break;
         case CmdCall:
@@ -104,7 +105,6 @@ void print_Cmd (Cmd *cmd, int level)
             break;
         case CmdBlock:
             print_Block (cmd->u.cb.block, level);
-            printf ("AAAAAAA\n");
             break;
     }
 }
@@ -174,7 +174,6 @@ void print_Block (Block *block, int level)
         decl = decl->next;
     }
 
-
     cmd = block->cmd;
     while (cmd) {
         print_Cmd (cmd, level);
@@ -196,6 +195,9 @@ void print_Params (Params *_params, int level)
 
 void print_Decl (Decl *decl, int level)
 {
+    if (!decl)
+        return;
+
     switch (decl->type) {
         case DeclVar:
             level += 1;
