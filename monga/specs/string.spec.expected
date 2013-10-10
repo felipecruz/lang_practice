@@ -1,10 +1,10 @@
 
 Func Decl - Return Type: Char[] 
           - Paramenters 
-   Assignment Var: string <- EXP: Const string: "valid string"
-   Assignment Var: string <- EXP: Const string: "valid string with \n "
-   Assignment Var: string <- EXP: Const string: "valid string with \\ "
-   Assignment Var: string <- EXP: Const string: "valid string with \t "
-   Assignment Var: string <- EXP: Const string: "valid string with \""
+   Assignment Var: string <- EXP: Const string: valid string
+   Assignment Var: string <- EXP: Const string: valid string with 
+ like break
+   ssignment Var: string <- EXP: Const string: valid string with 	 tab
+   Assignment Var: string <- EXP: Const string: valid string with "
    Return EXP: Var: string 
 

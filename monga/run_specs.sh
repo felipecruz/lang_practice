@@ -21,7 +21,7 @@ do
     if [ $OUT -eq 0 ]; then
         echo "... Tests OK"
     else
-        echo "... Test Error"
+        echo "ERROR"
         exit
     fi
 

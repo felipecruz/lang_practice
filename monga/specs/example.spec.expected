@@ -3,4 +3,4 @@ Func Decl - Return Type: Void
           - Paramenters 
    Assignment Var: a <- EXP: Const int: 12902
    Assignment Var: a <- EXP: Const int: 1
-   Assignment Var: st <- EXP: Const string: "string simples"
+   Assignment Var: st <- EXP: Const string: string simples

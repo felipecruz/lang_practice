@@ -12,9 +12,9 @@ Func Decl - Return Type: Int
    Assignment Var: middle <- EXP: Binary Exp EXP: Var: length EXP: Const int: 2
    Assignment Var: pivot <- EXP: Var: array [EXP: Var: middle ]
    Assignment Var: left <- EXP: 
-   Call: partition EXP: Var: array , EXP: Var: pivot , EXP: Const string: "lesser"
+   Call: partition EXP: Var: array , EXP: Var: pivot , EXP: Const string: lesser
    Assignment Var: right <- EXP: 
-   Call: partition EXP: Var: array , EXP: Var: pivot , EXP: Const string: "greater"
+   Call: partition EXP: Var: array , EXP: Var: pivot , EXP: Const string: greater
    Return EXP: 
    Call: join EXP: 
    Call: quickort EXP: Var: left , EXP: Var: pivot , EXP: 
@@ -35,4 +35,4 @@ Func Decl - Return Type: Int
    Assignment Var: b <- EXP: Binary Exp EXP: Var: c EXP: Var: b 
    Assignment Var: b <- EXP: Binary Exp EXP: Binary Exp EXP: Var: a EXP: Var: b EXP: Binary Exp EXP: Binary Exp EXP: Var: c EXP: Var: b EXP: Var: f 
    While EXP: Binary Exp EXP: Binary Exp EXP: Const int: 1EXP: Const int: 2EXP: Binary Exp EXP: Var: b EXP: Binary Exp EXP: Var: x EXP: Const int: 2
-    Call: printf EXP: Const string: "%"
+    Call: printf EXP: Const string: %
