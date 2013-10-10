@@ -1,0 +1,42 @@
+- formato de comentário está incorreto (ver email que mandei para
+a turma)
+
+- malloc (sizeof (char) * yyleng) não aloca espaço para o zero final.
+
+- formato de hexas deve aceitar o dígito '9' também
+
+- free (yylval.sval); vai liberar o espaço que você está retornando!
+Isso é receita de desastre.
+
+- seu código de debug é confuso:
+
+#ifndef DEBUG
+#define printf(...) /**/
+#endif
+
+Você devia usar outro nome para essa função, pois quem lê o código tende
+a achar que 'printf' é 'printf'. Algo como abaixo seria melhor:
+
+#ifdef DEBUG
+#define printdebug      printf
+#else
+#define printdebug(...) /**/
+#endif
+
+
+- formato de floats deve aceitar numerais sem ponto mas com expoente
+(e.g., 1e10)
+
+- Os erros (e.g., ERR_UNMATCHED) também deviam ser tratados pelo próprio
+léxico, e não retornados.
+
+- o léxico devia tratar os escapes dentro de uma string literal e retornar
+apenas o conteúdo final da string.
+
+----------------------------------------------------------------------------
+
+TODO
+
+- um teste como (yylval.ival < INT_MIN) é sempre falso quando ival é um int.
+
+- porque constantes hexa são long e constantes decimais são int?
