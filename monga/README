@@ -1,4 +1,4 @@
-# Parser Monga 0.1
+# Parser Monga 0.1.1
 
 ## Comandos
 
@@ -10,27 +10,37 @@ $ make
 
 $ ./monga arquivo.monga
 
-Se a última linha da saída for "Valid file" o arquivo é válido. Existem
-erros de sintáxe ou de valor (inteiros muito grandes por exemplo). Os erros
-de sintáxe caem em 'stderr' com 'Invalid token' e os erros de valor caem também
-em 'stderr' mas com outras mensagens específicas.
+A saída esperada é a AST com indentação ou uma mensagem de erro. Exemplo:
 
-Alguns tokens saem em 'stdout'. Esse output permite alguns testes.
+Código:
+int a;
+
+AST:
+Var Decl Int Name a
 
 ### Rodando os testes
 
 $ make test
 
-Saída: A saída informa se o arquivo tem a sintáxe válida ou não e se os testes rodaram
-como esperado. Alguns arquivos geram erros de propósito para que seja testado se o
-tratamento é sempre o mesmo. Os erros podem ser de sintáxe ou de valor.
+Se houver "ERRO" na saída é porque houve algum erro na suíte. Do contrário
+os testes rodaram com sucesso.
+
+### Ajustes em relação aos problemas anteriores
+
+* Tratamento correto de comentário usando máquina de estados do (f)lex.
+* Ajuste na alocanção de strings e remoção da chamada free()
+* Ajuste no código de debug
+* Ajuste na regex de Floats
+* Tratamento de ERR_UNMATCHED no léxico
+* Tratamento correto dos escapes nas strings literais.
 
 # Decisões de Projeto
 
+* Definição de Nós em "astnodes.h" e funções de criação dos nós em "astnodes.c"
+* Funções de imprimit AST em "dump.c" & "dump.h"
 * Foi deixado para um outro momento a criação de arquivos auxiliares como tokens.h
 * Foi limitado o tamanho máximo dos identificadores em 31.
 * O output padrão foi feito apenas para testes.
-* O número de linhas é contado para ajudar a localização dos erros de sintáxe.
 
 ### Gerando arquivos "expected"
 
