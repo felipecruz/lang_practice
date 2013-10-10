@@ -4,7 +4,7 @@ Func Decl - Return Type: Char[]
    Assignment Var: string <- EXP: Const string: valid string
    Assignment Var: string <- EXP: Const string: valid string with 
  like break
-   ssignment Var: string <- EXP: Const string: valid string with 	 tab
+   Assignment Var: string <- EXP: Const string: valid string with 	 tab
    Assignment Var: string <- EXP: Const string: valid string with "
    Return EXP: Var: string 
 
