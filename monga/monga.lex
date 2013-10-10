@@ -160,7 +160,8 @@ STRING "\""([^"\\\n]|(\\[nt\n"\\]))*"\""
 
                 memcpy (yylval.sval, yytext, yyleng);
                 free  (yylval.sval);
-                return ERR_UNMATCHED;
+                fprintf (stderr, "Syntax Error - Unmatched Token");
+                exit(-1);
             }
 
 %%
