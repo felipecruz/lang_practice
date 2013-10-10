@@ -13,10 +13,14 @@
 #define printdebug(...) /**/
 #endif
 
+char string_buf[509];
+char *string_buf_ptr;
+
 %}
 
 %option yylineno
 %x IN_COMMENT
+%x IN_STR
 
 VOID    "void"
 CHAR    "char"
@@ -40,7 +44,6 @@ N [0-9]+
 F (([0-9]+"."[0-9]*)|("."[0-9]+)|([0-9]+))([eE][+-]?[0-9]+)?
 H 0x[a-fA-F0-9]+
 ID [a-zA-Z_][a-zA-Z_0-9]*
-STRING "\""([^"\\\n]|(\\[nt\n"\\]))*"\""
 
 %%
 
@@ -136,17 +139,28 @@ STRING "\""([^"\\\n]|(\\[nt\n"\\]))*"\""
             return ID;
         }
 
-{STRING}    {
-                yylval.sval = malloc (sizeof (char) * (yyleng + 1));
+\"         { string_buf_ptr = string_buf; BEGIN(IN_STR); }
+<IN_STR>\" { BEGIN(INITIAL);
+             *string_buf_ptr = '\0';
+             yylval.sval = malloc (sizeof (char) * (strlen (string_buf) + 1));
+             strcpy (yylval.sval, string_buf);
+             return STRING;
+           }
 
-                if (!yylval.sval)
-                    return ERR_MALLOC;
+<IN_STR>\n { fprintf (stderr, "Syntax Error - Bad String Literal");
+             exit(-1);
+           }
 
-                memcpy (yylval.sval, yytext, yyleng);
-                printdebug ("\nSTRING: %s", yylval.sval);
+<IN_STR>\\n  *string_buf_ptr++ = '\n';
+<IN_STR>\\t  *string_buf_ptr++ = '\t';
+<IN_STR>\\"  *string_buf_ptr++ = '"';
+<IN_STR>\\(.|\n)  *string_buf_ptr++ = yytext[1];
 
-                return STRING;
-            }
+<IN_STR>[^\\\n\"]+ { char *yptr = yytext;
+                     while (*yptr)
+                        *string_buf_ptr++ = *yptr++;
+                   }
+
 
 [ \t]     { };
 
