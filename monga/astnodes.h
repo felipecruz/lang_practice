@@ -80,10 +80,12 @@ typedef struct Params {
 typedef struct Decl {
     DeclType type;
     struct Decl *next;
+    struct Decl *next_in_scope;
     union {
         struct {
             struct Type *type;
-            struct NameList *names;
+            char *id;
+            struct Decl *next;
         } dv;
         struct {
             char *id;
@@ -181,6 +183,7 @@ typedef struct Cmd {
 
 typedef struct Var {
     VarType type;
+    struct Decl *decl;
     union {
         struct {
             char *id;
@@ -197,13 +200,15 @@ typedef struct Call {
     Exp *exp_list;
 } Call;
 
+Decl* add_declaration(Decl*, Decl*);
+void _traverse_declarations(Decl *main_decl);
+
 Program *new_Program ();
 Program *add_Decl (Program *program, Decl *decl);
 
 Type *new_Type (TypeType typetype, int array);
-NameList *new_Name_List (char *id, NameList *next);
 
-Decl* new_Decl_Var (Type *type, NameList *name_list);
+Decl* new_Decl_Var (Type *type, char* id, Decl *next);
 Decl* new_Decl_Func (Type *type, char *id, Params *params, Block *block);
 
 Params *new_Param (Type *type, char *id, Params *param);

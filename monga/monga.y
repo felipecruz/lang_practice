@@ -12,6 +12,7 @@ extern int yylineno;
 extern char* yytext;
 
 static Program *__program = NULL;
+static struct Decl *declarations = NULL;
 
 #define YYDEBUG 1
 %}
@@ -26,7 +27,6 @@ static Program *__program = NULL;
 
     struct Program *program;
     struct Decl *decl;
-    struct NameList *name_list;
     struct Type *type;
     struct Params *params;
     struct Block *block;
@@ -44,7 +44,6 @@ static Program *__program = NULL;
 
 %type<program> program;
 %type<decl> decl decl_var decl_func decl_list;
-%type<name_list> name_list;
 %type<type> type base_type array_type;
 %type<params> params multi_param;
 %type<block> block;
@@ -108,26 +107,27 @@ main_program: program { __program = $1; };
 program: { $$ = new_Program (); }
        | decl program { $$ = add_Decl ($2, $1); };
 
-decl: decl_var
+decl: decl_var SEMICOL
     | decl_func
     ;
 
-decl_var: type name_list SEMICOL { $$ = new_Decl_Var ($1, $2); };
+decl_var: type ID { $$ = new_Decl_Var ($1, yylval.sval, NULL);
+                            declarations = add_declaration (declarations, $$); }
+        | decl_var COMMA ID { Decl *_decl = (Decl*) $1;
+                              $$ = new_Decl_Var (_decl->u.dv.type, $3, _decl);
+                              declarations = add_declaration (declarations, $$); };
 
 decl_func: type ID OPPAR params CLPAR block
-           { $$ = new_Decl_Func ($1, $2, $4, $6); }
+           { $$ = new_Decl_Func ($1, $2, $4, $6);
+             declarations = add_declaration (declarations, $$); }
          | TYPE_VOID ID OPPAR params CLPAR block
            { Type *type = new_Type (TypeVoid, 0);
-             $$ = new_Decl_Func (type, $2, $4, $6); };
+             $$ = new_Decl_Func (type, $2, $4, $6);
+             declarations = add_declaration (declarations, $$); };
 
 type : array_type
      | base_type
      ;
-
-name_list:
-      ID { $$ = new_Name_List (yylval.sval, NULL); }
-    | name_list COMMA ID { $$ = new_Name_List (yylval.sval, (NameList*)$1); }
-    ;
 
 base_type : TYPE_INT { $$ = new_Type (TypeInt, 0); }
           | TYPE_CHAR { $$ = new_Type (TypeChar, 0); }
@@ -237,6 +237,7 @@ int main (int argc, char **argv) {
     yyparse ();
 
     dump_Program (__program, indent);
+    _traverse_declarations (declarations);
 
     fclose (yyin);
     exit(0);

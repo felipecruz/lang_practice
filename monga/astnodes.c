@@ -5,6 +5,35 @@
 #include "astnodes.h"
 #include "dump.h"
 
+char* decl_name_str (Decl *decl)
+{
+    if (decl->type == DeclVar)
+        return decl->u.dv.id;
+    else
+        return decl->u.df.id;
+}
+
+Decl* add_declaration(Decl *main_decl, Decl *decl)
+{
+    if (!main_decl) {
+        decl->next_in_scope = NULL;
+        return decl;
+    } else {
+        decl->next_in_scope = main_decl;
+        return decl;
+    }
+}
+
+void _traverse_declarations(Decl *main_decl)
+{
+    printf ("\nTraversing\n");
+    Decl* _decl = main_decl;
+    while (_decl) {
+        printf ("Decl: %s\n", decl_name_str (_decl));
+        _decl = _decl->next_in_scope;
+    }
+}
+
 Program* new_Program ()
 {
     Program *program = (Program*) malloc (sizeof (Program));
@@ -39,14 +68,6 @@ Type *new_Type (TypeType typetype, int array)
     return type;
 }
 
-NameList *new_Name_List (char *id, NameList *next)
-{
-    NameList *name_list = (NameList*) malloc (sizeof (NameList));
-    name_list->next = next;
-    name_list->id = strdup (id);
-    return name_list;
-}
-
 Params *new_Param (Type *type, char *id, Params *params)
 {
     Params *param = (Params*) malloc (sizeof (Params));
@@ -56,7 +77,7 @@ Params *new_Param (Type *type, char *id, Params *params)
     return param;
 }
 
-Decl* new_Decl_Var (Type *type, NameList *name_list)
+Decl* new_Decl_Var (Type *type, char *id, Decl* next)
 {
     Decl *decl = (Decl*) malloc (sizeof (Decl));
     decl->type = DeclVar;
@@ -65,7 +86,8 @@ Decl* new_Decl_Var (Type *type, NameList *name_list)
     assert (type->type != TypeVoid);
 
     decl->u.dv.type = type;
-    decl->u.dv.names = name_list;
+    decl->u.dv.id = strdup (id);
+    decl->next = next;
 
     return decl;
 }

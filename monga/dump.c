@@ -195,19 +195,25 @@ void print_Params (Params *_params, int level)
 
 void print_Decl (Decl *decl, int level)
 {
+    Decl *_decl;
+
     if (!decl)
         return;
 
     switch (decl->type) {
         case DeclVar:
             level += 1;
+            _decl = decl;
             printf ("\n%*sVar Decl ", level, "");
             print_Type (decl->u.dv.type, level);
-            print_NameList (decl->u.dv.names, level);
+            while (_decl) {
+                printf ("Name %s ", decl->u.dv.id);
+                _decl = _decl->u.dv.next;
+            }
         break;
         case DeclFunc:
             level += 1;
-            printf ("\nFunc Decl - Return Type: ");
+            printf ("\n%*sFunc Decl - Name: %s Return Type: ", level, "", decl->u.df.id);
             print_Type (decl->u.df.type, level);
             printf ("\n          - Paramenters ");
             print_Params (decl->u.df.params, level);
