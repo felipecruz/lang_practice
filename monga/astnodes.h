@@ -86,6 +86,7 @@ typedef struct Decl {
             struct NameList *names;
         } dv;
         struct {
+            char *id;
             struct Type *type;
             struct Params *params;
             struct Block *block;

@@ -79,6 +79,7 @@ Decl* new_Decl_Func (Type *type, char *id, Params *params, Block *block)
     decl->u.df.type = type;
     decl->u.df.params = params;
     decl->u.df.block = block;
+    decl->u.df.id = strdup (id);
 
     return decl;
 }
