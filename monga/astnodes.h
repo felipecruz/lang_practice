@@ -80,7 +80,6 @@ typedef struct Params {
 typedef struct Decl {
     DeclType type;
     struct Decl *next;
-    struct Decl *next_in_scope;
     union {
         struct {
             struct Type *type;
@@ -200,8 +199,21 @@ typedef struct Call {
     Exp *exp_list;
 } Call;
 
-Decl* add_declaration(Decl*, Decl*);
-void _traverse_declarations(Decl *main_decl);
+typedef struct ScopeElement {
+    struct ScopeElement *next;
+    struct Decl *decl;
+    int level;
+} ScopeElement;
+
+typedef struct Stack {
+    struct ScopeElement *head;
+} Stack;
+
+void add_declaration(Stack*, Decl*, int);
+Decl* has_name_same_level (Stack *stack, char *id, int level);
+Decl* has_name (Stack *stack, char *id);
+void _traverse_declarations(Stack *stack);
+void remove_top_elements (Stack *stack, int level);
 
 Program *new_Program ();
 Program *add_Decl (Program *program, Decl *decl);
@@ -213,7 +225,7 @@ Decl* new_Decl_Func (Type *type, char *id, Params *params, Block *block);
 
 Params *new_Param (Type *type, char *id, Params *param);
 
-Var *new_Var (char *id, Exp *exp);
+Var *new_Var (char *id, Exp *exp, Decl *decl);
 Var *new_Var_Array (Var *_var, Exp *exp);
 
 Block *new_Block (Decl* decl, Cmd *cmd);
