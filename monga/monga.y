@@ -112,18 +112,34 @@ decl: decl_var SEMICOL
     | decl_func
     ;
 
-decl_var: type ID { $$ = new_Decl_Var ($1, yylval.sval, NULL);
-                    add_declaration (stack, $$, level); }
-        | decl_var COMMA ID { Decl *_decl = (Decl*) $1;
-                              $$ = new_Decl_Var (_decl->u.dv.type, $3, _decl);
-                              add_declaration (stack, $$, level); };
+decl_var: type ID
+    { Decl *decl = has_name_same_level (stack, yylval.sval, level);
+      if (decl)
+          yyerror ("Variable Redeclaration\n");
+      $$ = new_Decl_Var ($1, yylval.sval, NULL);
+      add_declaration (stack, $$, level);
+    }
+        | decl_var COMMA ID
+    { Decl *_decl = (Decl*) $1;
+      Decl *redecl = has_name_same_level (stack, yylval.sval, level);
+      if (redecl)
+            yyerror ("Variable Redeclaration\n");
+      $$ = new_Decl_Var (_decl->u.dv.type, $3, _decl);
+      add_declaration (stack, $$, level);
+    };
 
 decl_func: type ID OPPAR params CLPAR block
-           { $$ = new_Decl_Func ($1, $2, $4, $6);
+          {  Decl *decl = has_name_same_level (stack, $2, level);
+             if (decl)
+                 yyerror ("Function Redeclaration\n");
+             $$ = new_Decl_Func ($1, $2, $4, $6);
              add_declaration (stack, $$, level);
              }
          | TYPE_VOID ID OPPAR params CLPAR block
-           { Type *type = new_Type (TypeVoid, 0);
+           { Decl *decl = has_name_same_level (stack, $2, level);
+             if (decl)
+                 yyerror ("Function Redeclaration\n");
+             Type *type = new_Type (TypeVoid, 0);
              $$ = new_Decl_Func (type, $2, $4, $6);
              add_declaration (stack, $$, level);
              };

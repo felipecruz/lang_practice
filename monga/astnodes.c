@@ -35,7 +35,6 @@ void add_declaration(Stack *stack, Decl *decl, int level)
 
 void remove_top_elements (Stack *stack, int level)
 {
-    printf ("\nRemoving level %d\n", level);
     Decl *decl;
     ScopeElement *prev = stack->head;
     ScopeElement *current = stack->head;
@@ -60,6 +59,20 @@ void _traverse_declarations(Stack *stack)
         printf ("Decl: %s level: %d\n", decl_name_str (decl), current->level);
         current = current->next;
     }
+}
+
+Decl* has_name_same_level (Stack *stack, char *id, int level)
+{
+    Decl *decl;
+    ScopeElement *current = stack->head;
+    while (current && current->decl) {
+        decl = current->decl;
+        if (strcmp (decl_name_str(decl), id) == 0 &&
+            current->level == level)
+            return decl;
+        current = current->next;
+    }
+    return NULL;
 }
 
 Decl* has_name (Stack *stack, char *id)
