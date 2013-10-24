@@ -79,7 +79,7 @@ Decl* has_name (Stack *stack, char *id)
 {
     Decl *decl;
     ScopeElement *current = stack->head;
-    while (current) {
+    while (current && current->decl) {
         decl = current->decl;
         if (strcmp (decl_name_str(decl), id) == 0)
             return decl;
