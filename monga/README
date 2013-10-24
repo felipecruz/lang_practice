@@ -1,4 +1,4 @@
-# Parser Monga 0.1.1
+# Parser Monga 0.1.4
 
 ## Comandos
 
@@ -25,7 +25,17 @@ $ make test
 Se houver "ERRO" na saída é porque houve algum erro na suíte. Do contrário
 os testes rodaram com sucesso.
 
-### Ajustes em relação aos problemas anteriores
+### Ajustes em relação aos problemas anteriores 0.1.3 -> 0.1.4
+
+* Remoção do tipo "NameList", criando um encadeamento de declarações correto para
+  a sintáxe "int a, b, c;"
+* Colocado atributo id em DeclFunc (o nome da função).
+* O nó Var aponta para o nó Decl correspondente.
+* Verificação de referencia de variáveis (variáveis não declaradas geram erro e terminam o programa).
+* Verificação de re-declaração (se existir, gera um erro e termina o programa).
+* Inserção de parametros no escopo da função.
+
+### Ajustes da entrega anterior 0.1.2 para 0.1.3
 
 * Tratamento correto de comentário usando máquina de estados do (f)lex.
 * Ajuste na alocanção de strings e remoção da chamada free()
