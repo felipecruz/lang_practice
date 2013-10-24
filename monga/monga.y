@@ -10,9 +10,10 @@ int main (int argc, char **argv);
 extern FILE *yyin;
 extern int yylineno;
 extern char* yytext;
+static int level = 0;
 
 static Program *__program = NULL;
-static struct Decl *declarations = NULL;
+static struct Stack *stack = NULL;
 
 #define YYDEBUG 1
 %}
@@ -112,18 +113,20 @@ decl: decl_var SEMICOL
     ;
 
 decl_var: type ID { $$ = new_Decl_Var ($1, yylval.sval, NULL);
-                            declarations = add_declaration (declarations, $$); }
+                    add_declaration (stack, $$, level); }
         | decl_var COMMA ID { Decl *_decl = (Decl*) $1;
                               $$ = new_Decl_Var (_decl->u.dv.type, $3, _decl);
-                              declarations = add_declaration (declarations, $$); };
+                              add_declaration (stack, $$, level); };
 
 decl_func: type ID OPPAR params CLPAR block
            { $$ = new_Decl_Func ($1, $2, $4, $6);
-             declarations = add_declaration (declarations, $$); }
+             add_declaration (stack, $$, level);
+             }
          | TYPE_VOID ID OPPAR params CLPAR block
            { Type *type = new_Type (TypeVoid, 0);
              $$ = new_Decl_Func (type, $2, $4, $6);
-             declarations = add_declaration (declarations, $$); };
+             add_declaration (stack, $$, level);
+             };
 
 type : array_type
      | base_type
@@ -138,7 +141,11 @@ array_type: type OPSQB CLSQB { Type *type = (Type*)$1;
                                $$ = type;
                              };
 
-block : OPBRA decl_list commands CLBRA { $$ = new_Block($2, $3); } ;
+open_scope: OPBRA { level += 1; };
+close_scope: CLBRA { remove_top_elements (stack, level); level -= 1; };
+
+block : open_scope decl_list commands close_scope
+      { $$ = new_Block($2, $3); };
 
 decl_list: /* vazio */ { $$ = NULL; }
          | decl decl_list { Decl *_decl = (Decl*) $1;
@@ -159,8 +166,7 @@ commands: /* empty */ { $$ = NULL; }
         | command commands { Cmd *_cmd = (Cmd*) $1;
                              _cmd->next = $2;
                              $$ = _cmd;
-                           }
-        ;
+                           };
 
 command: if_cmd { $$ = $1; }
        | return { $$ = $1; }
@@ -178,7 +184,13 @@ return: RETURN SEMICOL { $$ = new_Return_Cmd (NULL); }
       | RETURN exp SEMICOL { $$ = new_Return_Cmd ($2); }
       ;
 
-var : ID { $$ = new_Var ($1, NULL); }
+var : ID { Decl* decl = has_name (stack, $1);
+           if (decl) {
+               printf ("Found %s in current scope\n", $1);
+           } else {
+              printf ("Name not found: %s\n", $1);
+           }
+           $$ = new_Var ($1, NULL); }
     | var OPSQB exp CLSQB { $$ = new_Var_Array ($1, $3); };
 
 exp : NUMBER { $$ = new_Exp_Int ($1, NULL); }
@@ -223,9 +235,15 @@ void yyerror (char *s) {
 
 int main (int argc, char **argv) {
     int indent = 0;
+    level = 0;
 #if YYDEBUG
     yydebug = 0;
 #endif
+
+    stack = malloc (sizeof (Stack));
+    stack->head = malloc (sizeof (ScopeElement));
+    stack->head->decl = NULL;
+    stack->head->level = 0;
 
     yyin = fopen (argv[1], "r");
 
@@ -237,7 +255,7 @@ int main (int argc, char **argv) {
     yyparse ();
 
     dump_Program (__program, indent);
-    _traverse_declarations (declarations);
+    _traverse_declarations (stack);
 
     fclose (yyin);
     exit(0);

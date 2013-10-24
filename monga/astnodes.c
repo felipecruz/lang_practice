@@ -13,25 +13,66 @@ char* decl_name_str (Decl *decl)
         return decl->u.df.id;
 }
 
-Decl* add_declaration(Decl *main_decl, Decl *decl)
+void add_declaration(Stack *stack, Decl *decl, int level)
 {
-    if (!main_decl) {
-        decl->next_in_scope = NULL;
-        return decl;
-    } else {
-        decl->next_in_scope = main_decl;
-        return decl;
+    Decl *_decl = stack->head->decl;
+    ScopeElement *current = stack->head;
+
+    if (!_decl) {
+        stack->head->decl = decl;
+        stack->head->level = level;
+        return;
+    }
+
+    while (current->next) {
+        current = current->next;
+    }
+
+    current->next = malloc (sizeof (ScopeElement));
+    current->next->decl = decl;
+    current->next->level = level;
+}
+
+void remove_top_elements (Stack *stack, int level)
+{
+    printf ("\nRemoving level %d\n", level);
+    Decl *decl;
+    ScopeElement *prev = stack->head;
+    ScopeElement *current = stack->head;
+    while (current && current->decl) {
+        if (current->next) {
+            if (current->next->level == level) {
+                current->next = NULL;
+                return;
+            }
+        }
+        current = current->next;
     }
 }
 
-void _traverse_declarations(Decl *main_decl)
+void _traverse_declarations(Stack *stack)
 {
     printf ("\nTraversing\n");
-    Decl* _decl = main_decl;
-    while (_decl) {
-        printf ("Decl: %s\n", decl_name_str (_decl));
-        _decl = _decl->next_in_scope;
+    Decl *decl;
+    ScopeElement *current = stack->head;
+    while (current && current->decl) {
+        decl = current->decl;
+        printf ("Decl: %s level: %d\n", decl_name_str (decl), current->level);
+        current = current->next;
     }
+}
+
+Decl* has_name (Stack *stack, char *id)
+{
+    Decl *decl;
+    ScopeElement *current = stack->head;
+    while (current) {
+        decl = current->decl;
+        if (strcmp (decl_name_str(decl), id) == 0)
+            return decl;
+        current = current->next;
+    }
+    return NULL;
 }
 
 Program* new_Program ()
