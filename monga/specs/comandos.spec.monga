@@ -1,4 +1,5 @@
-int[] func (char[] str) {
+int[] func (int num) {
+    int b, x, c, w;
     if (0) {} else {}
 
     while (b > c[0]) {}
@@ -8,7 +9,7 @@ int[] func (char[] str) {
 
     x = w[0];
     func (10);
-    w = func (100, b[0], 1 + 2);
+    w = func (b[0]);
 
     {
         b = 1;

@@ -1,1 +1,27 @@
-int a;
+int w;
+
+void x () {
+
+    int a;
+    w = 1;
+    {
+        int b;
+        int a;
+
+        a[0] = 1;
+        a = 1;
+        b = 1;
+        w = 10;
+    }
+    a = 1;
+}
+
+int z () {
+    int c;
+    int a;
+    {
+        a = 1;
+        c = 0;
+    }
+    c = a[1];
+}

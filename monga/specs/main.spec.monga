@@ -1,4 +1,5 @@
 void teste (int x, int y) {
+    int a;
     a = new int[10];
     x = x + 1;
     return x;
@@ -8,6 +9,7 @@ int quickort (int[] array, int length) {
 
     int middle;
     int pivot;
+    int left, right;
 
     middle = length / 2;
     pivot = array[middle];
@@ -19,6 +21,7 @@ int quickort (int[] array, int length) {
 }
 
 int main (int argc, char[] argv) {
+    int a, b, c, d, f, x, y;
     int[] array;
 
     a = 10;

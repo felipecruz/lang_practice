@@ -1,4 +1,4 @@
-char[] func () {
+char[] func (char[] string) {
     string = "valid string";
     string = "valid string with \n like break";
     string = "valid string with \t tab";

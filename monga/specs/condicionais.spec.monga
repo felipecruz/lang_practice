@@ -1,4 +1,4 @@
-void func (int a, float f, char x) {
+void func (int a, float b, char x) {
     if (a) { x = 1; }
     else { return b; }
 

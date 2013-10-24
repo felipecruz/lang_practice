@@ -6,7 +6,7 @@ int[] get_array (int[] array) {}
 
 int x, y, z;
 
-int[] a, b;
+int[] a1, b2;
 
-char[] a;
+char[] a3;
 float[] floats;

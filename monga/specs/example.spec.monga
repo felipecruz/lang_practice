@@ -1,4 +1,7 @@
 void f () {
+    int a;
+    char[] st;
+
     a = 12902;       /* TK_NUMBER */
 
     a = 1;           /* TK_ID */
