@@ -304,11 +304,12 @@ Call *new_Call (char *id, Exp *exp_list)
     return call;
 }
 
-Var *new_Var (char *id, Exp *exp)
+Var *new_Var (char *id, Exp *exp, Decl *decl)
 {
     Var *var = (Var*) malloc (sizeof (Var));
     var->type = VarSingle;
     var->u.vs.id = strdup (id);
+    var->decl = decl;
     return var;
 }
 

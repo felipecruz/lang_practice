@@ -185,12 +185,9 @@ return: RETURN SEMICOL { $$ = new_Return_Cmd (NULL); }
       ;
 
 var : ID { Decl* decl = has_name (stack, $1);
-           if (decl) {
-               printf ("Found %s in current scope\n", $1);
-           } else {
-              printf ("Name not found: %s\n", $1);
-           }
-           $$ = new_Var ($1, NULL); }
+           if (!decl)
+               yyerror ("Variable not declared");
+           $$ = new_Var ($1, NULL, decl); }
     | var OPSQB exp CLSQB { $$ = new_Var_Array ($1, $3); };
 
 exp : NUMBER { $$ = new_Exp_Int ($1, NULL); }
