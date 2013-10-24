@@ -174,8 +174,14 @@ params : /* vazio */ { $$ = NULL; }
        | multi_param
        ;
 
-multi_param: type ID { $$ = new_Param ($1, $2, NULL); }
-           | multi_param COMMA type ID { $$ = new_Param ($3, $4, $1); }
+multi_param: type ID {
+             Decl *param = new_Decl_Var ($1, $2, NULL);
+             add_declaration (stack, param, level);
+             $$ = new_Param ($1, $2, NULL); }
+           | multi_param COMMA type ID {
+             Decl *param = new_Decl_Var ($3, $4, NULL);
+             add_declaration (stack, param, level);
+             $$ = new_Param ($3, $4, $1); }
            ;
 
 commands: /* empty */ { $$ = NULL; }
@@ -268,7 +274,6 @@ int main (int argc, char **argv) {
     yyparse ();
 
     dump_Program (__program, indent);
-    _traverse_declarations (stack);
 
     fclose (yyin);
     exit(0);
