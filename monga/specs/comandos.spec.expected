@@ -1,6 +1,7 @@
 
-Func Decl - Return Type: Int[] 
-          - Paramenters Char[] str
+ Func Decl - Name: func Return Type: Int[] 
+          - Paramenters Int num
+   Var Decl Int Name w 
    If EXP: Const int: 0
    Then: 
    Else: 
@@ -10,5 +11,5 @@ Func Decl - Return Type: Int[]
    Assignment Var: x <- EXP: Var: w [EXP: Const int: 0]
    Call: func EXP: Const int: 10
    Assignment Var: w <- EXP: 
-   Call: func EXP: Const int: 100, EXP: Var: b [EXP: Const int: 0], EXP: Binary Exp EXP: Const int: 1EXP: Const int: 2
+   Call: func EXP: Var: b [EXP: Const int: 0]
     Assignment Var: b <- EXP: Const int: 1

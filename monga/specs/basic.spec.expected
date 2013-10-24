@@ -1,2 +1,20 @@
 
- Var Decl Int Name a 
+ Var Decl Int Name w 
+ Func Decl - Name: x Return Type: Void 
+          - Paramenters 
+   Var Decl Int Name a 
+   Assignment Var: w <- EXP: Const int: 1
+    Var Decl Int Name b 
+    Var Decl Int Name a 
+    Assignment Var: a [EXP: Const int: 0]<- EXP: Const int: 1
+    Assignment Var: a <- EXP: Const int: 1
+    Assignment Var: b <- EXP: Const int: 1
+    Assignment Var: w <- EXP: Const int: 10
+   Assignment Var: a <- EXP: Const int: 1
+ Func Decl - Name: z Return Type: Int 
+          - Paramenters 
+   Var Decl Int Name c 
+   Var Decl Int Name a 
+    Assignment Var: a <- EXP: Const int: 1
+    Assignment Var: c <- EXP: Const int: 0
+   Assignment Var: c <- EXP: Var: a [EXP: Const int: 1]

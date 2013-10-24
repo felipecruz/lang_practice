@@ -1,6 +1,6 @@
 
-Func Decl - Return Type: Void 
-          - Paramenters Char x, Float f, Int a
+ Func Decl - Name: func Return Type: Void 
+          - Paramenters Char x, Float b, Int a
    If EXP: Var: a 
    Then: 
      Assignment Var: x <- EXP: Const int: 1

@@ -1,14 +1,12 @@
 
-Func Decl - Return Type: Void 
+ Func Decl - Name: func_A Return Type: Void 
           - Paramenters 
    Var Decl Int Name x 
-    Assignment Var: a [EXP: Const int: 10]<- EXP: Const int: 1
-     Var Decl Int[] Name a 
-     Var Decl Int[] Name a 
+    Assignment Var: x [EXP: Const int: 10]<- EXP: Const int: 1
      Var Decl Int[] Name a 
      Return 
 
-Func Decl - Return Type: Int 
+ Func Decl - Name: func Return Type: Int 
           - Paramenters 
    Var Decl Int[] Name a 
    Assignment Var: a [EXP: Const int: 0]<- EXP: Const int: 1

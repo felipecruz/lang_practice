@@ -1,11 +1,11 @@
 
  Var Decl Int Name a 
  Var Decl Int Name b 
-Func Decl - Return Type: Void 
+ Func Decl - Name: func Return Type: Void 
           - Paramenters Int b, Int a
-Func Decl - Return Type: Int[] 
+ Func Decl - Name: get_array Return Type: Int[] 
           - Paramenters Int[] array
- Var Decl Int Name z Name y Name x 
- Var Decl Int[] Name b Name a 
- Var Decl Char[] Name a 
+ Var Decl Int Name z 
+ Var Decl Int[] Name b2 
+ Var Decl Char[] Name a3 
  Var Decl Float[] Name floats 

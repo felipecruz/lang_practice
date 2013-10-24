@@ -1,6 +1,6 @@
 
-Func Decl - Return Type: Char[] 
-          - Paramenters 
+ Func Decl - Name: func Return Type: Char[] 
+          - Paramenters Char[] string
    Assignment Var: string <- EXP: Const string: valid string
    Assignment Var: string <- EXP: Const string: valid string with 
  like break

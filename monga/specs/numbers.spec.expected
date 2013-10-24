@@ -1,6 +1,6 @@
 
  Var Decl Int Name a 
-Func Decl - Return Type: Void 
+ Func Decl - Name: fun Return Type: Void 
           - Paramenters 
    Assignment Var: a <- EXP: Const int: 1
    Assignment Var: a <- EXP: Const int: 2

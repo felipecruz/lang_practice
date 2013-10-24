@@ -1,14 +1,16 @@
 
-Func Decl - Return Type: Void 
+ Func Decl - Name: teste Return Type: Void 
           - Paramenters Int y, Int x
+   Var Decl Int Name a 
    Assignment Var: a <- EXP: New Int [EXP: Const int: 10]
    Assignment Var: x <- EXP: Binary Exp EXP: Var: x EXP: Const int: 1
    Return EXP: Var: x 
 
-Func Decl - Return Type: Int 
+ Func Decl - Name: quickort Return Type: Int 
           - Paramenters Int length, Int[] array
    Var Decl Int Name middle 
    Var Decl Int Name pivot 
+   Var Decl Int Name right 
    Assignment Var: middle <- EXP: Binary Exp EXP: Var: length EXP: Const int: 2
    Assignment Var: pivot <- EXP: Var: array [EXP: Var: middle ]
    Assignment Var: left <- EXP: 
@@ -20,8 +22,9 @@ Func Decl - Return Type: Int
    Call: quickort EXP: Var: left , EXP: Var: pivot , EXP: 
    Call: quickort EXP: Var: right 
 
-Func Decl - Return Type: Int 
+ Func Decl - Name: main Return Type: Int 
           - Paramenters Char[] argv, Int argc
+   Var Decl Int Name y 
    Var Decl Int[] Name array 
    Assignment Var: a <- EXP: Const int: 10
    Assignment Var: b <- EXP: Const int: 100

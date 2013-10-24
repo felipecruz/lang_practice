@@ -1,6 +1,8 @@
 
-Func Decl - Return Type: Void 
+ Func Decl - Name: f Return Type: Void 
           - Paramenters 
+   Var Decl Int Name a 
+   Var Decl Char[] Name st 
    Assignment Var: a <- EXP: Const int: 12902
    Assignment Var: a <- EXP: Const int: 1
    Assignment Var: st <- EXP: Const string: string simples
