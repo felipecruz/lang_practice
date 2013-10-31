@@ -295,7 +295,7 @@ Exp *new_Exp_Unary (UnaArithOps op, Exp *_exp, Exp *next)
     Exp *exp = (Exp*) malloc (sizeof (Exp));
     exp->type = UnaExpArith;
     exp->u.eu.op = op;
-    exp->u.eu.exp = exp;
+    exp->u.eu.exp = _exp;
     return exp;
 
 }
