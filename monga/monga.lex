@@ -133,7 +133,7 @@ ID [a-zA-Z_][a-zA-Z_0-9]*
             if (!yylval.sval)
                 return ERR_MALLOC;
 
-            memcpy (yylval.sval, yytext, yyleng);
+            memcpy (yylval.sval, yytext, yyleng + 1);
             printdebug ("\nID: %s", yylval.sval);
 
             return ID;
