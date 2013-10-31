@@ -3,7 +3,7 @@ int w;
 void x () {
 
     int a;
-    w = 1;
+    w = -1;
     {
         int b;
         int a;
