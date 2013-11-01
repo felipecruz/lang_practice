@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "astnodes.h"
+#include "typesystem.h"
 #include "dump.h"
 #include "y.tab.h"
 void yyerror (char *);
@@ -253,6 +254,7 @@ void yyerror (char *s) {
 }
 
 int main (int argc, char **argv) {
+    int valid_types = 0;
     int indent = 0;
     level = 0;
 #if YYDEBUG
@@ -274,6 +276,10 @@ int main (int argc, char **argv) {
     yyparse ();
 
     dump_Program (__program, indent);
+    valid_types = check_program (__program);
+    if (valid_types == -1) {
+        printf ("Type Error\n");
+    }
 
     fclose (yyin);
     exit(0);
