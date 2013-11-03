@@ -51,7 +51,22 @@ Type *get_decl_type (Decl *decl, char *id)
     return NULL;
 }
 
-Type *get_type (Exp *exp, Decl *globals, Decl *locals, Params *params)
+Type *resolve_type (char *id, Decl *globals, Decl *locals, Params *params)
+{
+    Type *type;
+    type = get_decl_type (locals, id);
+    if (type)
+        return type;
+    type = get_decl_type (globals, id);
+    if (type)
+        return type;
+    type = get_parameter_type (params, id);
+    if (type)
+        return type;
+    return NULL;
+}
+
+Type *get_exp_type (Exp *exp, Decl *globals, Decl *locals, Params *params)
 { 
     Type *type;
     printf ("Get Type\n");
@@ -67,17 +82,17 @@ Type *get_type (Exp *exp, Decl *globals, Decl *locals, Params *params)
             return CHAR_TYPE_AR;
         case ExpVar:
             printf ("Get expression Type...\n");
-            type = get_decl_type (locals, get_var_id (exp->u.ev.var));
+            type = resolve_type (get_var_id (exp->u.ev.var), globals, locals,
+                                 params);
+            return type;
+            break;
+        case ExpCall:
+            printf ("Get call return type..\n");
+            type = get_decl_type (globals, exp->u.ec.call->id);
             if (type)
                 return type;
-            type = get_decl_type (globals, get_var_id (exp->u.ev.var));
-            if (type)
-                return type;
-            type = get_parameter_type (params, get_var_id (exp->u.ev.var));
-            if (type)
-                return type;
+            break;
         /*
-        ExpCall,
         ExpNew,
         UnaExpArith,
         BinExpArith,*/
@@ -101,8 +116,8 @@ int check_declaration_block (Decl *decl, Decl *globals, Decl *locals,
 
     Type *return_type = decl->u.df.type;
     Cmd *cmd = decl->u.df.block->cmd; 
-    Exp *return_exp = NULL;
-    Type *type;
+    Exp *return_exp = NULL, *assign_exp = NULL, *assignee_exp = NULL;
+    Type *type, *type2;
 
     while (cmd) {
         switch (cmd->type) {
@@ -113,13 +128,22 @@ int check_declaration_block (Decl *decl, Decl *globals, Decl *locals,
 
             break;
             case CmdAss:
-
+                printf ("Checking assingment types... \n");
+                assign_exp = cmd->u.ca.exp;
+                type = get_exp_type (assign_exp, globals, locals, params);
+                type2 = resolve_type (get_var_id (cmd->u.ca.var), globals,
+                                      locals, params);
+                rc = match(type, type2);
+                if (rc != 1) {
+                    printf ("Assignment Type didn't match\n");
+                    return -1;
+                }
             break;
             case CmdRet:
                 printf ("Checking return type.. \n");
                 return_exp = cmd->u.cr.exp;
                 if (return_exp)
-                    type = get_type (return_exp, globals, locals, params);
+                    type = get_exp_type (return_exp, globals, locals, params);
                 else
                     type = VOID_TYPE;
 
