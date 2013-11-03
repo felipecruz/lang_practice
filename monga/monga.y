@@ -129,14 +129,14 @@ decl_var: type ID
       add_declaration (stack, $$, level);
     };
 
-decl_func: type ID OPPAR params CLPAR block
+decl_func: type ID open_scope params CLPAR block
           {  Decl *decl = has_name_same_level (stack, $2, level);
              if (decl)
                  yyerror ("Function Redeclaration\n");
              $$ = new_Decl_Func ($1, $2, $4, $6);
              add_declaration (stack, $$, level);
              }
-         | TYPE_VOID ID OPPAR params CLPAR block
+         | TYPE_VOID ID open_scope params CLPAR block
            { Decl *decl = has_name_same_level (stack, $2, level);
              if (decl)
                  yyerror ("Function Redeclaration\n");
@@ -158,10 +158,10 @@ array_type: type OPSQB CLSQB { Type *type = (Type*)$1;
                                $$ = type;
                              };
 
-open_scope: OPBRA { level += 1; };
+open_scope: OPPAR { level += 1; };
 close_scope: CLBRA { remove_top_elements (stack, level); level -= 1; };
 
-block : open_scope decl_list commands close_scope
+block : OPBRA decl_list commands close_scope
       { $$ = new_Block($2, $3); };
 
 decl_list: /* vazio */ { $$ = NULL; }
