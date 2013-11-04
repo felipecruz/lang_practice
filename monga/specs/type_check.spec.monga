@@ -1,0 +1,32 @@
+void ret_void ()
+{
+    return;
+}
+int ret_int (int x)
+{
+    int a;
+    a = ret_int (1);
+    x = 3;
+    return x;
+}
+float ret_float (float f)
+{
+    float x;
+    return f;
+}
+
+char[] ret_char_array ()
+{
+    return "abcd";
+}
+
+/*
+int main (int argc, char[] argv)
+{
+    int x;
+
+    x = 1;
+    x = ret_int (x);
+}
+
+*/
