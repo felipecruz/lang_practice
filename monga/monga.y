@@ -179,10 +179,10 @@ multi_param: type ID {
              Decl *param = new_Decl_Var ($1, $2, NULL);
              add_declaration (stack, param, level);
              $$ = new_Param ($1, $2, NULL); }
-           | multi_param COMMA type ID {
-             Decl *param = new_Decl_Var ($3, $4, NULL);
+           | type ID COMMA multi_param {
+             Decl *param = new_Decl_Var ($1, $2, NULL);
              add_declaration (stack, param, level);
-             $$ = new_Param ($3, $4, $1); }
+             $$ = new_Param ($1, $2, $4); }
            ;
 
 commands: /* empty */ { $$ = NULL; }
