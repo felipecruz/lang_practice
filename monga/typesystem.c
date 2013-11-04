@@ -1,11 +1,6 @@
 #include "typesystem.h"
 #include "dump.h"
 
-#define IS_INT(e) (e->type == ExpConstInt ||  \
-                   (e->type == ExpVar && e->u.ev.var->type == VarSingle && \
-                    e->u.ev.var->vs))
-
-
 static Type *VOID_TYPE;
 static Type *INT_TYPE;
 static Type *FLOAT_TYPE;
