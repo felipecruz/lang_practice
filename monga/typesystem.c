@@ -36,6 +36,32 @@ Type *get_parameter_type (Params *param, char *id)
     return NULL;
 }
 
+Params *get_params (char *id, Decl *decl)
+{
+    while (decl) {
+        if (decl->type == DeclFunc)
+            if (strcmp (decl->u.df.id, id) == 0)
+                return decl->u.df.params;
+        decl = decl->next;
+    }
+}
+
+
+Params* get_func_params (Call *call, Decl *globals, Decl *locals)
+{
+    Params *params;
+
+    params = get_params (call->id, globals);
+    if (params)
+        return params;
+
+    params = get_params (call->id, locals);
+    if (params)
+        return params;
+
+    return NULL;
+}
+
 Type *get_decl_type (Decl *decl, char *id)
 {
     while (decl) {
@@ -67,7 +93,7 @@ Type *resolve_type (char *id, Decl *globals, Decl *locals, Params *params)
 }
 
 Type *get_exp_type (Exp *exp, Decl *globals, Decl *locals, Params *params)
-{ 
+{
     Type *type;
     printf ("Get Type\n");
 
@@ -100,6 +126,31 @@ Type *get_exp_type (Exp *exp, Decl *globals, Decl *locals, Params *params)
     return NULL;
 }
 
+int match_signature (Params *params, Exp *exps, Decl *globals, Decl *locals,
+                     Params *function_params)
+{
+    int rc;
+    Params *par;
+    Exp *exp;
+    Type *type, *type2;
+
+    while (params && exps) {
+        type = get_exp_type (exps, globals, locals, params);
+        type2 = params->type;
+        rc = match (type, type2);
+        if (rc != 1) {
+            return rc;
+        }
+
+        params = params->next;
+        exps = exps->next;
+    }
+    if ((!exps && params) || (exps && !params))
+        return -1;
+
+    return 1;
+}
+
 int match (Type *t1, Type *t2)
 {
     /* verifica tipo base */
@@ -115,8 +166,10 @@ int check_declaration_block (Decl *decl, Decl *globals, Decl *locals,
     int rc;
 
     Type *return_type = decl->u.df.type;
-    Cmd *cmd = decl->u.df.block->cmd; 
-    Exp *return_exp = NULL, *assign_exp = NULL, *assignee_exp = NULL;
+    Cmd *cmd = decl->u.df.block->cmd;
+    Exp *return_exp = NULL, *assign_exp = NULL, *assignee_exp = NULL,
+        *exp_list = NULL;
+    Params *function_params;
     Type *type, *type2;
 
     while (cmd) {
@@ -138,6 +191,21 @@ int check_declaration_block (Decl *decl, Decl *globals, Decl *locals,
                     printf ("Assignment Type didn't match\n");
                     return -1;
                 }
+
+                if (assign_exp->type == ExpCall) {
+                    exp_list = cmd->u.ca.exp->u.ec.call->exp_list;
+                    function_params = get_func_params (cmd->u.ca.exp->u.ec.call,
+                                                       globals, locals);
+
+                    print_Params (function_params, 0);
+                    rc = match_signature (function_params, exp_list, globals,
+                                          locals, params);
+                    if (rc != 1) {
+                        printf ("Function Call signagure -> parameters dont match\n");
+                        return -1;
+                    }
+                }
+
             break;
             case CmdRet:
                 printf ("Checking return type.. \n");
@@ -154,16 +222,24 @@ int check_declaration_block (Decl *decl, Decl *globals, Decl *locals,
                 }
             break;
             case CmdCall:
+                exp_list = cmd->u.cc.call->exp_list;
+                function_params = get_func_params (cmd->u.cc.call,
+                                                   globals, locals);
 
+                print_Params (function_params, 0);
+                rc = match_signature (function_params, exp_list, globals,
+                                      locals, params);
+                if (rc != 1) {
+                    printf ("Function Call signagure -> parameters dont match\n");
+                    return -1;
+                }
             break;
             case CmdBlock:
 
             break;
         }
-
         cmd = cmd->next;
     }
-
     return 0;
 }
 

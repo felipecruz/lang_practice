@@ -2,6 +2,7 @@ void ret_void ()
 {
     return;
 }
+
 int ret_int (int x)
 {
     int a;
@@ -9,17 +10,30 @@ int ret_int (int x)
     x = 3;
     return x;
 }
+
 float ret_float (float f)
 {
     float x;
     return f;
 }
 
-char[] ret_char_array ()
+int f_all (int x, float f, char[] st)
 {
-    return "abcd";
+    return f_all (x, f, st);
 }
 
+char[] ret_char_array ()
+{
+
+    char[] st;
+    char[] a;
+    int x;
+    st = "uma string";
+    st = a;
+    ret_int (1);
+    x = f_all (1, 2.0, "aa");
+    return "abcd";
+}
 /*
 int main (int argc, char[] argv)
 {

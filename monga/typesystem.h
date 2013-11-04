@@ -12,4 +12,5 @@ int check_program (Program *program);
 int match (Type *t1, Type *t2);
 Type *get_expression_type (Exp *exp);
 Type *get_parameter_type (Params *params, char *id);
+Params* get_func_params (Call *call, Decl *globals, Decl *locals);
 #endif
