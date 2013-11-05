@@ -12,6 +12,9 @@ int ret_int (int x)
     a = ret_int (1);
     q = w;
     x = 3;
+    if (0) {
+
+    }
     return x;
 }
 
