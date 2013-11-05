@@ -126,8 +126,16 @@ Type *get_exp_type (Exp *exp, Decl *globals, Decl *locals, Params *params)
             if (type)
                 return type;
             break;
+        case UnaExpArith:
+            type = get_exp_type (exp->u.eu.exp, globals, locals, params);
+            if (!match (INT_TYPE, type)) {
+                printf ("Invalid unary expression\n");
+                return NULL;
+            }
+            if (type)
+                return type;
+            break;
         /*
-        UnaExpArith,
         BinExpArith,*/
     }
     return NULL;
@@ -182,11 +190,19 @@ int check_declaration_block (Decl *decl, Decl *globals, Decl *locals,
     while (cmd) {
         switch (cmd->type) {
             case CmdIf:
-
-            break;
+                type = get_exp_type (cmd->u.cif.cond, globals, locals, params);
+                if (!type) {
+                    printf ("Invalid If Condition\n");
+                    return -1;
+                }
+                break;
             case CmdWhile:
-
-            break;
+                type = get_exp_type (cmd->u.cw.cond, globals, locals, params);
+                if (!type) {
+                    printf ("Invalid While Condition\n");
+                    return -1;
+                }
+                break;
             case CmdAss:
                 printf ("Checking assingment types... \n");
                 assign_exp = cmd->u.ca.exp;
