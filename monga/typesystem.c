@@ -89,7 +89,8 @@ Type *resolve_type (char *id, Decl *globals, Decl *locals, Params *params)
 
 Type *get_exp_type (Exp *exp, Decl *globals, Decl *locals, Params *params)
 {
-    Type *type;
+    Type *type, *subscript_type;
+    Exp *subscript_exp;
     printf ("Get Type\n");
 
     switch (exp->type) {
@@ -113,8 +114,19 @@ Type *get_exp_type (Exp *exp, Decl *globals, Decl *locals, Params *params)
             if (type)
                 return type;
             break;
+        case ExpNew:
+            type = exp->u.en.type;
+            subscript_exp = exp->u.en.exp;
+            subscript_type = get_exp_type (subscript_exp, globals, locals, params);
+            if (!match (INT_TYPE, subscript_type)) {
+                printf ("Invalid index type\n");
+                return NULL;
+            }
+            type->array = 1;
+            if (type)
+                return type;
+            break;
         /*
-        ExpNew,
         UnaExpArith,
         BinExpArith,*/
     }
@@ -181,6 +193,12 @@ int check_declaration_block (Decl *decl, Decl *globals, Decl *locals,
                 type = get_exp_type (assign_exp, globals, locals, params);
                 type2 = resolve_type (get_var_id (cmd->u.ca.var), globals,
                                       locals, params);
+
+                if (!type || !type2) {
+                    printf ("Invalid Expression\n");
+                    return -1;
+                }
+
                 rc = match(type, type2);
                 if (rc != 1) {
                     printf ("Assignment Type didn't match\n");
@@ -200,7 +218,6 @@ int check_declaration_block (Decl *decl, Decl *globals, Decl *locals,
                         return -1;
                     }
                 }
-
             break;
             case CmdRet:
                 printf ("Checking return type.. \n");

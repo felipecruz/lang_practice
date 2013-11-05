@@ -6,7 +6,11 @@ void ret_void ()
 int ret_int (int x)
 {
     int a;
+    int[] w;
+    int[] q;
+    w = new int[10];
     a = ret_int (1);
+    q = w;
     x = 3;
     return x;
 }
@@ -24,7 +28,6 @@ int f_all (int x, float f, char[] st)
 
 char[] ret_char_array ()
 {
-
     char[] st;
     char[] a;
     int x;
