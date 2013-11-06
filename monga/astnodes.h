@@ -66,11 +66,6 @@ typedef struct Type {
     int array;
 } Type;
 
-typedef struct NameList {
-    char *id;
-    struct NameList *next;
-} NameList;
-
 typedef struct Params {
     struct Type *type;
     char *id;
