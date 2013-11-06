@@ -13,6 +13,21 @@ int ret_int (int x)
     q = w;
     x = 3;
 
+    x = w[1];
+    q[0] = w[1];
+    q[1] = x;
+
+    a = 1 + 2;
+    a = a * 10;
+    a = x / a;
+
+    if (a == 10) {}
+    if ((x + a) == -10) {}
+    if (x >= 10) {}
+    if (a <= 10) {}
+    if (a > 10) {}
+    if (a < 10 || (x * 2 + (a / 10))) {}
+
     if (!1) {
 
     }
@@ -26,12 +41,21 @@ int ret_int (int x)
 
     if (!x) {}
 
+    if (a && x) {}
+    if (a && 1) {}
+    if (0 && x) {}
+
     return x;
 }
 
 float ret_float (float f)
 {
-    float x;
+    float w;
+    w = 1 + 1.0;
+    w = 1.0 + 1 + 2.0;
+    w = 1;
+    f = ret_float (2.0);
+    f = ret_float (1.0);
     return f;
 }
 
@@ -44,7 +68,11 @@ char[] ret_char_array ()
 {
     char[] st;
     char[] a;
+    char q;
     int x;
+    q = 10;
+    x = 10;
+    q = x;
     st = "uma string";
     st = a;
     ret_int (1);

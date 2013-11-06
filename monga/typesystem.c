@@ -87,9 +87,38 @@ Type *resolve_type (char *id, Decl *globals, Decl *locals, Params *params)
     return NULL;
 }
 
+Type* coerce (Type *from, Type *to)
+{
+    if (match (from, to))
+        return to;
+
+    if ((match (from, INT_TYPE) && match (to, FLOAT_TYPE)) ||
+        (match (from, FLOAT_TYPE) && match (to, INT_TYPE)))
+        return FLOAT_TYPE;
+
+    return NULL;
+}
+
+Type *assignment_coerce (Type *from, Type *to)
+{
+    Type *new_type;
+
+    if (match (from, to))
+        return to;
+
+    if (match (from, INT_TYPE) && match (to, FLOAT_TYPE))
+        return FLOAT_TYPE;
+
+    if ((match (from, INT_TYPE) && match (to, CHAR_TYPE)))
+        return CHAR_TYPE;
+
+    return NULL;
+}
+
+
 Type *get_exp_type (Exp *exp, Decl *globals, Decl *locals, Params *params)
 {
-    Type *type, *subscript_type;
+    Type *type, *subscript_type, *type2, *new_type;
     Exp *subscript_exp;
     printf ("Get Type\n");
 
@@ -106,6 +135,11 @@ Type *get_exp_type (Exp *exp, Decl *globals, Decl *locals, Params *params)
             printf ("Get expression Type...\n");
             type = resolve_type (get_var_id (exp->u.ev.var), globals, locals,
                                  params);
+
+            if (exp->u.ev.var->u.va.exp == NULL)
+                return type;
+
+            type->array = 0;
             return type;
             break;
         case ExpCall:
@@ -135,8 +169,15 @@ Type *get_exp_type (Exp *exp, Decl *globals, Decl *locals, Params *params)
             if (type)
                 return type;
             break;
-        /*
-        BinExpArith,*/
+        case BinExpArith:
+            type = get_exp_type (exp->u.eb.exp1, globals, locals, params);
+            type2 = get_exp_type (exp->u.eb.exp2, globals, locals, params);
+            new_type = coerce (type, type2);
+            if (!new_type) {
+                printf ("Invalid binary expression - uncompatible expressions\n");
+                return NULL;
+            }
+            return new_type;
     }
     return NULL;
 }
@@ -191,14 +232,14 @@ int check_declaration_block (Decl *decl, Decl *globals, Decl *locals,
         switch (cmd->type) {
             case CmdIf:
                 type = get_exp_type (cmd->u.cif.cond, globals, locals, params);
-                if (!type) {
+                if (!type || !match (type, INT_TYPE)) {
                     printf ("Invalid If Condition\n");
                     return -1;
                 }
                 break;
             case CmdWhile:
                 type = get_exp_type (cmd->u.cw.cond, globals, locals, params);
-                if (!type) {
+                if (!type || !match (type, INT_TYPE)) {
                     printf ("Invalid While Condition\n");
                     return -1;
                 }
@@ -207,7 +248,7 @@ int check_declaration_block (Decl *decl, Decl *globals, Decl *locals,
                 printf ("Checking assingment types... \n");
                 assign_exp = cmd->u.ca.exp;
                 type = get_exp_type (assign_exp, globals, locals, params);
-                type2 = resolve_type (get_var_id (cmd->u.ca.var), globals,
+                type2 = get_exp_type (cmd->u.ca.exp, globals,
                                       locals, params);
 
                 if (!type || !type2) {
@@ -215,8 +256,8 @@ int check_declaration_block (Decl *decl, Decl *globals, Decl *locals,
                     return -1;
                 }
 
-                rc = match(type, type2);
-                if (rc != 1) {
+                type = assignment_coerce (type, type2);
+                if (!type) {
                     printf ("Assignment Type didn't match\n");
                     return -1;
                 }
