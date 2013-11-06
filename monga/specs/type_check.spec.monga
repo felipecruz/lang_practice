@@ -1,0 +1,97 @@
+void ret_void ()
+{
+    return;
+}
+
+int ret_int (int x)
+{
+    int a;
+    int[] w;
+    int[] q;
+    w = new int[10];
+    a = ret_int (1);
+    q = w;
+    x = 3;
+    a = ret_int (ret_int (w[0]));
+
+    x = w[1];
+    q[0] = w[1];
+    q[1] = x;
+
+    a = 1 + 2;
+    a = a * 10;
+    a = x / a;
+
+    if (a == 10) {}
+    if ((x + a) == -10) {}
+    if (x >= 10) {}
+    if (a <= 10) {}
+    if (a > 10) {}
+    if (a < 10 || (x * 2 + (a / 10))) {}
+
+    if (!1) {
+
+    }
+
+    while (-1) {
+
+    }
+
+    if (-a) {}
+    else {}
+
+    if (!x) {}
+
+    if (a && x) {}
+    if (a && 1) {}
+    if (0 && x) {}
+
+    return x;
+}
+
+float ret_float (float f)
+{
+    float w;
+    w = 1 + 1.0;
+    w = 1.0 + 1 + 2.0;
+    w = 1;
+    f = ret_float (2.0);
+    f = ret_float (1.0);
+
+    if (1 > 0) {
+
+    }
+
+    return f;
+}
+
+int f_all (int x, float f, char[] st)
+{
+    return f_all (x, f, st);
+}
+
+char[] ret_char_array ()
+{
+    char[] st;
+    char[] a;
+    char q;
+    int x;
+    q = 10;
+    x = 10;
+    q = x;
+    st = "uma string";
+    st = a;
+    ret_int (1);
+    x = f_all (1, 2.0, "aa");
+    return "abcd";
+}
+/*
+int main (int argc, char[] argv)
+{
+    int x;
+
+    x = 1;
+    x = ret_int (x);
+}
+
+*/

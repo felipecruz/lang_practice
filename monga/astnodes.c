@@ -106,18 +106,7 @@ Type *new_Type (TypeType typetype, int array)
 {
     Type *type = malloc (sizeof (Type));
 
-    if (typetype == TypeInt)
-        type->type = TypeInt;
-
-    if (typetype == TypeChar)
-        type->type = TypeChar;
-
-    if (typetype == TypeFloat)
-        type->type = TypeFloat;
-
-    if (typetype == TypeVoid)
-        type->type = TypeVoid;
-
+    type->type = typetype;
     type->array = array;
     return type;
 }

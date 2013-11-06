@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "astnodes.h"
+#include "typesystem.h"
 #include "dump.h"
 #include "y.tab.h"
 void yyerror (char *);
@@ -47,7 +48,7 @@ static struct Stack *stack = NULL;
 %type<decl> decl decl_var decl_func decl_list;
 %type<type> type base_type array_type;
 %type<params> params multi_param;
-%type<block> block;
+%type<block> regular_block scope_block;
 %type<cmd> commands command if_cmd return;
 %type<exp> exp exp_list;
 %type<var> var;
@@ -128,14 +129,14 @@ decl_var: type ID
       add_declaration (stack, $$, level);
     };
 
-decl_func: type ID OPPAR params CLPAR block
+decl_func: type ID open_scope params CLPAR scope_block
           {  Decl *decl = has_name_same_level (stack, $2, level);
              if (decl)
                  yyerror ("Function Redeclaration\n");
              $$ = new_Decl_Func ($1, $2, $4, $6);
              add_declaration (stack, $$, level);
              }
-         | TYPE_VOID ID OPPAR params CLPAR block
+         | TYPE_VOID ID open_scope params CLPAR scope_block
            { Decl *decl = has_name_same_level (stack, $2, level);
              if (decl)
                  yyerror ("Function Redeclaration\n");
@@ -157,11 +158,13 @@ array_type: type OPSQB CLSQB { Type *type = (Type*)$1;
                                $$ = type;
                              };
 
-open_scope: OPBRA { level += 1; };
+open_scope: OPPAR { level += 1; };
 close_scope: CLBRA { remove_top_elements (stack, level); level -= 1; };
 
-block : open_scope decl_list commands close_scope
-      { $$ = new_Block($2, $3); };
+scope_block : OPBRA decl_list commands close_scope
+              { $$ = new_Block($2, $3); };
+regular_block : OPBRA decl_list commands CLBRA
+              { $$ = new_Block($2, $3); };
 
 decl_list: /* vazio */ { $$ = NULL; }
          | decl decl_list { Decl *_decl = (Decl*) $1;
@@ -178,10 +181,10 @@ multi_param: type ID {
              Decl *param = new_Decl_Var ($1, $2, NULL);
              add_declaration (stack, param, level);
              $$ = new_Param ($1, $2, NULL); }
-           | multi_param COMMA type ID {
-             Decl *param = new_Decl_Var ($3, $4, NULL);
+           | type ID COMMA multi_param {
+             Decl *param = new_Decl_Var ($1, $2, NULL);
              add_declaration (stack, param, level);
-             $$ = new_Param ($3, $4, $1); }
+             $$ = new_Param ($1, $2, $4); }
            ;
 
 commands: /* empty */ { $$ = NULL; }
@@ -194,7 +197,7 @@ command: if_cmd { $$ = $1; }
        | return { $$ = $1; }
        | var SINGLE_EQ exp SEMICOL { $$ = new_Assign_Cmd ($1, $3); }
        | call SEMICOL { $$ = new_Call_Cmd ($1); }
-       | block { $$ = new_Block_Cmd ($1); }
+       | regular_block { $$ = new_Block_Cmd ($1); }
        | WHILE OPPAR exp CLPAR command { $$ = new_While_Cmd ($3, $5); }
        ;
 
@@ -253,6 +256,7 @@ void yyerror (char *s) {
 }
 
 int main (int argc, char **argv) {
+    int valid_types = 0;
     int indent = 0;
     level = 0;
 #if YYDEBUG
@@ -274,6 +278,10 @@ int main (int argc, char **argv) {
     yyparse ();
 
     dump_Program (__program, indent);
+    valid_types = check_program (__program);
+    if (valid_types == -1) {
+        printf ("Type Error\n");
+    }
 
     fclose (yyin);
     exit(0);

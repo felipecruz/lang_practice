@@ -52,7 +52,17 @@ void print_Exp (Exp *exp, int level)
             printf ("]");
             break;
         case UnaExpArith:
-            printf ("Unary Exp ");
+            switch (exp->u.eu.op) {
+                case UnaArith_Minus:
+                    printf ("Unary Exp [ - ] ");
+                    break;
+                case UnaArith_Log_Neg:
+                    printf ("Unary Exp  [ ! ] ");
+                    break;
+                default:
+                    printf ("Unknow Unary Arithmetic Expression");
+
+            }
             print_Exp (exp->u.eu.exp, level);
             break;
         case BinExpArith:
