@@ -12,6 +12,7 @@ int ret_int (int x)
     a = ret_int (1);
     q = w;
     x = 3;
+    a = ret_int (ret_int (w[0]));
 
     x = w[1];
     q[0] = w[1];
@@ -56,6 +57,11 @@ float ret_float (float f)
     w = 1;
     f = ret_float (2.0);
     f = ret_float (1.0);
+
+    if (1 > 0) {
+
+    }
+
     return f;
 }
 
