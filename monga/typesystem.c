@@ -167,6 +167,9 @@ Type *get_exp_type (Exp *exp)
             break;
         case UnaExpArith:
             type = get_exp_type (exp->u.eu.exp);
+            if (match (FLOAT_TYPE, type) && exp->u.eu.op == UnaArith_Minus) {
+                return type;
+            }
             if (!match (INT_TYPE, type)) {
                 printdebug ("Invalid unary expression\n");
                 return NULL;

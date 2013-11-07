@@ -60,6 +60,8 @@ float ret_float (float f)
     w = 1 + 1.0;
     w = 1.0 + 1 + 2.0;
     w = 1;
+    w = -1;
+    w = -1.0;
     f = ret_float (2.0);
     f = ret_float (1.0);
 
