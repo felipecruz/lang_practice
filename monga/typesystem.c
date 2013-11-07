@@ -58,6 +58,10 @@ Type* coerce (Type *from, Type *to)
         (match (from, FLOAT_TYPE) && match (to, INT_TYPE)))
         return FLOAT_TYPE;
 
+    if ((match (from, CHAR_TYPE) && match (to, INT_TYPE)) ||
+        (match (from, INT_TYPE) && match (to, CHAR_TYPE)))
+        return INT_TYPE;
+
     return NULL;
 }
 
@@ -71,7 +75,8 @@ Type *assignment_coerce (Type *from, Type *to)
     if (match (from, INT_TYPE) && match (to, FLOAT_TYPE))
         return FLOAT_TYPE;
 
-    if ((match (from, INT_TYPE) && match (to, CHAR_TYPE)))
+    if ((match (from, CHAR_TYPE) && match (to, INT_TYPE)) ||
+        (match (from, INT_TYPE) && match (to, CHAR_TYPE)))
         return CHAR_TYPE;
 
     return NULL;
@@ -339,8 +344,8 @@ int check_declaration_block (Decl *decl)
                 else
                     type = VOID_TYPE;
 
-                rc = match(type, decl->u.df.type);
-                if (rc != 1) {
+                new_type = coerce (type, decl->u.df.type);
+                if (!new_type) {
                     printdebug ("Return Type didn't match function declaration\n");
                     return -1;
                 }
