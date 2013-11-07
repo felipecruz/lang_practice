@@ -222,7 +222,7 @@ Decl* new_Decl_Func (Type *type, char *id, Params *params, Block *block);
 Params *new_Param (Type *type, char *id, Params *param);
 
 Var *new_Var (char *id, Exp *exp, Decl *decl);
-Var *new_Var_Array (Var *_var, Exp *exp);
+Var *new_Var_Array (Var *_var, Exp *exp, Decl *decl);
 
 Block *new_Block (Decl* decl, Cmd *cmd);
 
