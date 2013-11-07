@@ -280,7 +280,7 @@ int check_declaration_block (Decl *decl)
                 }
                 break;
             case CmdAss:
-                printdebug ("Checking assingment types... \n");
+                printdebug ("Checking assignment types... \n");
                 assign_exp = cmd->u.ca.exp;
                 type = get_exp_type (assign_exp);
                 type2 = resolve_type (cmd->u.ca.var);
