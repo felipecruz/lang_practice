@@ -37,6 +37,13 @@ Type *get_call_type (Call *call)
 
 Type *resolve_type (Var *var)
 {
+    Type *type;
+    if (var->type == VarArray && var->u.va.exp != NULL) {
+        type = resolve_type (var->u.va.var);
+        type->array = 0;
+        return type;
+    }
+
     if (var->decl->type == DeclVar)
         return var->decl->u.dv.type;
     return NULL;
@@ -137,7 +144,7 @@ Type *get_exp_type (Exp *exp)
             if (exp->u.ev.var->u.va.exp == NULL)
                 return type;
 
-            type->array = 1;
+            type->array = 0;
             return type;
             break;
         case ExpCall:
@@ -261,7 +268,7 @@ int check_declaration_block (Decl *decl)
     Exp *return_exp = NULL, *assign_exp = NULL, *assignee_exp = NULL,
         *exp_list = NULL;
     Params *function_params;
-    Type *type, *type2;
+    Type *type, *type2, *new_type;
 
     while (cmd) {
         switch (cmd->type) {
@@ -281,8 +288,7 @@ int check_declaration_block (Decl *decl)
                 break;
             case CmdAss:
                 printdebug ("Checking assignment types... \n");
-                assign_exp = cmd->u.ca.exp;
-                type = get_exp_type (assign_exp);
+                type = get_exp_type (cmd->u.ca.exp);
                 type2 = resolve_type (cmd->u.ca.var);
 
                 if (!type || !type2) {
@@ -290,13 +296,13 @@ int check_declaration_block (Decl *decl)
                     return -1;
                 }
 
-                type = assignment_coerce (type, type2);
-                if (!type) {
+                new_type = assignment_coerce (type, type2);
+                if (!new_type) {
                     printdebug ("Assignment Type didn't match\n");
                     return -1;
                 }
 
-                if (assign_exp->type == ExpCall) {
+                if (cmd->u.ca.exp->type == ExpCall) {
                     exp_list = cmd->u.ca.exp->u.ec.call->exp_list;
                     function_params = get_func_params (cmd->u.ca.exp->u.ec.call);
 
@@ -381,6 +387,7 @@ int check_program (Program *program)
     if (program == NULL) {
         return 0;
     }
+    decl = program->decl;
 
     while (decl) {
         if (decl->type == DeclFunc) {
