@@ -130,12 +130,16 @@ Type *get_exp_type (Exp *exp)
 
     switch (exp->type) {
         case ExpConstInt:
+            exp->exp_type = INT_TYPE;
             return INT_TYPE;
         case ExpConstLong:
+            exp->exp_type = INT_TYPE;
             return INT_TYPE;
         case ExpConstFloat:
+            exp->exp_type = FLOAT_TYPE;
             return FLOAT_TYPE;
         case ExpConstString:
+            exp->exp_type = CHAR_TYPE_AR;
             return CHAR_TYPE_AR;
         case ExpVar:
             printdebug ("Get Expression Var Type...\n");
@@ -146,10 +150,12 @@ Type *get_exp_type (Exp *exp)
 
             type = new_Type (type->type, 0);
             return type;
+            exp->exp_type = type;
             break;
         case ExpCall:
             printdebug ("Get call return type..\n");
             type = get_call_type (exp->u.ec.call);
+            exp->exp_type = type;
             if (type)
                 return type;
             break;
@@ -162,11 +168,13 @@ Type *get_exp_type (Exp *exp)
                 return NULL;
             }
             type->array = 1;
+            exp->exp_type = type;
             if (type)
                 return type;
             break;
         case UnaExpArith:
             type = get_exp_type (exp->u.eu.exp);
+            exp->exp_type = type;
             if (match (FLOAT_TYPE, type) && exp->u.eu.op == UnaArith_Minus) {
                 return type;
             }
@@ -191,6 +199,7 @@ Type *get_exp_type (Exp *exp)
                 printdebug ("Invalid binary expression - uncompatible expressions\n");
                 return NULL;
             }
+            exp->exp_type = new_type;
             return new_type;
     }
     return NULL;
