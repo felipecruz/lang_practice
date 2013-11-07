@@ -1,17 +1,25 @@
+int foo (int tw)
+{
+    return 1;
+}
+
 int[] func (int num) {
-    int b, x, c, w;
+    int[] b, c;
+    int x, w;
     if (0) {} else {}
 
-    while (b > c[0]) {}
-    while (b > c[0]) {
+    while (b[1] > c[0]) {}
+    while (x > c[0]) {
         b = 1;
     }
 
-    x = w[0];
+    x = c[0];
     func (10);
-    w = func (b[0]);
+    w = foo (b[0]);
 
     {
-        b = 1;
+        b[0] = 1;
     }
+
+    return b;
 }

@@ -50,6 +50,92 @@ int ret_int (int x)
     if (0 && x) {}
 
     ret_float(3.0);
+    {
+        x = 3;
+        q = w;
+
+        w = new int[10];
+        a = ret_int (1);
+
+        a = ret_int (ret_int (w[0]));
+
+        x = w[1];
+        q[0] = w[1];
+        q[1] = x;
+
+        a = 1 + 2;
+        a = a * 10;
+        a = x / a;
+
+        if (a == 10) {}
+        if ((x + a) == -10) {}
+        if (x >= 10) {}
+        if (a <= 10) {}
+        if (a > 10) {}
+        if (a < 10 || (x * 2 + (a / 10))) {}
+
+        if (!1) {
+
+        }
+
+        while (-1) {
+
+        }
+
+        if (-a) {}
+        else {}
+
+        if (!x) {}
+
+        if (a && x) {}
+        if (a && 1) {}
+        if (0 && x) {}
+
+        ret_float(3.0);
+        {
+            x = 3;
+            q = w;
+
+            w = new int[10];
+            a = ret_int (1);
+
+            a = ret_int (ret_int (w[0]));
+
+            x = w[1];
+            q[0] = w[1];
+            q[1] = x;
+
+            a = 1 + 2;
+            a = a * 10;
+            a = x / a;
+
+            if (a == 10) {}
+            if ((x + a) == -10) {}
+            if (x >= 10) {}
+            if (a <= 10) {}
+            if (a > 10) {}
+            if (a < 10 || (x * 2 + (a / 10))) {}
+
+            if (!1) {
+
+            }
+
+            while (-1) {
+
+            }
+
+            if (-a) {}
+            else {}
+
+            if (!x) {}
+
+            if (a && x) {}
+            if (a && 1) {}
+            if (0 && x) {}
+
+            ret_float(3.0);
+        }
+    }
 
     return x;
 }
