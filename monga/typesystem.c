@@ -181,6 +181,12 @@ Type *get_exp_type (Exp *exp)
             type = get_exp_type (exp->u.eb.exp1);
             type2 = get_exp_type (exp->u.eb.exp2);
             new_type = coerce (type, type2);
+            if (!match (type, new_type)) {
+                print_Type (type, 0);
+                exp->u.ecast.exp = exp->u.eb.exp1;
+                exp->u.ecast.type = new_type;
+                printf ("Change Exp to Exp with cast\n");
+            }
             if (!new_type) {
                 printdebug ("Invalid binary expression - uncompatible expressions\n");
                 return NULL;
