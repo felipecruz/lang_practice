@@ -98,6 +98,7 @@ typedef struct Block {
 typedef struct Exp {
     ExpType type;
     struct Exp *next;
+    Type *exp_type;
     union {
         struct {
             /* const int */;
@@ -138,6 +139,10 @@ typedef struct Exp {
             BinArithOps op;
             struct Exp *exp1, *exp2;
         } eb;
+        struct {
+            struct Exp *exp;
+            struct Type *type;
+        } ecast;
     }u;
 } Exp;
 
