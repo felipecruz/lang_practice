@@ -3,18 +3,14 @@
 #include <stdio.h>
 #include "astnodes.h"
 
+#define printdebug      printf
+
 #ifndef _TYPESYSTEM_H_
 #define _TYPESYSTEM_H_
 
-#ifdef DEBUG
-#define printdebug      printf
-#else
-#define printdebug(...) /**/
-#endif
-
 int check_declaration_block (Decl *decl);
 int link_missing_calls (Program *program);
-int link_and_validate_calls(Decl *decl, Decl *globals);
+int link_and_validate_calls(Block *block, Decl *globals);
 int check_program (Program *program);
 int match (Type *t1, Type *t2);
 Decl *resolve_decl (char *id, Decl *decl);

@@ -40,7 +40,7 @@ Type *resolve_type (Var *var)
     Type *type;
     if (var->type == VarArray && var->u.va.exp != NULL) {
         type = resolve_type (var->u.va.var);
-        type->array = 0;
+        type = new_Type (type->type, 0);
         return type;
     }
 
@@ -144,7 +144,7 @@ Type *get_exp_type (Exp *exp)
             if (exp->u.ev.var->u.va.exp == NULL)
                 return type;
 
-            type->array = 0;
+            type = new_Type (type->type, 0);
             return type;
             break;
         case ExpCall:
@@ -229,10 +229,10 @@ int match (Type *t1, Type *t2)
     return e && a;
 }
 
-int link_and_validate_calls (Decl *decl, Decl *globals)
+int link_and_validate_calls (Block *block, Decl *globals)
 {
     Decl *call_decl = NULL;
-    Cmd *cmd = decl->u.df.block->cmd;
+    Cmd *cmd = block->cmd;
     Exp *return_exp = NULL;
 
     while (cmd) {
@@ -260,7 +260,7 @@ int link_and_validate_calls (Decl *decl, Decl *globals)
                 break;
             break;
             case CmdBlock:
-                link_and_validate_calls (cmd->u.cb.block->decl, globals);
+                link_and_validate_calls (cmd->u.cb.block, globals);
                 break;
         }
         cmd = cmd->next;
@@ -371,7 +371,7 @@ int link_missing_calls (Program *program)
 
     while (decl) {
         if (decl->type == DeclFunc) {
-            rc = link_and_validate_calls (decl, globals);
+            rc = link_and_validate_calls (decl->u.df.block, globals);
             if (rc == -1)
                 return rc;
         }
