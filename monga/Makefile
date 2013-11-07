@@ -6,6 +6,9 @@ CC=gcc
 all: clean lex.yy.c y.tab.h
 	@$(CC) astnodes.c typesystem.c dump.c lex.yy.c y.tab.c $(FLAGS) -o monga
 
+debug: clean lex.yy.c y.tab.h
+	@$(CC) astnodes.c typesystem.c dump.c lex.yy.c y.tab.c $(FLAGS) -o monga -DDEBUG=1
+
 y.tab.h:
 	@$(YACC) monga.y
 
