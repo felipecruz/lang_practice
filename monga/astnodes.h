@@ -209,6 +209,7 @@ Decl* has_name_same_level (Stack *stack, char *id, int level);
 Decl* has_name (Stack *stack, char *id);
 void _traverse_declarations(Stack *stack);
 void remove_top_elements (Stack *stack, int level);
+char *get_var_id (Var *var);
 
 Program *new_Program ();
 Program *add_Decl (Program *program, Decl *decl);

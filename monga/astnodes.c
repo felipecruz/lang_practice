@@ -88,6 +88,17 @@ Decl* has_name (Stack *stack, char *id)
     return NULL;
 }
 
+char *get_var_id (Var *var)
+{
+    if (var == NULL)
+        return NULL;
+
+    if (var->type == VarSingle)
+        return var->u.vs.id;
+    else
+        return get_var_id (var->u.va.var);
+}
+
 Program* new_Program ()
 {
     Program *program = (Program*) malloc (sizeof (Program));
@@ -315,11 +326,12 @@ Var *new_Var (char *id, Exp *exp, Decl *decl)
     return var;
 }
 
-Var *new_Var_Array (Var *_var, Exp *exp)
+Var *new_Var_Array (Var *_var, Exp *exp, Decl *decl)
 {
     Var *var = (Var*) malloc (sizeof (Var));
     var->type = VarArray;
     var->u.va.var = _var;
     var->u.va.exp = exp;
+    var->decl = decl;
     return var;
 }

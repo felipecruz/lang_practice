@@ -213,7 +213,11 @@ var : ID { Decl* decl = has_name (stack, $1);
            if (!decl)
                yyerror ("Variable not declared");
            $$ = new_Var ($1, NULL, decl); }
-    | var OPSQB exp CLSQB { $$ = new_Var_Array ($1, $3); };
+    | var OPSQB exp CLSQB {
+           Decl* decl = has_name (stack, get_var_id ($1));
+           if (!decl)
+               yyerror ("Variable not declared");
+           $$ = new_Var_Array ($1, $3, decl); };
 
 exp : NUMBER { $$ = new_Exp_Int ($1, NULL); }
     | HEXA { $$ = new_Exp_Hexa ($1, NULL); }
