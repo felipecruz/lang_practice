@@ -8,10 +8,13 @@ int ret_int (int x)
     int a;
     int[] w;
     int[] q;
+
+    x = 3;
+    q = w;
+
     w = new int[10];
     a = ret_int (1);
-    q = w;
-    x = 3;
+
     a = ret_int (ret_int (w[0]));
 
     x = w[1];
@@ -45,6 +48,8 @@ int ret_int (int x)
     if (a && x) {}
     if (a && 1) {}
     if (0 && x) {}
+
+    ret_float(3.0);
 
     return x;
 }
@@ -85,13 +90,11 @@ char[] ret_char_array ()
     x = f_all (1, 2.0, "aa");
     return "abcd";
 }
-/*
+
 int main (int argc, char[] argv)
 {
     int x;
-
     x = 1;
-    x = ret_int (x);
-}
+    return ret_int (x + 2);
 
-*/
+}

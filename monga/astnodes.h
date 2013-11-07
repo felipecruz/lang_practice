@@ -192,6 +192,7 @@ typedef struct Var {
 typedef struct Call {
     char *id;
     Exp *exp_list;
+    Decl *decl;
 } Call;
 
 typedef struct ScopeElement {

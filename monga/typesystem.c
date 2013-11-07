@@ -9,81 +9,36 @@ static Type *INT_TYPE_AR;
 static Type *FLOAT_TYPE_AR;
 static Type *CHAR_TYPE_AR;
 
-char *get_var_id (Var *var)
+Params* get_func_params (Call *call)
 {
-    if (var == NULL)
-        return NULL;
-
-    if (var->type == VarSingle)
-        return var->u.vs.id;
-    else
-        return get_var_id (var->u.va.var);
+    return call->decl->u.df.params;
 }
 
-Type *get_parameter_type (Params *param, char *id)
-{
-    while (param) {
-        if (strcmp (param->id, id) == 0)
-            return param->type;
-
-        param = param->next;
-    }
-    return NULL;
-}
-
-Params *get_params (char *id, Decl *decl)
+Decl *resolve_decl (char *id, Decl *decl)
 {
     while (decl) {
         if (decl->type == DeclFunc)
             if (strcmp (decl->u.df.id, id) == 0)
-                return decl->u.df.params;
-        decl = decl->next;
-    }
-}
-
-
-Params* get_func_params (Call *call, Decl *globals, Decl *locals)
-{
-    Params *params;
-
-    params = get_params (call->id, globals);
-    if (params)
-        return params;
-
-    params = get_params (call->id, locals);
-    if (params)
-        return params;
-
-    return NULL;
-}
-
-Type *get_decl_type (Decl *decl, char *id)
-{
-    while (decl) {
-        if (decl->type == DeclFunc)
-            if (strcmp (decl->u.df.id, id) == 0)
-                return decl->u.df.type;
+                return decl;
         if (decl->type == DeclVar)
             if (strcmp (decl->u.dv.id, id) == 0)
-                return decl->u.dv.type;
-
+                return decl;
         decl = decl->next;
     }
     return NULL;
 }
 
-Type *resolve_type (char *id, Decl *globals, Decl *locals, Params *params)
+Type *get_call_type (Call *call)
 {
-    Type *type;
-    type = get_decl_type (locals, id);
-    if (type)
-        return type;
-    type = get_decl_type (globals, id);
-    if (type)
-        return type;
-    type = get_parameter_type (params, id);
-    if (type)
-        return type;
+    if (call->decl->type == DeclVar)
+        return NULL;
+    return call->decl->u.df.type;
+}
+
+Type *resolve_type (Var *var)
+{
+    if (var->decl->type == DeclVar)
+        return var->decl->u.dv.type;
     return NULL;
 }
 
@@ -115,12 +70,56 @@ Type *assignment_coerce (Type *from, Type *to)
     return NULL;
 }
 
+Decl *link_call (Call *call, Decl *globals)
+{
+    Decl *decl = resolve_decl (call->id, globals);
+    if (decl == NULL || decl->type == DeclVar)
+        return NULL;
+    call->decl = decl;
+    return call->decl;
+}
 
-Type *get_exp_type (Exp *exp, Decl *globals, Decl *locals, Params *params)
+void link_calls (Exp *exp, Decl *globals)
+{
+    Decl *decl;
+    Type *type, *subscript_type, *type2, *new_type;
+    Exp *subscript_exp;
+
+    switch (exp->type) {
+        case ExpConstInt:
+        case ExpConstLong:
+        case ExpConstFloat:
+        case ExpConstString:
+        case ExpVar:
+            return;
+        case ExpCall:
+            decl = resolve_decl (exp->u.ec.call->id, globals);
+            if (!decl)
+                printdebug ("Undeclared function name");
+            exp->u.ec.call->decl = decl;
+            exp = exp->u.ec.call->exp_list;
+            while (exp) {
+                link_calls (exp, globals);
+                exp = exp->next;
+            }
+            break;
+        case ExpNew:
+            link_calls (exp->u.en.exp, globals);
+            break;
+        case UnaExpArith:
+            link_calls (exp->u.eu.exp, globals);
+            break;
+        case BinExpArith:
+            link_calls (exp->u.eb.exp1, globals);
+            link_calls (exp->u.eb.exp2, globals);
+        break;
+    }
+}
+
+Type *get_exp_type (Exp *exp)
 {
     Type *type, *subscript_type, *type2, *new_type;
     Exp *subscript_exp;
-    printf ("Get Type\n");
 
     switch (exp->type) {
         case ExpConstInt:
@@ -132,28 +131,27 @@ Type *get_exp_type (Exp *exp, Decl *globals, Decl *locals, Params *params)
         case ExpConstString:
             return CHAR_TYPE_AR;
         case ExpVar:
-            printf ("Get expression Type...\n");
-            type = resolve_type (get_var_id (exp->u.ev.var), globals, locals,
-                                 params);
+            printdebug ("Get Expression Var Type...\n");
+            type = resolve_type (exp->u.ev.var);
 
             if (exp->u.ev.var->u.va.exp == NULL)
                 return type;
 
-            type->array = 0;
+            type->array = 1;
             return type;
             break;
         case ExpCall:
-            printf ("Get call return type..\n");
-            type = get_decl_type (globals, exp->u.ec.call->id);
+            printdebug ("Get call return type..\n");
+            type = get_call_type (exp->u.ec.call);
             if (type)
                 return type;
             break;
         case ExpNew:
             type = exp->u.en.type;
             subscript_exp = exp->u.en.exp;
-            subscript_type = get_exp_type (subscript_exp, globals, locals, params);
+            subscript_type = get_exp_type (subscript_exp);
             if (!match (INT_TYPE, subscript_type)) {
-                printf ("Invalid index type\n");
+                printdebug ("Invalid index type\n");
                 return NULL;
             }
             type->array = 1;
@@ -161,20 +159,20 @@ Type *get_exp_type (Exp *exp, Decl *globals, Decl *locals, Params *params)
                 return type;
             break;
         case UnaExpArith:
-            type = get_exp_type (exp->u.eu.exp, globals, locals, params);
+            type = get_exp_type (exp->u.eu.exp);
             if (!match (INT_TYPE, type)) {
-                printf ("Invalid unary expression\n");
+                printdebug ("Invalid unary expression\n");
                 return NULL;
             }
             if (type)
                 return type;
             break;
         case BinExpArith:
-            type = get_exp_type (exp->u.eb.exp1, globals, locals, params);
-            type2 = get_exp_type (exp->u.eb.exp2, globals, locals, params);
+            type = get_exp_type (exp->u.eb.exp1);
+            type2 = get_exp_type (exp->u.eb.exp2);
             new_type = coerce (type, type2);
             if (!new_type) {
-                printf ("Invalid binary expression - uncompatible expressions\n");
+                printdebug ("Invalid binary expression - uncompatible expressions\n");
                 return NULL;
             }
             return new_type;
@@ -182,8 +180,7 @@ Type *get_exp_type (Exp *exp, Decl *globals, Decl *locals, Params *params)
     return NULL;
 }
 
-int match_signature (Params *params, Exp *exps, Decl *globals, Decl *locals,
-                     Params *function_params)
+int match_signature (Params *params, Exp *exps)
 {
     int rc;
     Params *par;
@@ -191,7 +188,7 @@ int match_signature (Params *params, Exp *exps, Decl *globals, Decl *locals,
     Type *type, *type2;
 
     while (params && exps) {
-        type = get_exp_type (exps, globals, locals, params);
+        type = get_exp_type (exps);
         type2 = params->type;
         rc = match (type, type2);
         if (rc != 1) {
@@ -216,8 +213,46 @@ int match (Type *t1, Type *t2)
     return e && a;
 }
 
-int check_declaration_block (Decl *decl, Decl *globals, Decl *locals,
-                             Params *params)
+int link_and_validate_calls (Decl *decl, Decl *globals)
+{
+    Decl *call_decl = NULL;
+    Cmd *cmd = decl->u.df.block->cmd;
+    Exp *return_exp = NULL;
+
+    while (cmd) {
+        switch (cmd->type) {
+            case CmdIf:
+                link_calls (cmd->u.cif.cond, globals);
+                break;
+            case CmdWhile:
+                link_calls (cmd->u.cw.cond, globals);
+                break;
+            case CmdAss:
+                link_calls (cmd->u.ca.exp, globals);
+            break;
+            case CmdRet:
+                return_exp = cmd->u.cr.exp;
+                if (return_exp)
+                    link_calls (return_exp, globals);
+            break;
+            case CmdCall:
+                call_decl = link_call (cmd->u.cc.call, globals);
+                if (!call_decl) {
+                    printdebug ("Unknow Function name\n");
+                    return -1;
+                }
+                break;
+            break;
+            case CmdBlock:
+                link_and_validate_calls (cmd->u.cb.block->decl, globals);
+                break;
+        }
+        cmd = cmd->next;
+    }
+    return 0;
+}
+
+int check_declaration_block (Decl *decl)
 {
     int rc;
 
@@ -231,75 +266,74 @@ int check_declaration_block (Decl *decl, Decl *globals, Decl *locals,
     while (cmd) {
         switch (cmd->type) {
             case CmdIf:
-                type = get_exp_type (cmd->u.cif.cond, globals, locals, params);
+                type = get_exp_type (cmd->u.cif.cond);
                 if (!type || !match (type, INT_TYPE)) {
-                    printf ("Invalid If Condition\n");
+                    printdebug ("Invalid If Condition\n");
                     return -1;
                 }
                 break;
             case CmdWhile:
-                type = get_exp_type (cmd->u.cw.cond, globals, locals, params);
+                type = get_exp_type (cmd->u.cw.cond);
                 if (!type || !match (type, INT_TYPE)) {
-                    printf ("Invalid While Condition\n");
+                    printdebug ("Invalid While Condition\n");
                     return -1;
                 }
                 break;
             case CmdAss:
-                printf ("Checking assingment types... \n");
+                printdebug ("Checking assingment types... \n");
                 assign_exp = cmd->u.ca.exp;
-                type = get_exp_type (assign_exp, globals, locals, params);
-                type2 = get_exp_type (cmd->u.ca.exp, globals,
-                                      locals, params);
+                type = get_exp_type (assign_exp);
+                type2 = get_exp_type (cmd->u.ca.exp);
 
                 if (!type || !type2) {
-                    printf ("Invalid Expression\n");
+                    printdebug ("Invalid Expression\n");
                     return -1;
                 }
 
                 type = assignment_coerce (type, type2);
                 if (!type) {
-                    printf ("Assignment Type didn't match\n");
+                    printdebug ("Assignment Type didn't match\n");
                     return -1;
                 }
 
                 if (assign_exp->type == ExpCall) {
                     exp_list = cmd->u.ca.exp->u.ec.call->exp_list;
-                    function_params = get_func_params (cmd->u.ca.exp->u.ec.call,
-                                                       globals, locals);
+                    function_params = get_func_params (cmd->u.ca.exp->u.ec.call);
 
-                    print_Params (function_params, 0);
-                    rc = match_signature (function_params, exp_list, globals,
-                                          locals, params);
+                    rc = match_signature (function_params, exp_list);
                     if (rc != 1) {
-                        printf ("Function Call signagure -> parameters dont match\n");
+                        printdebug ("Function Call signagure -> parameters dont match\n");
                         return -1;
                     }
                 }
             break;
             case CmdRet:
-                printf ("Checking return type.. \n");
+                printdebug ("Checking return type.. \n");
                 return_exp = cmd->u.cr.exp;
                 if (return_exp)
-                    type = get_exp_type (return_exp, globals, locals, params);
+                    type = get_exp_type (return_exp);
                 else
                     type = VOID_TYPE;
 
                 rc = match(type, decl->u.df.type);
                 if (rc != 1) {
-                    printf ("Return Type didn't match function declaration\n");
+                    printdebug ("Return Type didn't match function declaration\n");
                     return -1;
                 }
             break;
             case CmdCall:
-                exp_list = cmd->u.cc.call->exp_list;
-                function_params = get_func_params (cmd->u.cc.call,
-                                                   globals, locals);
+                type = get_call_type (cmd->u.cc.call);
+                if (!type) {
+                    printdebug ("Unknown Function Name");
+                    return -1;
+                }
 
-                print_Params (function_params, 0);
-                rc = match_signature (function_params, exp_list, globals,
-                                      locals, params);
+                exp_list = cmd->u.cc.call->exp_list;
+                function_params = get_func_params (cmd->u.cc.call);
+
+                rc = match_signature (function_params, exp_list);
                 if (rc != 1) {
-                    printf ("Function Call signagure -> parameters dont match\n");
+                    printdebug ("Function Call signature -> parameters dont match\n");
                     return -1;
                 }
             break;
@@ -312,10 +346,28 @@ int check_declaration_block (Decl *decl, Decl *globals, Decl *locals,
     return 0;
 }
 
-int check_program (Program *program)
+int link_missing_calls (Program *program)
 {
     int rc;
     Decl *decl, *globals, *locals;
+
+    decl = program->decl;
+    globals = program->decl;
+
+    while (decl) {
+        if (decl->type == DeclFunc) {
+            rc = link_and_validate_calls (decl, globals);
+            if (rc == -1)
+                return rc;
+        }
+        decl = decl->next;
+    }
+}
+
+int check_program (Program *program)
+{
+    int rc;
+    Decl *decl;
     Params *params;
 
     VOID_TYPE = new_Type (TypeVoid, 0);
@@ -330,15 +382,10 @@ int check_program (Program *program)
         return 0;
     }
 
-    decl = program->decl;
-    globals = program->decl;
-
     while (decl) {
         if (decl->type == DeclFunc) {
-            locals = decl->u.df.block->decl;
-            params = decl->u.df.params;
-            printf ("Checking Func %s\n", decl->u.df.id);
-            rc = check_declaration_block (decl, globals, locals, params);
+            printdebug ("Checking Func %s\n", decl->u.df.id);
+            rc = check_declaration_block (decl);
             if (rc == -1)
                 return rc;
         }

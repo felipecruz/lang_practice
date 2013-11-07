@@ -260,7 +260,7 @@ void yyerror (char *s) {
 }
 
 int main (int argc, char **argv) {
-    int valid_types = 0;
+    int rc = 0;
     int indent = 0;
     level = 0;
 #if YYDEBUG
@@ -282,8 +282,21 @@ int main (int argc, char **argv) {
     yyparse ();
 
     dump_Program (__program, indent);
-    valid_types = check_program (__program);
-    if (valid_types == -1) {
+
+    /* Na nossa construção da AST, quando encontramos uma chamada recursiva,
+     * ou de uma função declarada que ainda não foi avaliada não conseguimos
+     * encontrar a declaração para amarrar a chamada a declaração.
+     * Essa etapa valida as chamadas verificando se existem as declarações
+     * e termina no primeiro erro.
+     */
+    rc = link_missing_calls (__program);
+    if (rc == -1) {
+        fclose (yyin);
+        exit(0);
+    }
+
+    rc = check_program (__program);
+    if (rc == -1) {
         printf ("Type Error\n");
     }
 
