@@ -159,15 +159,6 @@ void print_Type (Type *type, int level)
         printf (" ");
 }
 
-void print_NameList (NameList *name_list, int level)
-{
-    NameList *list = name_list;
-    while (list) {
-        printf ("Name %s ", list->id);
-        list = list->next;
-    }
-}
-
 void print_Block (Block *block, int level)
 {
     Decl *decl;

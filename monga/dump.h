@@ -7,7 +7,6 @@
 void error (const char *message);
 void dump_Program (Program *program, int level);
 void print_Decl (Decl *decl, int level);
-void print_NameList (NameList *name_list, int level);
 void print_Params (Params *_params, int level);
 void print_Call (Call *call, int level);
 void print_Exp (Exp *exp, int level);
