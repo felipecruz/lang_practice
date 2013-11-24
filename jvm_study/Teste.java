@@ -1,3 +1,4 @@
+import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -6,6 +7,13 @@ public class Teste {
 
     public Teste(int c, double d) {
         this.c = c;
+    }
+
+    public static void request(Map request) {
+        int i = 0;
+        if (request.get("uri") != null) {
+            i += 1;
+        }
     }
 
     public static void main(String argv[]) throws Exception {
@@ -17,9 +25,5 @@ public class Teste {
             list.add(t);
         }
 
-        while(true) {
-            System.out.print(".");
-            Thread.sleep(3000);
-        }
     }
 }
