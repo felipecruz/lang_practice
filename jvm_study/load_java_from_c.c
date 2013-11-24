@@ -22,20 +22,27 @@ void invoke_class (JNIEnv* env) {
     jclass test_class, string_class, map;
     jmethodID mainMethod, constructor, put, request;
     jobjectArray applicationArgs, map_instance;
-    jstring applicationArg0;
+    jstring applicationArg0, key, val;
 
     test_class = (*env)->FindClass (env, "Teste");
     mainMethod = (*env)->GetStaticMethodID (env, test_class,
                                             "main", "([Ljava/lang/String;)V");
-    request = (*env)->GetMethodID (env, test_class, "request",
-                                                    "(Ljava/util/Map;)V");
+    request = (*env)->GetStaticMethodID (env, test_class, "request",
+                                                          "(Ljava/util/Map;)V");
     string_class = (*env)->FindClass (env, "java/lang/String");
 
     map = (*env)->FindClass (env, "java/util/HashMap");
     constructor = (*env)->GetMethodID (env, map, "<init>", "()V");
-    map_instance = (*env)->NewObject (env, map, constructor);
-    (*env)->CallStaticVoidMethod (env, test_class, request, map_instance);
 
+    put = (*env)->GetMethodID (env, map, "put",
+                                         "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+    for (i = 0; i < 300000; i++) {
+        key = (*env)->NewStringUTF (env, "uri");
+        val = (*env)->NewStringUTF (env, "http://loogica.net");
+        map_instance = (*env)->NewObject (env, map, constructor);
+        (*env)->CallVoidMethod (env, map_instance, put, key, val);
+        (*env)->CallStaticVoidMethod (env, test_class, request, map_instance);
+    }
 
     applicationArgs = (*env)->NewObjectArray (env, 1, string_class, NULL);
     applicationArg0 = (*env)->NewStringUTF (env, "From-C-program");
@@ -48,4 +55,5 @@ void invoke_class (JNIEnv* env) {
 int main(int argc, char **argv) {
     JNIEnv* env = create_vm();
     invoke_class (env);
+    return 0;
 }
