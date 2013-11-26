@@ -1,4 +1,4 @@
-# Parser Monga 0.1.4
+# Compilador Monga 0.1.5
 
 ## Comandos
 
@@ -10,13 +10,7 @@ $ make
 
 $ ./monga arquivo.monga
 
-A saída esperada é a AST com indentação ou uma mensagem de erro. Exemplo:
-
-Código:
-int a;
-
-AST:
-Var Decl Int Name a
+A saída esperada é vazia ou uma mensagem de erro.
 
 ### Rodando os testes
 
@@ -24,6 +18,13 @@ $ make test
 
 Se houver "ERRO" na saída é porque houve algum erro na suíte. Do contrário
 os testes rodaram com sucesso.
+
+### Ajustes e mudanças anteriores 0.1.4 -> 0.1.5
+
+* Adiciona uma rotina de Tipagem.
+* Amarração de chamadas as declarações de funções.
+* Ajuste no bug de expressões unárias (ponteiro que deveria ser para proxima exp
+  apontando pra si próprio).
 
 ### Ajustes em relação aos problemas anteriores 0.1.3 -> 0.1.4
 
@@ -46,6 +47,8 @@ os testes rodaram com sucesso.
 
 # Decisões de Projeto
 
+* Sistema de tipos em "typesystem.{c,h}"
+* Suporte a chamadas recursivas e de funções declaradas posteriormente.
 * Definição de Nós em "astnodes.h" e funções de criação dos nós em "astnodes.c"
 * Funções de imprimit AST em "dump.c" & "dump.h"
 * Foi deixado para um outro momento a criação de arquivos auxiliares como tokens.h

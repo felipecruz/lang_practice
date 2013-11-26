@@ -13,3 +13,4 @@
 ./monga specs/declaracoes.spec.monga > specs/declaracoes.spec.expected
 ./monga specs/blocos.spec.monga > specs/blocos.spec.expected
 ./monga specs/comandos.spec.monga > specs/comandos.spec.expected
+./monga specs/type_check.spec.monga > specs/type_check.spec.expected

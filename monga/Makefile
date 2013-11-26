@@ -26,5 +26,5 @@ dump: clean
 	@gcc astnodes.c dump.c -Wall -o dump -DDUMP_TEST=1
 	@./dump
 
-test:
+test: all
 	@./run_specs.sh

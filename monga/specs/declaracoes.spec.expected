@@ -1,11 +1,2 @@
-
- Var Decl Int Name a 
- Var Decl Int Name b 
- Func Decl - Name: func Return Type: Void 
-          - Paramenters Int b, Int a
- Func Decl - Name: get_array Return Type: Int[] 
-          - Paramenters Int[] array
- Var Decl Int Name z 
- Var Decl Int[] Name b2 
- Var Decl Char[] Name a3 
- Var Decl Float[] Name floats 
+Checking Func func
+Checking Func get_array

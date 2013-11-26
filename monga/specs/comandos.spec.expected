@@ -1,15 +1,14 @@
-
- Func Decl - Name: func Return Type: Int[] 
-          - Paramenters Int num
-   Var Decl Int Name w 
-   If EXP: Const int: 0
-   Then: 
-   Else: 
-   While EXP: Binary Exp EXP: Var: b EXP: Var: c [EXP: Const int: 0]
-   While EXP: Binary Exp EXP: Var: b EXP: Var: c [EXP: Const int: 0]
-    Assignment Var: b <- EXP: Const int: 1
-   Assignment Var: x <- EXP: Var: w [EXP: Const int: 0]
-   Call: func EXP: Const int: 10
-   Assignment Var: w <- EXP: 
-   Call: func EXP: Var: b [EXP: Const int: 0]
-    Assignment Var: b <- EXP: Const int: 1
+Checking Func foo
+Checking return type.. 
+Checking Func func
+Get Expression Var Type...
+Get Expression Var Type...
+Get Expression Var Type...
+Get Expression Var Type...
+Checking assignment types... 
+Get Expression Var Type...
+Checking assignment types... 
+Get call return type..
+Get Expression Var Type...
+Checking return type.. 
+Get Expression Var Type...

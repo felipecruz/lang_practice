@@ -1,18 +1,2 @@
-
- Func Decl - Name: func Return Type: Void 
-          - Paramenters Char x, Float b, Int a
-   If EXP: Var: a 
-   Then: 
-     Assignment Var: x <- EXP: Const int: 1
-   Else: 
-     Return EXP: Var: b 
-
-   If EXP: Binary Exp EXP: Const int: 1EXP: Const int: 2
-   Then: 
-     Assignment Var: a <- EXP: Const int: 1
-   Else: 
-     If EXP: Binary Exp EXP: Var: a [EXP: Var: b ]EXP: Const int: 10
-     Then: 
-       Assignment Var: a <- EXP: Const int: 1
-     Else: 
-       Assignment Var: a <- EXP: Const int: 1
+Checking Func func
+Get Expression Var Type...

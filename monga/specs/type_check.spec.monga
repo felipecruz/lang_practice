@@ -1,3 +1,15 @@
+int int_ret_char ()
+{
+    char b;
+    return b;
+}
+
+char char_ret_int ()
+{
+    int x;
+    return x;
+}
+
 void ret_void ()
 {
     return;
@@ -22,6 +34,7 @@ int ret_int (int x)
     q[1] = x;
 
     a = 1 + 2;
+    a = 1 - 2;
     a = a * 10;
     a = x / a;
 
@@ -136,7 +149,6 @@ int ret_int (int x)
             ret_float(3.0);
         }
     }
-
     return x;
 }
 
@@ -155,7 +167,7 @@ float ret_float (float f)
 
     }
 
-    return f;
+    return ret_float (ret_float (1.0));
 }
 
 int f_all (int x, float f, char[] st)

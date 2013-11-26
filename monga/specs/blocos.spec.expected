@@ -1,14 +1,7 @@
-
- Func Decl - Name: func_A Return Type: Void 
-          - Paramenters 
-   Var Decl Int Name x 
-    Assignment Var: x [EXP: Const int: 10]<- EXP: Const int: 1
-     Var Decl Int[] Name a 
-     Return 
-
- Func Decl - Name: func Return Type: Int 
-          - Paramenters 
-   Var Decl Int[] Name a 
-   Assignment Var: a [EXP: Const int: 0]<- EXP: Const int: 1
-   Return EXP: Var: a 
-
+Checking Func func_A
+Checking Func func
+Checking assignment types... 
+Checking return type.. 
+Get Expression Var Type...
+Return Type didn't match function declaration
+Type Error
