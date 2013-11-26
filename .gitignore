@@ -1,0 +1,11 @@
+*.po
+*.pyc
+__pycache__
+*.o
+.*
+build_history/
+coopy.log
+monga/monga
+*.zip
+*.class
+*.out
