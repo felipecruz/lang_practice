@@ -4,6 +4,7 @@
 #include "astnodes.h"
 #include "typesystem.h"
 #include "dump.h"
+#include "codegen.h"
 #include "y.tab.h"
 void yyerror (char *);
 int main (int argc, char **argv);
@@ -281,7 +282,7 @@ int main (int argc, char **argv) {
 
     yyparse ();
 
-    dump_Program (__program, indent);
+    //dump_Program (__program, indent);
 
     /* Na nossa construção da AST, quando encontramos uma chamada recursiva,
      * ou de uma função declarada que ainda não foi avaliada não conseguimos
@@ -294,11 +295,14 @@ int main (int argc, char **argv) {
         fclose (yyin);
         exit(0);
     }
+    
 
     rc = check_program (__program);
     if (rc == -1) {
         printf ("Type Error\n");
     }
+
+    generate_Program (__program);
 
     fclose (yyin);
     exit(0);

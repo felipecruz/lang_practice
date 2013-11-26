@@ -3,7 +3,11 @@
 #include <stdio.h>
 #include "astnodes.h"
 
+#ifdef DEBUG
 #define printdebug      printf
+#else
+#define printdebug
+#endif
 
 #ifndef _TYPESYSTEM_H_
 #define _TYPESYSTEM_H_
