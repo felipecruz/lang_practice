@@ -91,8 +91,9 @@ Decl *link_call (Call *call, Decl *globals)
     return call->decl;
 }
 
-void link_calls (Exp *exp, Decl *globals)
+int link_calls (Exp *exp, Decl *globals)
 {
+    int rc;
     Decl *decl;
     Type *type, *subscript_type, *type2, *new_type;
     Exp *subscript_exp;
@@ -103,29 +104,42 @@ void link_calls (Exp *exp, Decl *globals)
         case ExpConstFloat:
         case ExpConstString:
         case ExpVar:
-            return;
+            return 0;
         case ExpCall:
             decl = resolve_decl (exp->u.ec.call->id, globals);
-            if (!decl)
+            if (!decl) {
                 printdebug ("Undeclared function name");
+                return -1;
+            }
             exp->u.ec.call->decl = decl;
             exp = exp->u.ec.call->exp_list;
             while (exp) {
-                link_calls (exp, globals);
+                rc = link_calls (exp, globals);
+                if (rc == -1)
+                    return rc;
                 exp = exp->next;
             }
             break;
         case ExpNew:
-            link_calls (exp->u.en.exp, globals);
+            rc = link_calls (exp->u.en.exp, globals);
+            if (rc == -1)
+                return rc;
             break;
         case UnaExpArith:
-            link_calls (exp->u.eu.exp, globals);
+            rc = link_calls (exp->u.eu.exp, globals);
+            if (rc == -1)
+                return rc;
             break;
         case BinExpArith:
-            link_calls (exp->u.eb.exp1, globals);
-            link_calls (exp->u.eb.exp2, globals);
+            rc = link_calls (exp->u.eb.exp1, globals);
+            if (rc == -1)
+                return rc;
+            rc = link_calls (exp->u.eb.exp2, globals);
+            if (rc == -1)
+                return rc;
         break;
     }
+    return 0;
 }
 
 Type *get_exp_type (Exp *exp)
@@ -245,6 +259,7 @@ int match (Type *t1, Type *t2)
 
 int link_and_validate_calls (Block *block, Decl *globals)
 {
+    int rc = 0;
     Decl *call_decl = NULL;
     Cmd *cmd = block->cmd;
     Exp *return_exp = NULL;
@@ -252,18 +267,19 @@ int link_and_validate_calls (Block *block, Decl *globals)
     while (cmd) {
         switch (cmd->type) {
             case CmdIf:
-                link_calls (cmd->u.cif.cond, globals);
+                rc = link_calls (cmd->u.cif.cond, globals);
                 break;
             case CmdWhile:
-                link_calls (cmd->u.cw.cond, globals);
+                rc = link_calls (cmd->u.cw.cond, globals);
                 break;
             case CmdAss:
-                link_calls (cmd->u.ca.exp, globals);
+                rc = link_calls (cmd->u.ca.exp, globals);
             break;
             case CmdRet:
                 return_exp = cmd->u.cr.exp;
                 if (return_exp)
-                    link_calls (return_exp, globals);
+                    rc = link_calls (return_exp, globals);
+
             break;
             case CmdCall:
                 call_decl = link_call (cmd->u.cc.call, globals);
@@ -274,12 +290,12 @@ int link_and_validate_calls (Block *block, Decl *globals)
                 break;
             break;
             case CmdBlock:
-                link_and_validate_calls (cmd->u.cb.block, globals);
+                rc = link_and_validate_calls (cmd->u.cb.block, globals);
                 break;
         }
         cmd = cmd->next;
     }
-    return 0;
+    return rc;
 }
 
 int check_declaration_block (Decl *decl)
