@@ -8,9 +8,9 @@
 /* http://en.wikipedia.org/wiki/Operators_in_C_and_C%2B%2B */
 
 #ifdef DEBUG
-#define printdebug      printf
+#define lexdebug      printf
 #else
-#define printdebug(...) /**/
+#define lexdebug(...) /**/
 #endif
 
 char string_buf[509];
@@ -81,15 +81,15 @@ ID [a-zA-Z_][a-zA-Z_0-9]*
 {LOG_OR}    { return LOG_OR; }
 
 
-{VOID}    { printdebug ("\nK_TYPE_VOID: %s", yytext);   return TYPE_VOID; }
-{CHAR}    { printdebug ("\nK_TYPE_CHAR: %s", yytext);   return TYPE_CHAR; }
-{FLOAT}   { printdebug ("\nK_TYPE_FLOAT: %s", yytext);  return TYPE_FLOAT; }
-{INT}     { printdebug ("\nTYPE_INT: %s", yytext);      return TYPE_INT; }
-{IF}      { printdebug ("\nK_IF: %s", yytext);          return IF; }
-{ELSE}    { printdebug ("\nK_ELSE: %s", yytext);        return ELSE; }
-{WHILE}   { printdebug ("\nK_WHILE: %s", yytext);       return WHILE; }
-{RETURN}  { printdebug ("\nK_RETURN: %s", yytext);      return RETURN; }
-{NEW}     { printdebug ("\nK_NEW: %s", yytext);         return NEW;}
+{VOID}    { lexdebug ("\nK_TYPE_VOID: %s", yytext);   return TYPE_VOID; }
+{CHAR}    { lexdebug ("\nK_TYPE_CHAR: %s", yytext);   return TYPE_CHAR; }
+{FLOAT}   { lexdebug ("\nK_TYPE_FLOAT: %s", yytext);  return TYPE_FLOAT; }
+{INT}     { lexdebug ("\nTYPE_INT: %s", yytext);      return TYPE_INT; }
+{IF}      { lexdebug ("\nK_IF: %s", yytext);          return IF; }
+{ELSE}    { lexdebug ("\nK_ELSE: %s", yytext);        return ELSE; }
+{WHILE}   { lexdebug ("\nK_WHILE: %s", yytext);       return WHILE; }
+{RETURN}  { lexdebug ("\nK_RETURN: %s", yytext);      return RETURN; }
+{NEW}     { lexdebug ("\nK_NEW: %s", yytext);         return NEW;}
 
 {N}     {
             yylval.ival = strtol (yytext, NULL, 0);
@@ -97,7 +97,7 @@ ID [a-zA-Z_][a-zA-Z_0-9]*
                 fprintf (stderr, "Line:%d Invalid Integer %s\n", yylineno, yytext);
                 return ERR_VAL;
             }
-            printdebug ("\nNUMBER: %d", yylval.ival);
+            lexdebug ("\nNUMBER: %d", yylval.ival);
             return NUMBER;
         }
 
@@ -107,7 +107,7 @@ ID [a-zA-Z_][a-zA-Z_0-9]*
                 fprintf (stderr, "Line:%d Invalid Float: %s\n", yylineno, yytext);
                 return ERR_VAL;
             }
-            printdebug ("\nFLOAT: %f", yylval.fval);
+            lexdebug ("\nFLOAT: %f", yylval.fval);
             return FLOAT;
         }
 
@@ -117,7 +117,7 @@ ID [a-zA-Z_][a-zA-Z_0-9]*
                 fprintf (stderr, "Line:%d Invalid Hexadecimal: %s\n", yylineno, yytext);
                 return ERR_VAL;
             }
-            printdebug ("\nHEXA: 0x%lX", yylval.hval);
+            lexdebug ("\nHEXA: 0x%lX", yylval.hval);
             return HEXA;
         }
 
@@ -134,7 +134,7 @@ ID [a-zA-Z_][a-zA-Z_0-9]*
                 return ERR_MALLOC;
 
             memcpy (yylval.sval, yytext, yyleng + 1);
-            printdebug ("\nID: %s", yylval.sval);
+            lexdebug ("\nID: %s", yylval.sval);
 
             return ID;
         }
