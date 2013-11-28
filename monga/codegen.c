@@ -195,34 +195,82 @@ void print_Params (Params *_params, int level)
     }
 }
 */
-void generate_Decl (Decl *decl)
+
+const char* type_id (Type *type)
 {
-    Decl *_decl;
+    switch (type->type) {
+        case TypeInt:
+            return ".long";
+            break;
+        case TypeChar:
+            return ".ascii";
+            break;
+        case TypeFloat:
+            return ".float";
+            break;
+        default:
+            return "ERROR";
+    }
+}
+
+int type_size (Type *type)
+{
+    switch (type->type) {
+        case TypeInt:
+            return 4;
+            break;
+        case TypeChar:
+            return 1;
+            break;
+        case TypeFloat:
+            return 4;
+            break;
+        default:
+            /* TODO rever isso */
+            return 4;
+    }
+}
+
+
+void generate_globals_Decl (Decl *decl)
+{
+    if (!decl)
+        return;
+
+    printf ("    %s: %s\n", decl->u.dv.id, type_id(decl->u.dv.type));
+}
+
+void generate_functions_Decl (Decl *decl)
+{
+    int offset = 0;
+    Block *block;
 
     if (!decl)
         return;
 
-    switch (decl->type) {
-        case DeclVar:
-            _decl = decl;
-            printf ("\nVar Decl ");
-            //print_Type (decl->u.dv.type, level);
-            //while (_decl) {
-            //    printf ("Name %s ", decl->u.dv.id);
-            //    _decl = _decl->u.dv.next;
-            //}
-        break;
-        case DeclFunc:
-            printf ("\nFunc Decl - Name: %s Return Type: ", decl->u.df.id);
-            //print_Type (decl->u.df.type, level);
-            //printf ("\n          - Paramenters ");
-            //print_Params (decl->u.df.params, level);
-            //print_Block (decl->u.df.block, level);
-        break;
-        default:
-            error ("Invalid Declaration");
-        break;
+    printf ("\n    .globl %s\n", decl->u.df.id);
+    printf ("%s:\n", decl->u.df.id);
+    printf ("    push %%ebp\n");
+    printf ("    mov %%esp, %%ebp\n");
+
+    /* calcula offset das variáveis locais */
+
+    block = decl->u.df.block;
+    print_Block (block, 0);
+    decl = block->decl;
+    while (decl) {
+        print_Decl (decl, 0);
+        offset = offset + type_size (decl->u.dv.type);
+        decl = decl->next;
     }
+    
+    printf ("    sub $%d, %%esp\n", offset);
+
+    //printf ("\nFunc Decl - Name: %s Return Type: ", decl->u.df.id);
+    //print_Type (decl->u.df.type, level);
+    //printf ("\n          - Paramenters ");
+    //print_Params (decl->u.df.params, level);
+    //print_Block (decl->u.df.block, level);
 }
 
 void generate_Program (Program *program)
