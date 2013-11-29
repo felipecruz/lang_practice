@@ -169,8 +169,18 @@ regular_block : OPBRA decl_list commands CLBRA
 
 decl_list: /* vazio */ { $$ = NULL; }
          | decl decl_list { Decl *_decl = (Decl*) $1;
-                            _decl->next = $2;
-                            $$ = _decl;
+                            Decl *_list = (Decl*) $2;
+                            Decl *_original_list = (Decl*) $2;
+
+                            if (_decl && _list) {
+                                while (_list->next) {
+                                    _list = _list->next;
+                                }
+                                _list->next = _decl;
+                                $$ = _original_list;
+                            } else {
+                                $$ = _decl;
+                            }
                           }
          ;
 
@@ -295,7 +305,7 @@ int main (int argc, char **argv) {
         fclose (yyin);
         exit(0);
     }
-    
+
 
     rc = check_program (__program);
     if (rc == -1) {
