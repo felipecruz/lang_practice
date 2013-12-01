@@ -69,7 +69,9 @@ typedef struct Type {
 typedef struct Params {
     struct Type *type;
     char *id;
+    int _offset;
     struct Params *next;
+    struct Decl *decl;
 } Params;
 
 typedef struct Decl {
@@ -225,7 +227,7 @@ Type *new_Type (TypeType typetype, int array);
 Decl* new_Decl_Var (Type *type, char* id, Decl *next);
 Decl* new_Decl_Func (Type *type, char *id, Params *params, Block *block);
 
-Params *new_Param (Type *type, char *id, Params *param);
+Params *new_Param (Type *type, char *id, Params *param, Decl *decl);
 
 Var *new_Var (char *id, Exp *exp, Decl *decl);
 Var *new_Var_Array (Exp *prefix_exp, Exp *exp, Decl *decl);

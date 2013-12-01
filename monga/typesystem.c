@@ -300,7 +300,7 @@ int link_and_validate_calls (Block *block, Decl *globals)
 
 int check_declaration_block (Decl *decl)
 {
-    int rc;
+    int i, rc;
 
     Decl *decls = decl->u.df.block->decl;
     Type *return_type = decl->u.df.type;
@@ -310,9 +310,22 @@ int check_declaration_block (Decl *decl)
     Params *function_params;
     Type *type, *type2, *new_type;
 
-    while (decls) {
+    function_params = decl->u.df.params;
+    for (i = 0; function_params; i++) {
+        function_params->decl->_offset = (i * 4) + 8;
+        function_params = function_params->next;
+    }
+
+    for (i = 1; decls; i++) {
         // TODO pode usar todos offsets iguais
-        decls->_offset += -4;
+        decls = decls->next;
+    }
+
+    decls = decl->u.df.block->decl;
+    i--;
+    for (; decls; i--) {
+        // TODO pode usar todos offsets iguais
+        decls->_offset = i * -4;
         decls = decls->next;
     }
 

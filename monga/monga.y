@@ -191,11 +191,11 @@ params : /* vazio */ { $$ = NULL; }
 multi_param: type ID {
              Decl *param = new_Decl_Var ($1, $2, NULL);
              add_declaration (stack, param, level);
-             $$ = new_Param ($1, $2, NULL); }
+             $$ = new_Param ($1, $2, NULL, param); }
            | type ID COMMA multi_param {
              Decl *param = new_Decl_Var ($1, $2, NULL);
              add_declaration (stack, param, level);
-             $$ = new_Param ($1, $2, $4); }
+             $$ = new_Param ($1, $2, $4, param); }
            ;
 
 commands: /* empty */ { $$ = NULL; }

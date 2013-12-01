@@ -122,12 +122,13 @@ Type *new_Type (TypeType typetype, int array)
     return type;
 }
 
-Params *new_Param (Type *type, char *id, Params *params)
+Params *new_Param (Type *type, char *id, Params *params, Decl *decl)
 {
     Params *param = (Params*) malloc (sizeof (Params));
     param->type = type;
     param->id = strdup (id);
     param->next = params;
+    param->decl = decl;
     return param;
 }
 
