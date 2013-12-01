@@ -430,6 +430,9 @@ void generate_Program (Program *program)
 
     printf (".data\n");
 
+    printf ("    int_pattern: .ascii \"%%d\\12\\0\"\n");
+    printf ("    string_pattern: .ascii \"%%s\\12\\0\"\n");
+
     decl = program->decl;
 
     while (decl) {
@@ -441,6 +444,21 @@ void generate_Program (Program *program)
     decl = program->decl;
 
     printf ("\n.text\n");
+
+    printf (".globl _pint\n");
+    printf ("_pint:\n");
+	printf ("    pushl	%%ebp\n");
+	printf ("    movl	%%esp, %%ebp\n");
+	printf ("    pushl	%%ebx\n");
+    printf ("    lea 8(%%ebp), %%eax\n");
+    printf ("    push %%eax\n");
+    printf ("    lea string_pattern, %%eax\n");
+    printf ("    push %%eax\n");
+    printf ("    call _printf\n");
+    printf ("    add $8, %%eax\n");
+    printf ("    leave\n");
+    printf ("    ret\n");
+
 
     //TODO Verificar se tem main
 
