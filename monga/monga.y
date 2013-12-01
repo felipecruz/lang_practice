@@ -67,6 +67,8 @@ static struct Stack *stack = NULL;
 %token RETURN
 %token NEW
 
+%token EXTERN
+
 %token DBL_EQ
 %token LTE
 %token GTE
@@ -134,7 +136,7 @@ decl_func: type ID open_scope params CLPAR scope_block
           {  Decl *decl = has_name_same_level (stack, $2, level);
              if (decl)
                  yyerror ("Function Redeclaration\n");
-             $$ = new_Decl_Func ($1, $2, $4, $6);
+             $$ = new_Decl_Func ($1, $2, $4, $6, 0);
              add_declaration (stack, $$, level);
              }
          | TYPE_VOID ID open_scope params CLPAR scope_block
@@ -142,7 +144,15 @@ decl_func: type ID open_scope params CLPAR scope_block
              if (decl)
                  yyerror ("Function Redeclaration\n");
              Type *type = new_Type (TypeVoid, 0);
-             $$ = new_Decl_Func (type, $2, $4, $6);
+             $$ = new_Decl_Func (type, $2, $4, $6, 0);
+             add_declaration (stack, $$, level);
+             }
+         | EXTERN TYPE_VOID ID OPPAR params CLPAR SEMICOL
+           { Decl *decl = has_name_same_level (stack, $3, level);
+             if (decl)
+                 yyerror ("Function Redeclaration\n");
+             Type *type = new_Type (TypeVoid, 0);
+             $$ = new_Decl_Func (type, $3, $5, NULL, 1);
              add_declaration (stack, $$, level);
              };
 

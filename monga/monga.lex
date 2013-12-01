@@ -40,6 +40,8 @@ GTE ">="
 LOG_AND "&&"
 LOG_OR "||"
 
+EXTERN "extern"
+
 N [0-9]+
 F (([0-9]+"."[0-9]*)|("."[0-9]+)|([0-9]+))([eE][+-]?[0-9]+)?
 H 0x[a-fA-F0-9]+
@@ -79,6 +81,8 @@ ID [a-zA-Z_][a-zA-Z_0-9]*
 {GTE}       { return GTE; }
 {LOG_AND}   { return LOG_AND; }
 {LOG_OR}    { return LOG_OR; }
+
+{EXTERN}    { return EXTERN; }
 
 
 {VOID}    { lexdebug ("\nK_TYPE_VOID: %s", yytext);   return TYPE_VOID; }

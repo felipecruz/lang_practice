@@ -148,7 +148,7 @@ Decl* new_Decl_Var (Type *type, char *id, Decl* next)
     return decl;
 }
 
-Decl* new_Decl_Func (Type *type, char *id, Params *params, Block *block)
+Decl* new_Decl_Func (Type *type, char *id, Params *params, Block *block, int e)
 {
     Decl *decl = (Decl*) malloc (sizeof (Decl));
     decl->type = DeclFunc;
@@ -159,6 +159,7 @@ Decl* new_Decl_Func (Type *type, char *id, Params *params, Block *block)
     decl->u.df.params = params;
     decl->u.df.block = block;
     decl->u.df.id = strdup (id);
+    decl->u.df._extern = e;
 
     return decl;
 }

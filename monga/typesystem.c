@@ -259,6 +259,9 @@ int match (Type *t1, Type *t2)
 
 int link_and_validate_calls (Block *block, Decl *globals)
 {
+    if (!block)
+        return 0;
+
     int rc = 0;
     Decl *call_decl = NULL;
     Cmd *cmd = block->cmd;
@@ -301,6 +304,9 @@ int link_and_validate_calls (Block *block, Decl *globals)
 int check_declaration_block (Decl *decl)
 {
     int i, rc;
+
+    if (decl->u.df._extern)
+        return 0;
 
     Decl *decls = decl->u.df.block->decl;
     Type *return_type = decl->u.df.type;

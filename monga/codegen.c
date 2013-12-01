@@ -463,7 +463,7 @@ void generate_Program (Program *program)
     //TODO Verificar se tem main
 
     while (decl) {
-        if (decl->type == DeclFunc)
+        if (decl->type == DeclFunc && !decl->u.df._extern)
             generate_functions_Decl (decl);
         decl = decl->next;
     }

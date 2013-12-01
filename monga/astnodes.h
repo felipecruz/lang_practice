@@ -89,6 +89,7 @@ typedef struct Decl {
             struct Type *type;
             struct Params *params;
             struct Block *block;
+            int _extern;
         } df;
     } u;
 } Decl;
@@ -225,7 +226,7 @@ Program *add_Decl (Program *program, Decl *decl);
 Type *new_Type (TypeType typetype, int array);
 
 Decl* new_Decl_Var (Type *type, char* id, Decl *next);
-Decl* new_Decl_Func (Type *type, char *id, Params *params, Block *block);
+Decl* new_Decl_Func (Type *type, char *id, Params *params, Block *block, int e);
 
 Params *new_Param (Type *type, char *id, Params *param, Decl *decl);
 
