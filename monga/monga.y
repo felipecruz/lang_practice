@@ -228,7 +228,9 @@ var : ID { Decl* decl = has_name (stack, $1);
         Decl* decl = has_name (stack, $1);
         if (!decl)
             yyerror ("Variable not declared");
-        $$ = new_Var ($1, $3, decl); }
+        Var *var = new_Var ($1, $3, decl);
+        var->type = VarArray;
+        $$ = var; }
     | var_exp exp CLSQB { $$ = new_Var_Array ($1, $2, NULL); };
 
 var_exp: STRING OPSQB { $$ = new_Exp_String ($1, NULL); }
