@@ -5,7 +5,12 @@
 #ifndef _CODEGEN_H_
 #define _CODEGEN_H_
 void generate_Program (Program *program);
-void generate_Decl (Decl *decl, int level);
+void generate_globals_Decl (Decl *decl);
+void generate_functions_Decl (Decl *decl);
+void jmp_if_false (Exp *exp, int label);
+void jmp_if_true (Exp *exp, int label);
+void export_value (Exp *exp);
+void generate_command (Cmd *cmd);
 
 //void error (const char *message);
 //void print_Params (Params *_params, int level);
