@@ -318,7 +318,10 @@ void generate_call (Call *call)
         exp = exp->next;
     }
 
-    printf ("    call %s\n", call->id);
+    if (call->decl->u.df._extern)
+        printf ("    call _%s\n", call->id);
+    else
+        printf ("    call %s\n", call->id);
     printf ("    addl $%d, %%esp\n", stack_clean_val);
     printf ("                            # Fim Chamada\n");
 }
@@ -363,6 +366,8 @@ void generate_command (Cmd *cmd)
         case CmdIf:
         case CmdWhile:
         case CmdCall:
+            generate_call (cmd->u.cc.call);
+            break;
         case CmdBlock:
         default:
             printf ("Unssuported\n");
@@ -379,7 +384,7 @@ void generate_globals_Decl (Decl *decl)
 
 void generate_functions_Decl (Decl *decl)
 {
-    int offset = 0;
+    int offset = 24;
     Block *block;
     Cmd *cmd;
 
@@ -445,17 +450,18 @@ void generate_Program (Program *program)
 
     printf ("\n.text\n");
 
-    printf (".globl _pint\n");
-    printf ("_pint:\n");
+    printf (".globl _print_int\n");
+    printf ("_print_int:\n");
 	printf ("    pushl	%%ebp\n");
 	printf ("    movl	%%esp, %%ebp\n");
 	printf ("    pushl	%%ebx\n");
-    printf ("    lea 8(%%ebp), %%eax\n");
-    printf ("    push %%eax\n");
+    printf ("    subl	$20, %%esp\n");
+    printf ("    movl 8(%%ebp), %%eax\n");
+    printf ("    movl   %%eax, 4(%%esp)\n");
     printf ("    lea string_pattern, %%eax\n");
-    printf ("    push %%eax\n");
+    printf ("    movl   %%eax, (%%esp)\n");
     printf ("    call _printf\n");
-    printf ("    add $8, %%eax\n");
+    printf ("    add $8, %%esp\n");
     printf ("    leave\n");
     printf ("    ret\n");
 
