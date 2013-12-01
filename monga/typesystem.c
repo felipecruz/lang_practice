@@ -302,12 +302,19 @@ int check_declaration_block (Decl *decl)
 {
     int rc;
 
+    Decl *decls = decl->u.df.block->decl;
     Type *return_type = decl->u.df.type;
     Cmd *cmd = decl->u.df.block->cmd;
     Exp *return_exp = NULL, *assign_exp = NULL, *assignee_exp = NULL,
         *exp_list = NULL;
     Params *function_params;
     Type *type, *type2, *new_type;
+
+    while (decls) {
+        // TODO pode usar todos offsets iguais
+        decls->_offset += -4;
+        decls = decls->next;
+    }
 
     while (cmd) {
         switch (cmd->type) {
