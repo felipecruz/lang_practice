@@ -9,8 +9,10 @@ void generate_globals_Decl (Decl *decl);
 void generate_functions_Decl (Decl *decl);
 void jmp_if_false (Exp *exp, int label);
 void jmp_if_true (Exp *exp, int label);
-void export_value (Exp *exp);
+void generate_expression (Exp *exp);
 void generate_command (Cmd *cmd);
+void generate_call (Call *call);
+void generate_var (Var *var);
 
 //void error (const char *message);
 //void print_Params (Params *_params, int level);
