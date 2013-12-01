@@ -75,6 +75,7 @@ typedef struct Params {
 typedef struct Decl {
     DeclType type;
     struct Decl *next;
+    int _offset;
     union {
         struct {
             struct Type *type;

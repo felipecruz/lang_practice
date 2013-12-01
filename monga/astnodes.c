@@ -136,6 +136,7 @@ Decl* new_Decl_Var (Type *type, char *id, Decl* next)
     Decl *decl = (Decl*) malloc (sizeof (Decl));
     decl->type = DeclVar;
     decl->next = NULL;
+    decl->_offset = 0;
 
     assert (type->type != TypeVoid);
 
@@ -151,6 +152,7 @@ Decl* new_Decl_Func (Type *type, char *id, Params *params, Block *block)
     Decl *decl = (Decl*) malloc (sizeof (Decl));
     decl->type = DeclFunc;
     decl->next = NULL;
+    decl->_offset = 0;
 
     decl->u.df.type = type;
     decl->u.df.params = params;
@@ -322,7 +324,6 @@ Var *new_Var (char *id, Exp *exp, Decl *decl)
     Var *var = (Var*) malloc (sizeof (Var));
     var->type = VarSingle;
     var->u.vs.id = strdup (id);
-    var->u.va.exp = exp;
     var->decl = decl;
     return var;
 }
