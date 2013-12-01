@@ -51,7 +51,7 @@ static struct Stack *stack = NULL;
 %type<params> params multi_param;
 %type<block> regular_block scope_block;
 %type<cmd> commands command if_cmd return;
-%type<exp> exp exp_list;
+%type<exp> exp exp_list var_exp;
 %type<var> var;
 %type<call> call;
 
@@ -224,11 +224,17 @@ var : ID { Decl* decl = has_name (stack, $1);
            if (!decl)
                yyerror ("Variable not declared");
            $$ = new_Var ($1, NULL, decl); }
-    | var OPSQB exp CLSQB {
-           Decl* decl = has_name (stack, get_var_id ($1));
-           if (!decl)
-               yyerror ("Variable not declared");
-           $$ = new_Var_Array ($1, $3, decl); };
+    | ID OPSQB exp CLSQB {
+        Decl* decl = has_name (stack, $1);
+        if (!decl)
+            yyerror ("Variable not declared");
+        $$ = new_Var ($1, $3, decl); }
+    | var_exp exp CLSQB { $$ = new_Var_Array ($1, $2, NULL); };
+
+var_exp: STRING OPSQB { $$ = new_Exp_String ($1, NULL); }
+       | call OPSQB { $$ = new_Exp_Call ($1, NULL); }
+       | OPPAR var_exp CLPAR OPSQB { $$ = $2; }
+       ;
 
 exp : NUMBER { $$ = new_Exp_Int ($1, NULL); }
     | HEXA { $$ = new_Exp_Hexa ($1, NULL); }

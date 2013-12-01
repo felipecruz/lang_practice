@@ -126,7 +126,7 @@ void print_Var (struct Var *var, int level)
             printf ("Var: %s ", var->u.vs.id);
             break;
         case VarArray:
-            print_Var (var->u.va.var, level);
+            print_Exp (var->u.va.prefix_exp, level);
             printf ("[");
             print_Exp (var->u.va.exp, level);
             printf ("]");

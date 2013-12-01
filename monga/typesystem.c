@@ -39,7 +39,7 @@ Type *resolve_type (Var *var)
 {
     Type *type;
     if (var->type == VarArray && var->u.va.exp != NULL) {
-        type = resolve_type (var->u.va.var);
+        type = get_exp_type (var->u.va.prefix_exp);
         type = new_Type (type->type, 0);
         return type;
     }

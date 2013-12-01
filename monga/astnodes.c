@@ -96,7 +96,7 @@ char *get_var_id (Var *var)
     if (var->type == VarSingle)
         return var->u.vs.id;
     else
-        return get_var_id (var->u.va.var);
+        return get_var_id (var->u.va.prefix_exp->u.ev.var);
 }
 
 Program* new_Program ()
@@ -322,15 +322,16 @@ Var *new_Var (char *id, Exp *exp, Decl *decl)
     Var *var = (Var*) malloc (sizeof (Var));
     var->type = VarSingle;
     var->u.vs.id = strdup (id);
+    var->u.va.exp = exp;
     var->decl = decl;
     return var;
 }
 
-Var *new_Var_Array (Var *_var, Exp *exp, Decl *decl)
+Var *new_Var_Array (Exp *prefix_exp, Exp *exp, Decl *decl)
 {
     Var *var = (Var*) malloc (sizeof (Var));
     var->type = VarArray;
-    var->u.va.var = _var;
+    var->u.va.prefix_exp = prefix_exp;
     var->u.va.exp = exp;
     var->decl = decl;
     return var;
