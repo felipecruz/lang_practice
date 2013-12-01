@@ -1,56 +1,15 @@
-void teste (int x, int y) {
-    int[] a;
-    a = new int[10];
-    x = x + 1;
-    return;
+char[] string_global;
+
+int soma (int a, int b) {
+    int w;
+    w = a + b;
+    return w;
 }
 
-int[] join (int[] l1, int pivot, int[] l2)
-{
-    return l1;
-}
-
-int[] partition (int[] l, int pivot, char[] type)
-{
-    return l;
-}
-
-int[] quicksort (int[] array, int length) {
-
-    int middle;
-    int pivot;
-    int[] left, right;
-
-    middle = length / 2;
-    pivot = array[middle];
-
-    left = partition (array, pivot, ">");
-    right = partition (array, pivot, "<");
-
-    return join (quicksort (left), pivot, quicksort (right));
-}
-
-int main (int argc, char[] argv) {
-    int a, b, c, d, f;
-    float x;
-    int[] array;
-
-    a = 10;
-    b = 100;
-    d = 0xF1;
-    x = 1.2E+09;
-
-    a = 1;
-    x = a + a;
-    a = 1 + a;
-
-    b = (c + b);
-    b = (a * b) + ((c + b) * f);
-
-    while (1 == 2 || (3 > 2) > 0) {
-        printf ("%");
-    }
-    
+int _main (int argc, char[] argv) {
+    int a, b, c;
+    int d;
+    d = 1;
     return a;
 }
 
