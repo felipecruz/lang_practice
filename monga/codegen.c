@@ -216,12 +216,79 @@ void export_to_int (Exp *exp)
     }
 }
 
+int is_var (Exp *exp)
+{
+    if (exp->type == ExpVar)
+        return 1;
+    return 0;
+}
+
+int is_int_const (Exp *exp)
+{
+    if (exp->type == ExpConstInt || exp->type == ExpConstLong)
+        return 1;
+    return  0;
+}
+
 void generate_expression_val (Exp *exp)
 {
     Var *var = exp->u.ev.var;
 
     printf ("    movl %d(%%ebp), %%eax       # local %s\n",
             var->decl->_offset, var->decl->u.dv.id);
+}
+
+void generate_bin_exp (Exp *exp)
+{
+    switch (exp->u.eb.op) {
+        case Arith_Plus:
+            if (!is_int_const (exp->u.eb.exp1) &&
+                !is_int_const (exp->u.eb.exp2)) {
+                generate_expression (exp->u.eb.exp1);
+                printf ("    push %%eax\n");
+                generate_expression_val (exp->u.eb.exp2);
+                printf ("    pop %%ecx\n");
+                printf ("    add (%%ecx), %%eax\n");
+            } else if (!is_int_const (exp->u.eb.exp1) &&
+                       is_int_const (exp->u.eb.exp2)) {
+                generate_expression_val (exp->u.eb.exp1);
+                printf ("    push %%eax\n");
+                generate_expression (exp->u.eb.exp2);
+                printf ("    pop %%ecx\n");
+                printf ("    add %%ecx, %%eax\n");
+            } else if (is_int_const (exp->u.eb.exp1) &&
+                       !is_int_const (exp->u.eb.exp2)) {
+                generate_expression (exp->u.eb.exp1);
+                printf ("    push %%eax\n");
+                generate_expression_val (exp->u.eb.exp2);
+                printf ("    pop %%ecx\n");
+                printf ("    add %%ecx, %%eax\n");
+            } else if (is_int_const (exp->u.eb.exp1) &&
+                       is_int_const (exp->u.eb.exp2)) {
+                generate_expression (exp->u.eb.exp1);
+                printf ("    push %%eax\n");
+                generate_expression (exp->u.eb.exp2);
+                printf ("    pop %%ecx\n");
+                printf ("    add %%ecx, %%eax\n");
+            } else {
+                printf ("Unssuported\n");
+            }
+
+            break;
+        case Arith_Sub:
+            generate_expression (exp->u.eb.exp1);
+            printf ("    push %%eax\n");
+            generate_expression (exp->u.eb.exp2);
+            printf ("    pop %%ecx\n");
+            printf ("    sub %%ecx, %%eax\n");
+            break;
+        case Arith_Dbl_EQ:
+        case Arith_Log_And:
+        case Arith_Log_Or:
+        default:
+            printf ("Unssuported\n");
+            break;
+    }
 }
 
 void generate_expression (Exp *exp)
@@ -265,28 +332,7 @@ void generate_expression (Exp *exp)
             }
             break;
         case BinExpArith:
-            switch (exp->u.eb.op) {
-                case Arith_Plus:
-                    generate_expression (exp->u.eb.exp1);
-                    printf ("    push %%eax\n");
-                    generate_expression_val (exp->u.eb.exp2);
-                    printf ("    pop %%ecx\n");
-                    printf ("    add (%%ecx), %%eax\n");
-                    break;
-                case Arith_Sub:
-                    generate_expression (exp->u.eb.exp1);
-                    printf ("    push %%eax\n");
-                    generate_expression (exp->u.eb.exp2);
-                    printf ("    pop %%ecx\n");
-                    printf ("    sub %%ecx, %%eax\n");
-                    break;
-                case Arith_Dbl_EQ:
-                case Arith_Log_And:
-                case Arith_Log_Or:
-                default:
-                    printf ("Unssuported\n");
-                    break;
-            }
+            generate_bin_exp (exp);
             break;
         default:
             printf ("Invalid Expression");
@@ -308,13 +354,6 @@ void reverse_exp_list (Exp **exp)
     }
 
     *exp = prev;
-}
-
-int is_var (Exp *exp)
-{
-    if (exp->type == ExpVar)
-        return 1;
-    return 0;
 }
 
 void generate_call (Call *call)

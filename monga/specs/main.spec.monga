@@ -1,15 +1,26 @@
+extern void print_int (int x);
+
 char[] string_global;
 
 int soma (int a, int b) {
     int w;
     w = a + b;
+    print_int (w);
+    print_int (1 + 3);
+    print_int (w + 1);
+    print_int (100 + b);
     return w;
 }
 
-int _main (int argc, char[] argv) {
-    int a, b, c;
-    int d;
-    d = 1;
+int main (int argc, char[] argv) {
+    int a, b;
+    int c;
+    a = 3;
+    b = 11;
+    c = soma (a, b);
+    b = soma (c, a);
+    print_int (c);
+    print_int (b);
     return a;
 }
 
