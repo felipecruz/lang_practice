@@ -437,7 +437,7 @@ int link_missing_calls (Program *program)
 
 int check_program (Program *program)
 {
-    int rc;
+    int rc, has_main = 0;
     Decl *decl;
     Params *params;
 
@@ -452,6 +452,21 @@ int check_program (Program *program)
     if (program == NULL) {
         return 0;
     }
+    decl = program->decl;
+
+    //TODO Verificar se tem main
+
+    while (decl) {
+        if (decl->type == DeclFunc && !decl->u.df._extern)
+            if (strcmp (decl->u.df.id, "main") == 0)
+                has_main = 1;
+        decl = decl->next;
+    }
+
+    if (!has_main) {
+        return -2;
+    }
+
     decl = program->decl;
 
     while (decl) {

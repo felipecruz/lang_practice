@@ -324,14 +324,20 @@ int main (int argc, char **argv) {
         exit(0);
     }
 
+    fclose (yyin);
 
     rc = check_program (__program);
     if (rc == -1) {
         printf ("Type Error\n");
+        return -1;
+    }
+
+    if (rc == -2) {
+        printf ("Error - No main function\n");
+        return -2;
     }
 
     generate_Program (__program);
 
-    fclose (yyin);
     exit(0);
 }
