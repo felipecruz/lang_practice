@@ -420,7 +420,10 @@ void generate_command (Cmd *cmd)
             printf ("                      # fim Atribuicao\n");
             break;
         case CmdRet:
-            generate_expression_val (cmd->u.cr.exp);
+            if (!is_int_const (cmd->u.cr.exp))
+                generate_expression_val (cmd->u.cr.exp);
+            else
+                generate_expression (cmd->u.cr.exp);
             break;
         case CmdIf:
         case CmdWhile:
