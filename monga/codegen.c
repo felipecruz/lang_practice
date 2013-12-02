@@ -242,7 +242,46 @@ void generate_bin_exp (Exp *exp)
 {
     switch (exp->u.eb.op) {
         case Arith_Plus:
-            if (!is_int_const (exp->u.eb.exp1) &&
+            if (exp->u.eb.exp1->type == BinExpArith &&
+                exp->u.eb.exp2->type == BinExpArith) {
+                printf ("# bin exp 1 e 2\n");
+                generate_bin_exp (exp->u.eb.exp1);
+                printf ("    pushl %%eax\n");
+                generate_bin_exp (exp->u.eb.exp2);
+                printf ("    popl %%ecx\n");
+                printf ("    addl %%ecx, %%eax\n");
+                printf ("# fim bin exp 1 e 2 - result em EAX\n");
+            } else if (exp->u.eb.exp1->type == BinExpArith &&
+                       exp->u.eb.exp2->type != BinExpArith) {
+                printf ("# bin exp 1\n");
+                generate_bin_exp (exp->u.eb.exp1);
+                printf ("    pushl %%eax\n");
+
+                if (!is_int_const (exp->u.eb.exp2))
+                    generate_expression_val (exp->u.eb.exp2);
+                else
+                    generate_expression (exp->u.eb.exp2);
+
+                printf ("    popl %%ecx\n");
+                printf ("    addl %%ecx, %%eax\n");
+                printf ("# fim bin exp 1 e 2 - result em EAX\n");
+                return;
+            } else if (exp->u.eb.exp1->type != BinExpArith &&
+                       exp->u.eb.exp2->type == BinExpArith) {
+                printf ("# bin exp 2\n");
+
+                if (!is_int_const (exp->u.eb.exp1))
+                    generate_expression_val (exp->u.eb.exp1);
+                else
+                    generate_expression (exp->u.eb.exp1);
+
+                printf ("    pushl %%eax\n");
+                generate_bin_exp (exp->u.eb.exp2);
+                printf ("    popl %%ecx\n");
+                printf ("    addl %%ecx, %%eax\n");
+                printf ("# fim bin exp 2 - result em EAX\n");
+                return;
+            } else if (!is_int_const (exp->u.eb.exp1) &&
                 !is_int_const (exp->u.eb.exp2)) {
                 generate_expression (exp->u.eb.exp1);
                 printf ("    push %%eax\n");
