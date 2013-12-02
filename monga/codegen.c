@@ -216,6 +216,14 @@ void export_to_int (Exp *exp)
     }
 }
 
+void generate_expression_val (Exp *exp)
+{
+    Var *var = exp->u.ev.var;
+
+    printf ("    movl %d(%%ebp), %%eax       # local %s\n",
+            var->decl->_offset, var->decl->u.dv.id);
+}
+
 void generate_expression (Exp *exp)
 {
     int l1, l2;
@@ -261,9 +269,9 @@ void generate_expression (Exp *exp)
                 case Arith_Plus:
                     generate_expression (exp->u.eb.exp1);
                     printf ("    push %%eax\n");
-                    generate_expression (exp->u.eb.exp2);
+                    generate_expression_val (exp->u.eb.exp2);
                     printf ("    pop %%ecx\n");
-                    printf ("    add %%ecx, %%eax\n");
+                    printf ("    add (%%ecx), %%eax\n");
                     break;
                 case Arith_Sub:
                     generate_expression (exp->u.eb.exp1);
@@ -302,6 +310,13 @@ void reverse_exp_list (Exp **exp)
     *exp = prev;
 }
 
+int is_var (Exp *exp)
+{
+    if (exp->type == ExpVar)
+        return 1;
+    return 0;
+}
+
 void generate_call (Call *call)
 {
     int stack_clean_val = 0;
@@ -314,12 +329,15 @@ void generate_call (Call *call)
         type = get_exp_type (exp);
         stack_clean_val += type_size (type);
         generate_expression (exp);
-        printf ("    push %%eax\n");
+        if (is_var (exp))
+            printf ("    push (%%eax)\n");
+        else
+            printf ("    push %%eax\n");
         exp = exp->next;
     }
 
     if (call->decl->u.df._extern)
-        printf ("    call _%s\n", call->id);
+        printf ("    call %s\n", call->id);
     else
         printf ("    call %s\n", call->id);
     printf ("    addl $%d, %%esp\n", stack_clean_val);
@@ -354,14 +372,16 @@ void generate_command (Cmd *cmd)
     switch (cmd->type) {
         case CmdAss:
             //TODO Depende do tipo movlb ou movc (4 ou 1 byte)
+            printf ("                      # Atribuicao\n");
             generate_var (cmd->u.ca.var);
             printf ("    push %%eax\n");
             generate_expression (cmd->u.ca.exp);
             printf ("    pop %%ecx\n");
             printf ("    mov %%eax, (%%ecx)\n");
+            printf ("                      # fim Atribuicao\n");
             break;
         case CmdRet:
-            generate_expression (cmd->u.cr.exp);
+            generate_expression_val (cmd->u.cr.exp);
             break;
         case CmdIf:
         case CmdWhile:
@@ -384,7 +404,7 @@ void generate_globals_Decl (Decl *decl)
 
 void generate_functions_Decl (Decl *decl)
 {
-    int offset = 24;
+    int offset = 0;
     Block *block;
     Cmd *cmd;
 
@@ -450,17 +470,18 @@ void generate_Program (Program *program)
 
     printf ("\n.text\n");
 
-    printf (".globl _print_int\n");
-    printf ("_print_int:\n");
+    printf (".globl print_int\n");
+    printf ("print_int:\n");
 	printf ("    pushl	%%ebp\n");
 	printf ("    movl	%%esp, %%ebp\n");
-	printf ("    pushl	%%ebx\n");
-    printf ("    subl	$20, %%esp\n");
     printf ("    movl 8(%%ebp), %%eax\n");
-    printf ("    movl   %%eax, 4(%%esp)\n");
-    printf ("    lea string_pattern, %%eax\n");
-    printf ("    movl   %%eax, (%%esp)\n");
-    printf ("    call _printf\n");
+    printf ("    push %%eax\n");
+    //printf ("    movl   %%eax, 4(%%esp)\n");
+    printf ("    lea int_pattern, %%eax\n");
+    printf ("    push %%eax\n");
+    //printf ("    movl   %%eax, 4(%%esp)\n");
+    //printf ("    movl   %%eax, (%%esp)\n");
+    printf ("    call printf\n");
     printf ("    add $8, %%esp\n");
     printf ("    leave\n");
     printf ("    ret\n");
