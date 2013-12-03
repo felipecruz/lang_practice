@@ -238,8 +238,7 @@ var : ID { Decl* decl = has_name (stack, $1);
         Decl* decl = has_name (stack, $1);
         if (!decl)
             yyerror ("Variable not declared");
-        Var *var = new_Var ($1, $3, decl);
-        var->type = VarArray;
+        Var *var = new_Var_Array_Id ($1, $3, decl);
         $$ = var; }
     | var_exp exp CLSQB { $$ = new_Var_Array ($1, $2, NULL); };
 
