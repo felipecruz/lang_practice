@@ -39,7 +39,10 @@ Type *resolve_type (Var *var)
 {
     Type *type;
     if (var->type == VarArray && var->u.va.exp != NULL) {
-        type = get_exp_type (var->u.va.prefix_exp);
+        if (var->decl->type == DeclVar)
+            type = var->decl->u.dv.type;
+        if (var->decl->type == DeclFunc)
+            type = var->decl->u.df.type;
         type = new_Type (type->type, 0);
         return type;
     }
@@ -78,6 +81,10 @@ Type *assignment_coerce (Type *from, Type *to)
     if ((match (from, CHAR_TYPE) && match (to, INT_TYPE)) ||
         (match (from, INT_TYPE) && match (to, CHAR_TYPE)))
         return CHAR_TYPE;
+
+    if (match_array_assignment (to, from)) {
+        return from;
+    }
 
     return NULL;
 }
@@ -257,6 +264,15 @@ int match (Type *t1, Type *t2)
     return e && a;
 }
 
+int match_array_assignment (Type *t1, Type *t2)
+{
+    /* verifica tipo base */
+    int e = t1->type == t2->type;
+    /* verifica flag de array */
+    int a = (t2->array && !t1->array);
+    return e && a;
+}
+
 int link_and_validate_calls (Block *block, Decl *globals)
 {
     if (!block)
@@ -360,8 +376,8 @@ int check_declaration_block (Decl *decl)
                     printdebug ("Invalid Expression\n");
                     return -1;
                 }
-
-                new_type = assignment_coerce (type, type2);
+                
+                new_type = assignment_coerce (type2, type);
                 if (!new_type) {
                     printdebug ("Assignment Type didn't match\n");
                     return -1;

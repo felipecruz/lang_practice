@@ -330,6 +330,16 @@ Var *new_Var (char *id, Exp *exp, Decl *decl)
     return var;
 }
 
+Var *new_Var_Array_Id (char *id, Exp *exp, Decl *decl)
+{
+    Var *var = (Var*) malloc (sizeof (Var));
+    var->type = VarArray;
+    var->u.va.id = strdup (id);
+    var->u.va.exp = exp;
+    var->decl = decl;
+    return var;
+}
+
 Var *new_Var_Array (Exp *prefix_exp, Exp *exp, Decl *decl)
 {
     Var *var = (Var*) malloc (sizeof (Var));

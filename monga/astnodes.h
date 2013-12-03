@@ -192,7 +192,9 @@ typedef struct Var {
             char *id;
         } vs;
         struct {
-            struct Exp *prefix_exp, *exp;
+            char *id;
+            struct Exp *prefix_exp;
+            struct Exp *exp;
         } va;
     } u;
 } Var;
@@ -232,6 +234,7 @@ Params *new_Param (Type *type, char *id, Params *param, Decl *decl);
 
 Var *new_Var (char *id, Exp *exp, Decl *decl);
 Var *new_Var_Array (Exp *prefix_exp, Exp *exp, Decl *decl);
+Var *new_Var_Array_Id (char *id, Exp *exp, Decl *decl);
 
 Block *new_Block (Decl* decl, Cmd *cmd);
 
@@ -253,4 +256,6 @@ Exp *new_Exp_Call (Call *call, Exp *next);
 Exp *new_Exp_New (Type *type, Exp *exp, Exp *next);
 Exp *new_Exp_Unary (UnaArithOps op, Exp *exp, Exp *next);
 Exp *new_Exp_Binary (BinArithOps op, Exp *expl, Exp *expr, Exp *next);
+
+int match_array_assignment (Type *t1, Type *t2);
 #endif
