@@ -351,11 +351,15 @@ void generate_expression (Exp *exp)
             generate_var (exp->u.ev.var);
             break;
         case ExpCall:
-            // TODO Call
             generate_call (exp->u.ec.call);
             break;
         case ExpNew:
-            // TODO New
+            generate_expression (exp->u.en.exp);
+            printf ("    pushl %%eax\n");
+            printf ("    movl $%d, %%eax\n", type_size (exp->u.en.type));
+            printf ("    popl %%ecx\n");
+            printf ("    imull %%ecx, %%eax\n");
+            printf ("    call malloc\n");
             break;
         case UnaExpArith:
             switch (exp->u.eu.op) {
@@ -434,11 +438,12 @@ void generate_var (Var *var)
                         var->decl->_offset, var->decl->u.dv.id);
                 break;
             case VarArray:
-                generate_expression (var->u.va.prefix_exp);
+                printf ("    lea %d(%%ebp), %%eax       # local %s\n",
+                        var->decl->_offset, var->decl->u.dv.id);
                 printf ("    push %%eax\n");
                 generate_expression (var->u.va.exp);
                 printf ("    pop %%ecx\n");
-                printf ("    lea (%%ecx, %%eax,%d), %%eax\n    # local %s",
+                printf ("    lea (%%ecx, %%eax,%d), %%eax\n    # local %s\n",
                         type_size (var->decl->u.dv.type), var->decl->u.dv.id);
                 break;
         }
@@ -557,18 +562,12 @@ void generate_Program (Program *program)
 	printf ("    movl	%%esp, %%ebp\n");
     printf ("    movl 8(%%ebp), %%eax\n");
     printf ("    push %%eax\n");
-    //printf ("    movl   %%eax, 4(%%esp)\n");
     printf ("    lea int_pattern, %%eax\n");
     printf ("    push %%eax\n");
-    //printf ("    movl   %%eax, 4(%%esp)\n");
-    //printf ("    movl   %%eax, (%%esp)\n");
     printf ("    call printf\n");
     printf ("    add $8, %%esp\n");
     printf ("    leave\n");
     printf ("    ret\n");
-
-
-    //TODO Verificar se tem main
 
     while (decl) {
         if (decl->type == DeclFunc && !decl->u.df._extern)
