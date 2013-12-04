@@ -4,6 +4,37 @@
 
 #ifndef _CODEGEN_H_
 #define _CODEGEN_H_
+
+
+#define PUSH    "pushl"
+#define POP     "popl"
+
+#define ADD     "addl"
+#define SUB     "subl"
+#define IMUL    "imull"
+#define IDIV    "idivl"
+
+#define MOV     "movl"
+#define LEA     "leal"
+
+#define CALL    "call"
+#define RET     "ret"
+
+#define CMP     "cmpl"
+#define JNE     "jne"
+
+#define EAX     "eax"
+#define ECX     "ecx"
+#define EBP     "ebp"
+#define ESP     "esp"
+
+typedef struct Instruction {
+    char *op;
+    char *src;
+    char *dst; 
+} Instruction;
+
+void generte_assembly (Instruction inst, char *cmt);
 void generate_Program (Program *program);
 void generate_globals_Decl (Decl *decl);
 void generate_functions_Decl (Decl *decl);
