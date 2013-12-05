@@ -15,6 +15,13 @@ char *int_operand (int value)
     return name;
 }
 
+char *label_operand (char *label)
+{
+    char *name = malloc (20);
+    sprintf (name, "%s", label);
+    return name;
+}
+
 char *operand(char *nme, int is_value, int offset)
 {
     char *name = malloc (20);
@@ -45,9 +52,9 @@ Instruction *new_inst (char *op, char *src, char *dst)
 void generate_assembly (Instruction *inst, const char *cmt)
 {
     if (!inst->dst)
-        printf ("    %s %s          #%s\n", inst->op, inst->src, cmt);
+        printf ("    %-4s %-10s #%s\n", inst->op, inst->src, cmt);
     else
-        printf ("    %s %s, %s        #%s\n", inst->op, inst->src, inst->dst, cmt);
+        printf ("    %-4s %-4s, %-4s #%s\n", inst->op, inst->src, inst->dst, cmt);
     free (inst->src);
     if (!inst->dst)
         free (inst->dst);
@@ -101,151 +108,254 @@ int type_size (Type *type)
     }
 }
 
+void jmp_if_false_binexp (Exp *exp, int label)
+{
+    int l1;
+    Instruction *inst;
+
+    switch (exp->u.eb.op) {
+        case Arith_Log_And:
+            jmp_if_false (exp->u.eb.exp1, label);
+            jmp_if_false (exp->u.eb.exp2, label);
+            return;
+        case Arith_Log_Or:
+            l1 = new_label ();
+            jmp_if_true (exp->u.eb.exp1, l1);
+            jmp_if_false (exp->u.eb.exp2, label);
+            printf ("%s:\n", get_label (l1));
+            return;
+    }
+
+    switch (exp->u.eb.op) {
+        case Arith_Mul:
+        case Arith_Div:
+        case Arith_Plus:
+        case Arith_Sub:
+            generate_expression (exp);
+            inst = new_inst (MOV, int_operand (0), operand (ECX, 0, 0));
+            generate_assembly (inst, "");
+            inst = new_inst (CMP, operand (EAX, 0, 0), operand (ECX, 0, 0));
+            generate_assembly (inst, "");
+            inst = new_inst (JE, label_operand (get_label (label)), NULL);
+            generate_assembly (inst, "");
+            return;
+    }
+
+    generate_expression (exp->u.eb.exp1);
+    inst = new_inst (PUSH, operand (EAX, 0, 0), NULL);
+    generate_assembly (inst, "");
+    generate_expression (exp->u.eb.exp2);
+    inst = new_inst (POP, operand (ECX, 0, 0), NULL);
+    generate_assembly (inst, "");
+    inst = new_inst (CMP, operand (EAX, 0, 0), operand (ECX, 0, 0));
+    generate_assembly (inst, "");
+
+    switch (exp->u.eb.op) {
+        case Arith_Dbl_EQ:
+            inst = new_inst (JNE, label_operand (get_label (label)), NULL);
+            generate_assembly (inst, "");
+            break;
+        case Arith_Lte:
+            inst = new_inst (JLE, label_operand (get_label (label)), NULL);
+            generate_assembly (inst, "");
+            break;
+        case Arith_Gte:
+            inst = new_inst (JGE, label_operand (get_label (label)), NULL);
+            generate_assembly (inst, "");
+            break;
+        case Arith_Ge:
+            inst = new_inst (JG, label_operand (get_label (label)), NULL);
+            generate_assembly (inst, "");
+            break;
+        case Arith_Lt:
+            inst = new_inst (JL, label_operand (get_label (label)), NULL);
+            generate_assembly (inst, "");
+            break;
+    }
+
+}
+
 void jmp_if_false (Exp *exp, int label)
 {
     int l1;
+    Instruction *inst;
 
     switch (exp->type) {
         case ExpConstInt:
-            if (!exp->u.eci.val)
-                printf ("    jmp %s\n", get_label (label));
-            break;
+            if (!exp->u.eci.val) {
+                inst = new_inst (JMP, label_operand (get_label (label)), NULL);
+                generate_assembly (inst, "");
+            }
+            return;
         case ExpConstLong:
-            if (!exp->u.ech.val);
-                printf ("    jmp %s\n", get_label (label));
-            break;
+            if (!exp->u.ech.val) {
+                inst = new_inst (JMP, label_operand (get_label (label)), NULL);
+                generate_assembly (inst, "");
+            }
+            return;
+    }
+
+    switch (exp->type) {
         case UnaExpArith:
-            switch (exp->u.eu.op) {
-                case UnaArith_Minus:
-                    //TODO completar
-                    break;
-                case UnaArith_Log_Neg:
-                    jmp_if_true (exp->u.eu.exp, label);
-                    break;
-                default:
-                    printf ("Unknow Unary Arithmetic Expression");
-
+            if (exp->u.eu.op == UnaArith_Log_Neg) {
+                jmp_if_true (exp->u.eu.exp, label);
+                return;
             }
-            break;
         case BinExpArith:
-            switch (exp->u.eb.op) {
-                case Arith_Log_And:
-                    jmp_if_false (exp->u.eb.exp1, label);
-                    jmp_if_false (exp->u.eb.exp2, label);
-                    break;
-                case Arith_Log_Or:
-                    l1 = new_label ();
-                    jmp_if_true (exp->u.eb.exp1, l1);
-                    jmp_if_false (exp->u.eb.exp2, label);
-                    printf ("%s", get_label (l1));
-                    break;
-                case Arith_Dbl_EQ:
-                case Arith_Lte:
-                case Arith_Gte:
-                case Arith_Ge:
-                case Arith_Lt:
-                    generate_expression (exp->u.eb.exp1);
-                    printf ("    push %%eax\n");
-                    generate_expression (exp->u.eb.exp2);
-                    printf ("    pop %%ecx\n");
-                    printf ("    cmp %%eax, %%ecx\n");
+            jmp_if_false_binexp (exp, label);
+            return;
+    }
 
-                    printf ("Finish JUMPS");
-
-                    break;
-                case Arith_Plus:
-                case Arith_Sub:
-
-                    generate_expression (exp);
-                    printf ("    mov $0, %%eax\n");
-                    printf ("    jne %s\n", get_label (label));
-
-                default:
-                    printf ("Unsupported");
-                    break;
-            }
+    switch (exp->type) {
+        case UnaExpArith:
+            if (exp->u.eu.op == UnaArith_Minus)
+                generate_expression (exp->u.eu.exp);
+            break;
+        case ExpVar:
+            generate_var (exp->u.ev.var);
+            inst = new_inst (MOV, operand (EAX, 1, 0), operand (EAX, 0, 0));
+            break;
+        case ExpCall:
+            generate_call (exp->u.ec.call);
             break;
         case ExpConstFloat:
         case ExpConstString:
-        case ExpVar:
-        case ExpCall:
         case ExpNew:
             printf ("Unssuported\n");
 
     }
+
+    inst = new_inst (MOV, int_operand (0), operand (ECX, 0, 0));
+    generate_assembly (inst, "");
+    inst = new_inst (CMP, operand (EAX, 0, 0), operand (ECX, 0, 0));
+    generate_assembly (inst, "");
+    inst = new_inst (JE, label_operand (get_label (label)), NULL);
+    generate_assembly (inst, "");
+}
+
+void jmp_if_true_binexp (Exp *exp, int label)
+{
+    int l1;
+    Instruction *inst;
+
+    switch (exp->u.eb.op) {
+        case Arith_Log_And:
+            l1 = new_label ();
+            jmp_if_false (exp->u.eb.exp1, l1);
+            jmp_if_true (exp->u.eb.exp2, label);
+            printf ("%s:\n", get_label (l1));
+            return;
+        case Arith_Log_Or:
+            jmp_if_true (exp->u.eb.exp1, label);
+            jmp_if_true (exp->u.eb.exp2, label);
+            return;
+    }
+
+    switch (exp->u.eb.op) {
+        case Arith_Mul:
+        case Arith_Div:
+        case Arith_Plus:
+        case Arith_Sub:
+            generate_expression (exp);
+            inst = new_inst (MOV, int_operand (0), operand (ECX, 0, 0));
+            generate_assembly (inst, "");
+            inst = new_inst (CMP, operand (EAX, 0, 0), operand (ECX, 0, 0));
+            generate_assembly (inst, "");
+            inst = new_inst (JNE, label_operand (get_label (label)), NULL);
+            generate_assembly (inst, "");
+            return;
+    }
+
+    generate_expression (exp->u.eb.exp1);
+    inst = new_inst (PUSH, operand (EAX, 0, 0), NULL);
+    generate_assembly (inst, "");
+    generate_expression (exp->u.eb.exp2);
+    inst = new_inst (POP, operand (ECX, 0, 0), NULL);
+    generate_assembly (inst, "");
+    inst = new_inst (CMP, operand (EAX, 0, 0), operand (ECX, 0, 0));
+    generate_assembly (inst, "");
+
+    switch (exp->u.eb.op) {
+        case Arith_Dbl_EQ:
+            inst = new_inst (JNE, label_operand (get_label (label)), NULL);
+            generate_assembly (inst, "");
+            break;
+        case Arith_Lte:
+            inst = new_inst (JLE, label_operand (get_label (label)), NULL);
+            generate_assembly (inst, "");
+            break;
+        case Arith_Gte:
+            inst = new_inst (JGE, label_operand (get_label (label)), NULL);
+            generate_assembly (inst, "");
+            break;
+        case Arith_Ge:
+            inst = new_inst (JG, label_operand (get_label (label)), NULL);
+            generate_assembly (inst, "");
+            break;
+        case Arith_Lt:
+            inst = new_inst (JL, label_operand (get_label (label)), NULL);
+            generate_assembly (inst, "");
+            break;
+    }
+
 }
 
 void jmp_if_true (Exp *exp, int label)
 {
     int l1, l2;
+    Instruction *inst;
 
     switch (exp->type) {
         case ExpConstInt:
-            if (exp->u.eci.val)
-                printf ("    jmp %s\n", get_label (label));
-            break;
+            if (exp->u.eci.val) {
+                inst = new_inst (JMP, label_operand (get_label (label)), NULL);
+                generate_assembly (inst, "");
+            }
+            return;
         case ExpConstLong:
-            if (exp->u.ech.val);
-                printf ("    jmp %s\n", get_label (label));
-            break;
+            if (exp->u.ech.val) {
+                inst = new_inst (JMP, label_operand (get_label (label)), NULL);
+                generate_assembly (inst, "");
+            }
+            return;
+    }
+
+    switch (exp->type) {
         case UnaExpArith:
-            switch (exp->u.eu.op) {
-                case UnaArith_Minus:
-                    //TODO completar
-                    break;
-                case UnaArith_Log_Neg:
-                    jmp_if_false (exp->u.eu.exp, label);
-                    break;
-                default:
-                    printf ("Unknow Unary Arithmetic Expression");
+            if (exp->u.eu.op == UnaArith_Log_Neg) {
+                jmp_if_false (exp->u.eu.exp, label);
+                return;
             }
-            //print_Exp (exp->u.eu.exp);
-            break;
         case BinExpArith:
-            switch (exp->u.eb.op) {
-                case Arith_Log_And:
-                    l1 = new_label ();
-                    jmp_if_false (exp->u.eb.exp1, l1);
-                    jmp_if_true (exp->u.eb.exp2, label);
-                    printf ("%s", get_label (l1));
-                    break;
-                case Arith_Log_Or:
-                    jmp_if_true (exp->u.eb.exp1, label);
-                    jmp_if_true (exp->u.eb.exp2, label);
-                    break;
-                case Arith_Dbl_EQ:
-                case Arith_Lte:
-                case Arith_Gte:
-                case Arith_Ge:
-                case Arith_Lt:
-                    generate_expression (exp->u.eb.exp1);
-                    printf ("    push %%eax\n");
-                    generate_expression (exp->u.eb.exp2);
-                    printf ("    pop %%ecx\n");
-                    printf ("    cmp %%eax, %%ecx\n");
+            jmp_if_true_binexp (exp, label);
+            return;
+    }
 
-                    printf ("Finish JUMPS");
-
-                    break;
-                case Arith_Plus:
-                case Arith_Sub:
-
-                    generate_expression (exp);
-                    printf ("    mov $0, %%eax\n");
-                    printf ("    jne %s\n", get_label (label));
-
-                default:
-                    printf ("Unsupported");
-                    break;
-            }
+    switch (exp->type) {
+        case UnaExpArith:
+            if (exp->u.eu.op == UnaArith_Minus)
+                generate_expression (exp->u.eu.exp);
+            break;
+        case ExpVar:
+            generate_var (exp->u.ev.var);
+            inst = new_inst (MOV, operand (EAX, 1, 0), operand (EAX, 0, 0));
+            break;
+        case ExpCall:
+            generate_call (exp->u.ec.call);
             break;
         case ExpConstFloat:
         case ExpConstString:
-        case ExpVar:
-        case ExpCall:
         case ExpNew:
             printf ("Unssuported\n");
+
     }
+
+    inst = new_inst (MOV, int_operand (0), operand (ECX, 0, 0));
+    generate_assembly (inst, "");
+    inst = new_inst (CMP, operand (EAX, 0, 0), operand (ECX, 0, 0));
+    generate_assembly (inst, "");
+    inst = new_inst (JNE, label_operand (get_label (label)), NULL);
+    generate_assembly (inst, "");
 }
 
 void export_to_int (Exp *exp)
@@ -322,10 +432,11 @@ void generate_bin_exp (Exp *exp)
             break;
         case Arith_Div:
             inst = new_inst (IDIV, operand (ECX, 0, 0),
-                                  operand (EAX, 0, 0));
+                                   operand (EAX, 0, 0));
             generate_assembly (inst, "");
             break;
         case Arith_Dbl_EQ:
+
         case Arith_Log_And:
         case Arith_Log_Or:
         default:
@@ -371,15 +482,17 @@ void generate_expression (Exp *exp)
             break;
         case UnaExpArith:
             switch (exp->u.eu.op) {
+                generate_expression (exp->u.eu.exp);
                 case UnaArith_Minus:
-                    //TODO Verificar se pode usar imul $-1, %eax
-                    generate_expression (exp->u.eu.exp);
-                    printf ("    imull $-1, %%eax\n");
+                    inst = new_inst (NEG, operand (EAX, 1, 0), NULL);
+                    generate_assembly (inst, "");
                     break;
                 case UnaArith_Log_Neg:
+                    inst = new_inst (NOT, operand (EAX, 1, 0), NULL);
+                    generate_assembly (inst, "");
+                    break;
                 default:
                     printf ("Unknow Unary Arithmetic Expression");
-
             }
             break;
         case BinExpArith:
@@ -422,11 +535,11 @@ void generate_call (Call *call)
         printf ("    push %%eax\n");
         exp = exp->next;
     }
+    
+    if (call->id == NULL)
+        return;
 
-    if (call->decl->u.df._extern)
-        printf ("    call %s\n", call->id);
-    else
-        printf ("    call %s\n", call->id);
+    printf ("    call %s\n", call->id);
     printf ("    addl $%d, %%esp\n", stack_clean_val);
     printf ("\n");
 }
@@ -458,28 +571,44 @@ void generate_var (Var *var)
 
 void generate_command (Cmd *cmd)
 {
-    switch (cmd->type) {
-        case CmdAss:
-            //TODO Depende do tipo movlb ou movc (4 ou 1 byte)
-            printf ("                      # Atribuicao\n");
-            generate_var (cmd->u.ca.var);
-            printf ("    push %%eax\n");
-            generate_expression (cmd->u.ca.exp);
-            printf ("    pop %%ecx\n");
-            printf ("    mov %%eax, (%%ecx)\n");
-            printf ("                      # fim Atribuicao\n");
-            break;
-        case CmdRet:
-            generate_expression (cmd->u.cr.exp);
-            break;
-        case CmdIf:
-        case CmdWhile:
-        case CmdCall:
-            generate_call (cmd->u.cc.call);
-            break;
-        case CmdBlock:
-        default:
-            printf ("Unssuported\n");
+    int l1, l2;
+
+    while (cmd) {
+        switch (cmd->type) {
+            case CmdAss:
+                //TODO Depende do tipo movlb ou movc (4 ou 1 byte)
+                printf ("                      # Atribuicao\n");
+                generate_var (cmd->u.ca.var);
+                printf ("    push %%eax\n");
+                generate_expression (cmd->u.ca.exp);
+                printf ("    pop %%ecx\n");
+                printf ("    mov %%eax, (%%ecx)\n");
+                printf ("                      # fim Atribuicao\n");
+                break;
+            case CmdRet:
+                generate_expression (cmd->u.cr.exp);
+                break;
+            case CmdIf:
+                l1 = new_label ();
+                jmp_if_false (cmd->u.cif.cond, l1);
+                generate_command (cmd->u.cif.then);
+                l2 = new_label ();
+                printf ("    jmp %s\n", get_label (l2));
+                printf ("%s:\n", get_label (l1));
+                generate_command (cmd->u.cif._else);
+                printf ("%s:\n", get_label (l2));
+                break;
+            case CmdWhile:
+            case CmdCall:
+                generate_call (cmd->u.cc.call);
+                break;
+            case CmdBlock:
+                generate_command (cmd->u.cb.block->cmd);
+                break;
+            default:
+                printf ("Unssuported\n");
+        }
+        cmd = cmd->next;
     }
 }
 
@@ -504,32 +633,13 @@ void generate_functions_Decl (Decl *decl)
     printf ("%s:\n", decl->u.df.id);
     printf ("    push %%ebp\n");
     printf ("    mov %%esp, %%ebp\n");
+    printf ("    sub $%d, %%esp\n", decl->u.df.max_offset);
 
-    /* calcula offset das variáveis locais */
-
-    block = decl->u.df.block;
-    decl = block->decl;
-    while (decl) {
-        offset = offset + type_size (decl->u.dv.type);
-        decl = decl->next;
-    }
-
-    printf ("    sub $%d, %%esp\n", offset);
-
-    // TODO miolo
-
-    cmd = block->cmd;
-    while (cmd) {
-        generate_command (cmd);
-        cmd = cmd->next;
-    }
-
-    // Saída
+    cmd = decl->u.df.block->cmd;
+    generate_command (cmd);
 
     printf ("    mov %%ebp, %%esp\n");
     printf ("    pop %%ebp\n");
-
-    // TODO código do retorno com valor/var/exp - return x;
     printf ("    ret\n"); // return ;
 }
 

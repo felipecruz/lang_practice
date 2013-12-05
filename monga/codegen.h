@@ -13,6 +13,9 @@
 #define SUB     "subl"
 #define IMUL    "imull"
 #define IDIV    "idivl"
+#define NEG     "neg"
+
+#define NOT     "not"
 
 #define MOV     "movl"
 #define LEA     "leal"
@@ -21,7 +24,13 @@
 #define RET     "ret"
 
 #define CMP     "cmpl"
+#define JMP     "jmp"
 #define JNE     "jne"
+#define JE      "je"
+#define JG      "jg"
+#define JGE     "jge"
+#define JL      "jl"
+#define JLE     "jle"
 
 #define EAX     "eax"
 #define ECX     "ecx"
@@ -40,6 +49,8 @@ void generate_globals_Decl (Decl *decl);
 void generate_functions_Decl (Decl *decl);
 void jmp_if_false (Exp *exp, int label);
 void jmp_if_true (Exp *exp, int label);
+void jmp_if_true_binexp (Exp *exp, int label);
+void jmp_if_false_binexp (Exp *exp, int label);
 void generate_expression (Exp *exp);
 void generate_command (Cmd *cmd);
 void generate_call (Call *call);
