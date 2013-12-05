@@ -9,6 +9,8 @@ static Type *INT_TYPE_AR;
 static Type *FLOAT_TYPE_AR;
 static Type *CHAR_TYPE_AR;
 
+static int current_max = 0;
+
 Params* get_func_params (Call *call)
 {
     return call->decl->u.df.params;
@@ -317,6 +319,33 @@ int link_and_validate_calls (Block *block, Decl *globals)
     return rc;
 }
 
+void set_decl_offset_get_max (Decl *decls, Block *block, int current)
+{
+    int i, local_max = current;
+    Cmd *cmd = block->cmd;
+
+    for (i = 1; decls; i++) {
+        decls->_offset = (i * -4) + current;
+        local_max = decls->_offset;
+        decls = decls->next;
+    }
+
+    if (local_max < current_max) {
+        current_max = local_max;
+    }
+
+    current = local_max;
+
+    while (cmd) {
+        if (cmd->type == CmdBlock) {
+            set_decl_offset_get_max (cmd->u.cb.block->decl,
+                                     cmd->u.cb.block, current);
+
+        }
+        cmd = cmd->next;
+    }
+}
+
 int check_declaration_block (Decl *decl)
 {
     int i, rc;
@@ -338,18 +367,8 @@ int check_declaration_block (Decl *decl)
         function_params = function_params->next;
     }
 
-    for (i = 1; decls; i++) {
-        // TODO pode usar todos offsets iguais
-        decls = decls->next;
-    }
-
-    decls = decl->u.df.block->decl;
-    i--;
-    for (; decls; i--) {
-        // TODO pode usar todos offsets iguais
-        decls->_offset = i * -4;
-        decls = decls->next;
-    }
+    set_decl_offset_get_max (decls, decl->u.df.block, 0);
+    decl->u.df.max_offset = -current_max;
 
     while (cmd) {
         switch (cmd->type) {
@@ -376,7 +395,7 @@ int check_declaration_block (Decl *decl)
                     printdebug ("Invalid Expression\n");
                     return -1;
                 }
-                
+
                 new_type = assignment_coerce (type2, type);
                 if (!new_type) {
                     printdebug ("Assignment Type didn't match\n");
@@ -488,6 +507,7 @@ int check_program (Program *program)
     while (decl) {
         if (decl->type == DeclFunc) {
             printdebug ("Checking Func %s\n", decl->u.df.id);
+            current_max = 0;
             rc = check_declaration_block (decl);
             if (rc == -1)
                 return rc;

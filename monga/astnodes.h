@@ -90,6 +90,7 @@ typedef struct Decl {
             struct Params *params;
             struct Block *block;
             int _extern;
+            int max_offset;
         } df;
     } u;
 } Decl;

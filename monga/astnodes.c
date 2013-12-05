@@ -160,6 +160,7 @@ Decl* new_Decl_Func (Type *type, char *id, Params *params, Block *block, int e)
     decl->u.df.block = block;
     decl->u.df.id = strdup (id);
     decl->u.df._extern = e;
+    decl->u.df.max_offset = 0;
 
     return decl;
 }
