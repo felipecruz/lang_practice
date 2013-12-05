@@ -282,158 +282,46 @@ int is_int_const (Exp *exp)
     return  0;
 }
 
-void generate_expression_val (Exp *exp)
-{
-    char *cmt = malloc (50);
-    Var *var = exp->u.ev.var;
-    Instruction *inst;
-
-    inst = new_inst (MOV, operand (EBP, 1, var->decl->_offset),
-                          operand (EAX, 0, 0));
-
-    sprintf (cmt, "Local %s", var->decl->u.dv.id);
-    generate_assembly (inst, cmt);
-
-    //printf ("    movl %d(%%ebp), %%eax       # local %s\n",
-    //        var->decl->_offset, var->decl->u.dv.id);
-    free (cmt);
-}
-
 void generate_bin_exp (Exp *exp)
 {
     Instruction *inst;
-    int left_val = 0;
 
-    if (exp->u.eb.exp1->type == BinExpArith &&
-        exp->u.eb.exp2->type == BinExpArith) {
-        printf ("\n");
+    printf ("\n");
+
+    if (exp->u.eb.exp1->type == BinExpArith)
         generate_bin_exp (exp->u.eb.exp1);
-
-        inst = new_inst (PUSH, operand (EAX, 0, 0), NULL);
-        generate_assembly (inst, "left exp");
-
-        generate_bin_exp (exp->u.eb.exp2);
-
-        inst = new_inst (POP, operand (ECX, 0, 0), NULL);
-        generate_assembly (inst, "");
-
-
-        printf ("            # end Binary expression\n");
-    } else if (exp->u.eb.exp1->type == BinExpArith &&
-               exp->u.eb.exp2->type != BinExpArith) {
-        printf ("# Left -> BinExp\n");
-        generate_bin_exp (exp->u.eb.exp1);
-
-        inst = new_inst (PUSH, operand (EAX, 0, 0), NULL);
-        generate_assembly (inst, "left exp");
-
-        if (!is_int_const (exp->u.eb.exp2))
-            generate_expression_val (exp->u.eb.exp2);
-        else
-            generate_expression (exp->u.eb.exp2);
-
-        inst = new_inst (POP, operand (ECX, 0, 0), NULL);
-        generate_assembly (inst, "");
-
-
-        printf (" # end Binary expression\n");
-        return;
-    } else if (exp->u.eb.exp1->type != BinExpArith &&
-               exp->u.eb.exp2->type == BinExpArith) {
-        printf ("# Right -> BinExp\n");
-
-        if (!is_int_const (exp->u.eb.exp1))
-            generate_expression_val (exp->u.eb.exp1);
-        else
-            generate_expression (exp->u.eb.exp1);
-
-        inst = new_inst (PUSH, operand (EAX, 0, 0), NULL);
-        generate_assembly (inst, "left exp");
-
-        generate_bin_exp (exp->u.eb.exp2);
-
-        inst = new_inst (POP, operand (ECX, 0, 0), NULL);
-        generate_assembly (inst, "");
-
-
-        printf ("# fim bin exp 2 - result em EAX\n");
-        return;
-    } else if (!is_int_const (exp->u.eb.exp1) &&
-        !is_int_const (exp->u.eb.exp2)) {
+    else
         generate_expression (exp->u.eb.exp1);
 
-        inst = new_inst (PUSH, operand (EAX, 0, 0), NULL);
-        generate_assembly (inst, "left exp");
+    inst = new_inst (PUSH, operand (EAX, 0, 0), NULL);
+    generate_assembly (inst, "left exp");
 
-        generate_expression_val (exp->u.eb.exp2);
-
-        inst = new_inst (POP, operand (ECX, 0, 0), NULL);
-        generate_assembly (inst, "");
-
-        left_val = 1;
-
-
-    } else if (!is_int_const (exp->u.eb.exp1) &&
-               is_int_const (exp->u.eb.exp2)) {
-        generate_expression_val (exp->u.eb.exp1);
-
-        inst = new_inst (PUSH, operand (EAX, 0, 0), NULL);
-        generate_assembly (inst, "left exp");
-
+    if (exp->u.eb.exp2->type == BinExpArith)
+        generate_bin_exp (exp->u.eb.exp2);
+    else
         generate_expression (exp->u.eb.exp2);
 
-        inst = new_inst (POP, operand (ECX, 0, 0), NULL);
-        generate_assembly (inst, "");
-
-
-    } else if (is_int_const (exp->u.eb.exp1) &&
-               !is_int_const (exp->u.eb.exp2)) {
-        generate_expression (exp->u.eb.exp1);
-
-        inst = new_inst (PUSH, operand (EAX, 0, 0), NULL);
-        generate_assembly (inst, "left exp");
-
-        generate_expression_val (exp->u.eb.exp2);
-
-        inst = new_inst (POP, operand (ECX, 0, 0), NULL);
-        generate_assembly (inst, "");
-
-
-    } else if (is_int_const (exp->u.eb.exp1) &&
-               is_int_const (exp->u.eb.exp2)) {
-        generate_expression (exp->u.eb.exp1);
-
-        inst = new_inst (PUSH, operand (EAX, 0, 0), NULL);
-        generate_assembly (inst, "left exp");
-
-        generate_expression (exp->u.eb.exp2);
-
-        inst = new_inst (POP, operand (ECX, 0, 0), NULL);
-        generate_assembly (inst, "");
-
-
-    } else {
-        printf ("Unssuported\n");
-    }
+    inst = new_inst (POP, operand (ECX, 0, 0), NULL);
+    generate_assembly (inst, "");
 
     switch (exp->u.eb.op) {
         case Arith_Plus:
-            inst = new_inst (ADD, operand (ECX, left_val, 0),
+            inst = new_inst (ADD, operand (ECX, 0, 0),
                                   operand (EAX, 0, 0));
             generate_assembly (inst, "");
             break;
         case Arith_Sub:
-            inst = new_inst (SUB, operand (ECX, left_val, 0),
+            inst = new_inst (SUB, operand (ECX, 0, 0),
                                   operand (EAX, 0, 0));
             generate_assembly (inst, "");
             break;
         case Arith_Mul:
-            inst = new_inst (IMUL, operand (ECX, left_val, 0),
+            inst = new_inst (IMUL, operand (ECX, 0, 0),
                                   operand (EAX, 0, 0));
             generate_assembly (inst, "");
             break;
         case Arith_Div:
-            inst = new_inst (IDIV, operand (ECX, left_val, 0),
+            inst = new_inst (IDIV, operand (ECX, 0, 0),
                                   operand (EAX, 0, 0));
             generate_assembly (inst, "");
             break;
@@ -444,11 +332,14 @@ void generate_bin_exp (Exp *exp)
             printf ("Unssuported\n");
             break;
     }
+
+    printf ("\n");
 }
 
 void generate_expression (Exp *exp)
 {
     int l1, l2;
+    Instruction *inst;
 
     switch (exp->type) {
         case ExpConstInt:
@@ -465,17 +356,18 @@ void generate_expression (Exp *exp)
             break;
         case ExpVar:
             generate_var (exp->u.ev.var);
+            inst = new_inst (MOV, operand (EAX, 1, 0), operand (EAX, 0, 0));
+            generate_assembly (inst, "");
             break;
         case ExpCall:
             generate_call (exp->u.ec.call);
             break;
         case ExpNew:
             generate_expression (exp->u.en.exp);
+            printf ("    imull $%d, %%eax, %%eax\n", type_size (exp->u.en.type));
             printf ("    pushl %%eax\n");
-            printf ("    movl $%d, %%eax\n", type_size (exp->u.en.type));
-            printf ("    popl %%ecx\n");
-            printf ("    imull %%ecx, %%eax\n");
             printf ("    call malloc\n");
+            printf ("    addl $4, %%esp\n");
             break;
         case UnaExpArith:
             switch (exp->u.eu.op) {
@@ -521,16 +413,13 @@ void generate_call (Call *call)
     Type *type;
     Exp *exp = call->exp_list;
     reverse_exp_list (&exp);
-    printf ("                             # Chamada\n");
+    printf ("\n");
 
     while (exp) {
         type = get_exp_type (exp);
         stack_clean_val += type_size (type);
         generate_expression (exp);
-        if (is_var (exp))
-            printf ("    push (%%eax)\n");
-        else
-            printf ("    push %%eax\n");
+        printf ("    push %%eax\n");
         exp = exp->next;
     }
 
@@ -539,7 +428,7 @@ void generate_call (Call *call)
     else
         printf ("    call %s\n", call->id);
     printf ("    addl $%d, %%esp\n", stack_clean_val);
-    printf ("                            # Fim Chamada\n");
+    printf ("\n");
 }
 
 void generate_var (Var *var)
@@ -556,6 +445,7 @@ void generate_var (Var *var)
             case VarArray:
                 printf ("    lea %d(%%ebp), %%eax       # local %s\n",
                         var->decl->_offset, var->decl->u.dv.id);
+                printf ("    movl (%%eax), %%eax\n");
                 printf ("    push %%eax\n");
                 generate_expression (var->u.va.exp);
                 printf ("    pop %%ecx\n");
@@ -580,10 +470,7 @@ void generate_command (Cmd *cmd)
             printf ("                      # fim Atribuicao\n");
             break;
         case CmdRet:
-            if (!is_int_const (cmd->u.cr.exp))
-                generate_expression_val (cmd->u.cr.exp);
-            else
-                generate_expression (cmd->u.cr.exp);
+            generate_expression (cmd->u.cr.exp);
             break;
         case CmdIf:
         case CmdWhile:
