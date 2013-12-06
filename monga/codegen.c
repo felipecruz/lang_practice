@@ -37,7 +37,7 @@ char *operand(char *nme, int is_value, int offset)
 char *leal_operand (char *n1, char *n2, int size)
 {
     char *name = malloc (20);
-    sprintf (name, "(%s, %s, %d)", n1, n2, size);
+    sprintf (name, "(%%%s, %%%s, %d)", n1, n2, size);
     return name;
 }
 
@@ -58,13 +58,19 @@ Instruction *new_inst (char *op, char *src, char *dst)
 
 void generate_assembly (Instruction *inst, const char *cmt)
 {
-    if (!inst->dst)
-        printf ("    %-8s %-20s #%s\n", inst->op, inst->src, cmt);
+    if (!inst->src)
+        printf ("    %-31s # %s\n", inst->op, cmt);
+    else if (!inst->dst)
+        printf ("    %-8s %-23s # %s\n", inst->op, inst->src, cmt);
     else
-        printf ("    %-8s %-12s, %-6s #%s\n", inst->op, inst->src, inst->dst, cmt);
-    free (inst->src);
-    if (!inst->dst)
+        printf ("    %-8s %-15s, %-6s # %s\n", inst->op, inst->src, inst->dst, cmt);
+
+    if (inst->src)
+        free (inst->src);
+
+    if (inst->dst)
         free (inst->dst);
+
     free (inst);
 }
 
@@ -221,6 +227,7 @@ void jmp_if_false (Exp *exp, int label)
         case ExpVar:
             generate_var (exp->u.ev.var);
             inst = new_inst (MOV, operand (EAX, 1, 0), operand (EAX, 0, 0));
+            generate_assembly (inst, "");
             break;
         case ExpCall:
             generate_call (exp->u.ec.call);
@@ -444,10 +451,10 @@ void generate_bin_exp (Exp *exp)
             l2 = new_label ();
             inst = new_inst (JMP, label_operand (get_label (l2)), NULL);
             generate_assembly (inst, "");
-            
+
             // TODO remover printf
             printf ("%s:\n", get_label (l1));
-            
+
             inst = new_inst (MOV, int_operand (0),
                                   operand (EAX, 0, 0));
             generate_assembly (inst, "");
@@ -510,13 +517,13 @@ void generate_expression (Exp *exp)
             inst = new_inst (IMUL, imul_operand (type_size (exp->u.en.type), EAX),
                                    operand (EAX, 0, 0));
             generate_assembly (inst, "");
-            
+
             inst = new_inst (PUSH, operand (EAX, 0, 0), NULL);
             generate_assembly (inst, "");
 
             inst = new_inst (CALL, label_operand ("malloc"), NULL);
             generate_assembly (inst, "");
-            
+
             inst = new_inst (ADD, int_operand (4), operand (ESP, 0, 0));
             generate_assembly (inst, "");
             break;
@@ -565,6 +572,8 @@ void generate_call (Call *call)
     int stack_clean_val = 0;
     Type *type;
     Exp *exp = call->exp_list;
+    Instruction *inst;
+
     reverse_exp_list (&exp);
     printf ("\n");
 
@@ -572,38 +581,70 @@ void generate_call (Call *call)
         type = get_exp_type (exp);
         stack_clean_val += type_size (type);
         generate_expression (exp);
-        printf ("    push %%eax\n");
+        inst = new_inst (PUSH, operand (EAX, 0, 0), NULL);
+        generate_assembly (inst, "Push Param");
         exp = exp->next;
     }
-    
+
     if (call->id == NULL)
         return;
 
-    printf ("    call %s\n", call->id);
-    printf ("    addl $%d, %%esp\n", stack_clean_val);
+    inst = new_inst (CALL, label_operand (call->id), NULL);
+    generate_assembly (inst, "");
+
+    inst = new_inst (ADD, int_operand (stack_clean_val), operand (ESP, 0, 0));
+    generate_assembly (inst, "");
+
     printf ("\n");
 }
 
 void generate_var (Var *var)
 {
+    int offset;
+    Instruction *inst;
+
     /* Global */
     if (var->decl->_offset == 0) {
-        printf ("    lea %s, %%eax\n", get_var_id (var));
+        inst = new_inst (LEA, label_operand (get_var_id (var)),
+                              operand (EAX, 0, 0));
+        generate_assembly (inst, "global");
+        //printf ("    lea %s, %%eax\n", get_var_id (var));
     } else {
         switch (var->type) {
             case VarSingle:
-                printf ("    lea %d(%%ebp), %%eax       # local %s\n",
-                        var->decl->_offset, var->decl->u.dv.id);
+                inst = new_inst (LEA, operand (EBP, 1, var->decl->_offset),
+                                      operand (EAX, 0, 0));
+                generate_assembly (inst, var->decl->u.dv.id);
+                //printf ("    lea %d(%%ebp), %%eax       # local %s\n",
+                //        var->decl->_offset, var->decl->u.dv.id);
                 break;
             case VarArray:
-                printf ("    lea %d(%%ebp), %%eax       # local %s\n",
-                        var->decl->_offset, var->decl->u.dv.id);
-                printf ("    movl (%%eax), %%eax\n");
-                printf ("    push %%eax\n");
+                inst = new_inst (LEA, operand (EBP, 1, var->decl->_offset),
+                                      operand (EAX, 0, 0));
+                generate_assembly (inst, var->decl->u.dv.id);
+                //printf ("    lea %d(%%ebp), %%eax       # local %s\n",
+                //        var->decl->_offset, var->decl->u.dv.id);
+
+                inst = new_inst (MOV, operand (EAX, 1, 0), operand (EAX, 0, 0));
+                generate_assembly (inst, "");
+                //printf ("    movl (%%eax), %%eax\n");
+
+                inst = new_inst (PUSH, operand (EAX, 0, 0), NULL);
+                generate_assembly (inst, "");
+                //printf ("    push %%eax\n");
+
                 generate_expression (var->u.va.exp);
-                printf ("    pop %%ecx\n");
-                printf ("    lea (%%ecx, %%eax,%d), %%eax\n    # local %s\n",
-                        type_size (var->decl->u.dv.type), var->decl->u.dv.id);
+
+                inst = new_inst (POP, operand (ECX, 0, 0), NULL);
+                generate_assembly (inst, "");
+                //printf ("    pop %%ecx\n");
+
+                offset = type_size (var->decl->u.df.type);
+                inst = new_inst (LEA, leal_operand (ECX, EAX, offset),
+                                      operand (EAX, 0, 0));
+                generate_assembly (inst, "");
+                //printf ("    lea (%%ecx, %%eax,%d), %%eax\n    # local %s\n",
+                //        type_size (var->decl->u.dv.type), var->decl->u.dv.id);
                 break;
         }
     }
@@ -612,37 +653,50 @@ void generate_var (Var *var)
 void generate_command (Cmd *cmd)
 {
     int l1, l2;
+    Instruction *inst;
 
     while (cmd) {
         switch (cmd->type) {
             case CmdAss:
                 //TODO Depende do tipo movlb ou movc (4 ou 1 byte)
-                printf ("                      # Atribuicao\n");
+                printf ("                                     # Atribuicao\n");
                 generate_var (cmd->u.ca.var);
-                printf ("    push %%eax\n");
+
+                inst = new_inst (PUSH, operand (EAX, 0, 0), NULL);
+                generate_assembly (inst, "");
+
                 generate_expression (cmd->u.ca.exp);
-                printf ("    pop %%ecx\n");
-                printf ("    mov %%eax, (%%ecx)\n");
-                printf ("                      # fim Atribuicao\n");
+
+                inst = new_inst (POP, operand (ECX, 0, 0), NULL);
+                generate_assembly (inst, "");
+
+                inst = new_inst (MOV, operand (EAX, 0, 0), operand (ECX, 1, 0));
+                generate_assembly (inst, "");
+                printf ("                                     # fim Atribuicao\n");
                 break;
             case CmdRet:
+                printf ("                                     # Retorno\n");
                 generate_expression (cmd->u.cr.exp);
                 break;
             case CmdIf:
+                printf ("                                     # If\n");
                 l1 = new_label ();
                 jmp_if_false (cmd->u.cif.cond, l1);
                 generate_command (cmd->u.cif.then);
                 l2 = new_label ();
-                printf ("    jmp %s\n", get_label (l2));
+                inst = new_inst (JMP, label_operand (get_label (l2)), NULL);
+                generate_assembly (inst, "");
                 printf ("%s:\n", get_label (l1));
                 generate_command (cmd->u.cif._else);
                 printf ("%s:\n", get_label (l2));
                 break;
             case CmdWhile:
             case CmdCall:
+                printf ("                                     # Chamada\n");
                 generate_call (cmd->u.cc.call);
                 break;
             case CmdBlock:
+                printf ("                                     # Bloco\n");
                 generate_command (cmd->u.cb.block->cmd);
                 break;
             default:
@@ -665,22 +719,36 @@ void generate_functions_Decl (Decl *decl)
     int offset = 0;
     Block *block;
     Cmd *cmd;
+    Instruction *inst;
 
     if (!decl)
         return;
 
+    // TODO remover printf
     printf ("\n    .globl %s\n", decl->u.df.id);
     printf ("%s:\n", decl->u.df.id);
-    printf ("    push %%ebp\n");
-    printf ("    mov %%esp, %%ebp\n");
-    printf ("    sub $%d, %%esp\n", decl->u.df.max_offset);
+
+    inst = new_inst (PUSH, operand (EBP, 0, 0), NULL);
+    generate_assembly (inst, "");
+
+    inst = new_inst (MOV, operand (ESP, 0, 0), operand (EBP, 0, 0));
+    generate_assembly (inst, "");
+
+    inst = new_inst (SUB, int_operand(decl->u.df.max_offset),
+                          operand (ESP, 0, 0));
+    generate_assembly (inst, "");
 
     cmd = decl->u.df.block->cmd;
     generate_command (cmd);
 
-    printf ("    mov %%ebp, %%esp\n");
-    printf ("    pop %%ebp\n");
-    printf ("    ret\n"); // return ;
+    inst = new_inst (MOV, operand (EBP, 0, 0), operand (ESP, 0, 0));
+    generate_assembly (inst, "");
+
+    inst = new_inst (POP, operand (EBP, 0, 0), NULL);
+    generate_assembly (inst, "");
+
+    inst = new_inst (RET, NULL, NULL);
+    generate_assembly (inst, "");
 }
 
 void generate_Program (Program *program)
