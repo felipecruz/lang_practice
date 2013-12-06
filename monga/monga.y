@@ -265,7 +265,7 @@ exp : NUMBER { $$ = new_Exp_Int ($1, NULL); }
 	| exp LTE exp { $$ = new_Exp_Binary (Arith_Lte, $1, $3, NULL); }
 	| exp GTE exp { $$ = new_Exp_Binary (Arith_Gte, $1, $3, NULL); }
 	| exp LT exp { $$ = new_Exp_Binary (Arith_Lt, $1, $3, NULL); }
-	| exp GT exp { $$ = new_Exp_Binary (Arith_Ge, $1, $3, NULL); }
+	| exp GT exp { $$ = new_Exp_Binary (Arith_Gt, $1, $3, NULL); }
 	| exp LOG_AND exp { $$ = new_Exp_Binary (Arith_Log_And, $1, $3, NULL); }
 	| exp LOG_OR exp { $$ = new_Exp_Binary (Arith_Log_Or, $1, $3, NULL); }
     ;

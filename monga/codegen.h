@@ -15,6 +15,8 @@
 #define IDIV    "idivl"
 #define NEG     "neg"
 
+#define AND     "andl"
+#define OR      "orl"
 #define NOT     "not"
 
 #define MOV     "movl"
@@ -40,7 +42,7 @@
 typedef struct Instruction {
     char *op;
     char *src;
-    char *dst; 
+    char *dst;
 } Instruction;
 
 void generte_assembly (Instruction inst, char *cmt);

@@ -52,7 +52,7 @@ typedef enum {
     Arith_Lte,
     Arith_Gte,
     Arith_Lt,
-    Arith_Ge,
+    Arith_Gt,
     Arith_Log_And,
     Arith_Log_Or
 } BinArithOps;

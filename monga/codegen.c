@@ -41,6 +41,13 @@ char *leal_operand (char *n1, char *n2, int size)
     return name;
 }
 
+char *imul_operand (int val, char *n1)
+{
+    char *name = malloc (20);
+    sprintf (name, "$%d, %%%s", val, n1);
+    return name;
+}
+
 Instruction *new_inst (char *op, char *src, char *dst)
 {
     Instruction *instruction = malloc (sizeof (Instruction));
@@ -52,9 +59,9 @@ Instruction *new_inst (char *op, char *src, char *dst)
 void generate_assembly (Instruction *inst, const char *cmt)
 {
     if (!inst->dst)
-        printf ("    %-4s %-10s #%s\n", inst->op, inst->src, cmt);
+        printf ("    %-8s %-20s #%s\n", inst->op, inst->src, cmt);
     else
-        printf ("    %-4s %-4s, %-4s #%s\n", inst->op, inst->src, inst->dst, cmt);
+        printf ("    %-8s %-12s, %-6s #%s\n", inst->op, inst->src, inst->dst, cmt);
     free (inst->src);
     if (!inst->dst)
         free (inst->dst);
@@ -156,19 +163,19 @@ void jmp_if_false_binexp (Exp *exp, int label)
             generate_assembly (inst, "");
             break;
         case Arith_Lte:
-            inst = new_inst (JLE, label_operand (get_label (label)), NULL);
-            generate_assembly (inst, "");
-            break;
-        case Arith_Gte:
-            inst = new_inst (JGE, label_operand (get_label (label)), NULL);
-            generate_assembly (inst, "");
-            break;
-        case Arith_Ge:
             inst = new_inst (JG, label_operand (get_label (label)), NULL);
             generate_assembly (inst, "");
             break;
-        case Arith_Lt:
+        case Arith_Gte:
             inst = new_inst (JL, label_operand (get_label (label)), NULL);
+            generate_assembly (inst, "");
+            break;
+        case Arith_Gt:
+            inst = new_inst (JLE, label_operand (get_label (label)), NULL);
+            generate_assembly (inst, "");
+            break;
+        case Arith_Lt:
+            inst = new_inst (JGE, label_operand (get_label (label)), NULL);
             generate_assembly (inst, "");
             break;
     }
@@ -277,7 +284,7 @@ void jmp_if_true_binexp (Exp *exp, int label)
 
     switch (exp->u.eb.op) {
         case Arith_Dbl_EQ:
-            inst = new_inst (JNE, label_operand (get_label (label)), NULL);
+            inst = new_inst (JE, label_operand (get_label (label)), NULL);
             generate_assembly (inst, "");
             break;
         case Arith_Lte:
@@ -288,7 +295,7 @@ void jmp_if_true_binexp (Exp *exp, int label)
             inst = new_inst (JGE, label_operand (get_label (label)), NULL);
             generate_assembly (inst, "");
             break;
-        case Arith_Ge:
+        case Arith_Gt:
             inst = new_inst (JG, label_operand (get_label (label)), NULL);
             generate_assembly (inst, "");
             break;
@@ -297,7 +304,6 @@ void jmp_if_true_binexp (Exp *exp, int label)
             generate_assembly (inst, "");
             break;
     }
-
 }
 
 void jmp_if_true (Exp *exp, int label)
@@ -378,22 +384,9 @@ void export_to_int (Exp *exp)
     }
 }
 
-int is_var (Exp *exp)
-{
-    if (exp->type == ExpVar)
-        return 1;
-    return 0;
-}
-
-int is_int_const (Exp *exp)
-{
-    if (exp->type == ExpConstInt || exp->type == ExpConstLong)
-        return 1;
-    return  0;
-}
-
 void generate_bin_exp (Exp *exp)
 {
+    int l1, l2;
     Instruction *inst;
 
     printf ("\n");
@@ -421,7 +414,10 @@ void generate_bin_exp (Exp *exp)
             generate_assembly (inst, "");
             break;
         case Arith_Sub:
-            inst = new_inst (SUB, operand (ECX, 0, 0),
+            inst = new_inst (SUB, operand (EAX, 0, 0),
+                                  operand (ECX, 0, 0));
+            generate_assembly (inst, "");
+            inst = new_inst (MOV, operand (ECX, 0, 0),
                                   operand (EAX, 0, 0));
             generate_assembly (inst, "");
             break;
@@ -435,12 +431,48 @@ void generate_bin_exp (Exp *exp)
                                    operand (EAX, 0, 0));
             generate_assembly (inst, "");
             break;
+        case Arith_Lte:
+        case Arith_Gte:
+        case Arith_Gt:
+        case Arith_Lt:
         case Arith_Dbl_EQ:
+            l1 = new_label ();
+            jmp_if_false (exp, l1);
+            inst = new_inst (MOV, int_operand (1),
+                                  operand (EAX, 0, 0));
+            generate_assembly (inst, "");
+            l2 = new_label ();
+            inst = new_inst (JMP, label_operand (get_label (l2)), NULL);
+            generate_assembly (inst, "");
+            
+            // TODO remover printf
+            printf ("%s:\n", get_label (l1));
+            
+            inst = new_inst (MOV, int_operand (0),
+                                  operand (EAX, 0, 0));
+            generate_assembly (inst, "");
 
+            // TODO remover printf
+            printf ("%s:\n", get_label (l2));
+
+            inst = new_inst (CMP, operand (ECX, 0, 0),
+                                  operand (EAX, 0, 0));
+
+
+            generate_assembly (inst, "");
+            break;
         case Arith_Log_And:
+            inst = new_inst (AND, operand (ECX, 0, 0),
+                                  operand (EAX, 0, 0));
+            generate_assembly (inst, "");
+            break;
         case Arith_Log_Or:
+            inst = new_inst (OR, operand (ECX, 0, 0),
+                                 operand (EAX, 0, 0));
+            generate_assembly (inst, "");
+            break;
         default:
-            printf ("Unssuported\n");
+            printf ("Unssuportedddd\n");
             break;
     }
 
@@ -475,20 +507,28 @@ void generate_expression (Exp *exp)
             break;
         case ExpNew:
             generate_expression (exp->u.en.exp);
-            printf ("    imull $%d, %%eax, %%eax\n", type_size (exp->u.en.type));
-            printf ("    pushl %%eax\n");
-            printf ("    call malloc\n");
-            printf ("    addl $4, %%esp\n");
+            inst = new_inst (IMUL, imul_operand (type_size (exp->u.en.type), EAX),
+                                   operand (EAX, 0, 0));
+            generate_assembly (inst, "");
+            
+            inst = new_inst (PUSH, operand (EAX, 0, 0), NULL);
+            generate_assembly (inst, "");
+
+            inst = new_inst (CALL, label_operand ("malloc"), NULL);
+            generate_assembly (inst, "");
+            
+            inst = new_inst (ADD, int_operand (4), operand (ESP, 0, 0));
+            generate_assembly (inst, "");
             break;
         case UnaExpArith:
             switch (exp->u.eu.op) {
                 generate_expression (exp->u.eu.exp);
                 case UnaArith_Minus:
-                    inst = new_inst (NEG, operand (EAX, 1, 0), NULL);
+                    inst = new_inst (NEG, operand (EAX, 0, 0), NULL);
                     generate_assembly (inst, "");
                     break;
                 case UnaArith_Log_Neg:
-                    inst = new_inst (NOT, operand (EAX, 1, 0), NULL);
+                    inst = new_inst (NOT, operand (EAX, 0, 0), NULL);
                     generate_assembly (inst, "");
                     break;
                 default:
@@ -668,6 +708,19 @@ void generate_Program (Program *program)
     decl = program->decl;
 
     printf ("\n.text\n");
+
+    printf (".globl print_str\n");
+    printf ("print_str:\n");
+	printf ("    pushl	%%ebp\n");
+	printf ("    movl	%%esp, %%ebp\n");
+    printf ("    movl 8(%%ebp), %%eax\n");
+    printf ("    push %%eax\n");
+    printf ("    lea string_pattern, %%eax\n");
+    printf ("    push %%eax\n");
+    printf ("    call printf\n");
+    printf ("    add $8, %%esp\n");
+    printf ("    leave\n");
+    printf ("    ret\n");
 
     printf (".globl print_int\n");
     printf ("print_int:\n");
