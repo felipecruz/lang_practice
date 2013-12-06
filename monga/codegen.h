@@ -13,6 +13,7 @@
 #define SUB     "subl"
 #define IMUL    "imull"
 #define IDIV    "idivl"
+#define CDQ     "cdq"
 #define NEG     "neg"
 
 #define AND     "andl"

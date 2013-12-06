@@ -398,6 +398,32 @@ void generate_bin_exp (Exp *exp)
 
     printf ("\n");
 
+    switch (exp->u.eb.op) {
+        case Arith_Div:
+            if (exp->u.eb.exp2->type == BinExpArith)
+                generate_bin_exp (exp->u.eb.exp2);
+            else
+                generate_expression (exp->u.eb.exp2);
+
+            inst = new_inst (PUSH, operand (EAX, 0, 0), NULL);
+            generate_assembly (inst, "left exp");
+
+            if (exp->u.eb.exp1->type == BinExpArith)
+                generate_bin_exp (exp->u.eb.exp1);
+            else
+                generate_expression (exp->u.eb.exp1);
+
+            inst = new_inst (CDQ, NULL, NULL);
+            generate_assembly (inst, "");
+
+            inst = new_inst (POP, operand (ECX, 0, 0), NULL);
+            generate_assembly (inst, "");
+
+            inst = new_inst (IDIV, operand (ECX, 0, 0), NULL);
+            generate_assembly (inst, "");
+            return;
+    }
+
     if (exp->u.eb.exp1->type == BinExpArith)
         generate_bin_exp (exp->u.eb.exp1);
     else
@@ -431,11 +457,6 @@ void generate_bin_exp (Exp *exp)
         case Arith_Mul:
             inst = new_inst (IMUL, operand (ECX, 0, 0),
                                   operand (EAX, 0, 0));
-            generate_assembly (inst, "");
-            break;
-        case Arith_Div:
-            inst = new_inst (IDIV, operand (ECX, 0, 0),
-                                   operand (EAX, 0, 0));
             generate_assembly (inst, "");
             break;
         case Arith_Lte:
@@ -691,6 +712,17 @@ void generate_command (Cmd *cmd)
                 printf ("%s:\n", get_label (l2));
                 break;
             case CmdWhile:
+                l1 = new_label ();
+                l2 = new_label ();
+                inst = new_inst (JMP, label_operand (get_label (l1)), NULL);
+                generate_assembly (inst, "");
+
+                printf ("%s:\n", get_label (l2));
+                generate_command (cmd->u.cw.body);
+
+                printf ("%s:\n", get_label (l1));
+                jmp_if_true (cmd->u.cw.cond, l2);
+                break;
             case CmdCall:
                 printf ("                                     # Chamada\n");
                 generate_call (cmd->u.cc.call);
