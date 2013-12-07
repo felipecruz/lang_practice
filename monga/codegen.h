@@ -21,6 +21,7 @@
 #define NOT     "not"
 
 #define MOV     "movl"
+#define MOVB    "movb"
 #define LEA     "leal"
 
 #define CALL    "call"
@@ -36,6 +37,7 @@
 #define JLE     "jle"
 
 #define EAX     "eax"
+#define AL      "al"
 #define ECX     "ecx"
 #define EBP     "ebp"
 #define ESP     "esp"
