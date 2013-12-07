@@ -51,6 +51,8 @@ Type *resolve_type (Var *var)
 
     if (var->decl->type == DeclVar)
         return var->decl->u.dv.type;
+    if (var->decl->type == DeclFunc)
+        type = var->decl->u.df.type;
     return NULL;
 }
 
@@ -84,7 +86,7 @@ Type *assignment_coerce (Type *from, Type *to)
         (match (from, INT_TYPE) && match (to, CHAR_TYPE)))
         return CHAR_TYPE;
 
-    if (match_array_assignment (to, from)) {
+    if (match_array_assignment (from, to)) {
         return from;
     }
 
@@ -173,12 +175,15 @@ Type *get_exp_type (Exp *exp)
             printdebug ("Get Expression Var Type...\n");
             type = resolve_type (exp->u.ev.var);
 
-            if (exp->u.ev.var->u.va.exp == NULL)
-                return type;
+            if (exp->u.ev.var->type == VarArray) {
+                if (exp->u.ev.var->u.va.exp != NULL) {
+                    type = new_Type (type->type, 0);
+                }
+            }
 
-            type = new_Type (type->type, 0);
-            return type;
             exp->exp_type = type;
+            if (type)
+                return type;
             break;
         case ExpCall:
             printdebug ("Get call return type..\n");
@@ -218,7 +223,6 @@ Type *get_exp_type (Exp *exp)
             type2 = get_exp_type (exp->u.eb.exp2);
             new_type = coerce (type, type2);
             if (!match (type, new_type)) {
-                print_Type (type, 0);
                 exp->u.ecast.exp = exp->u.eb.exp1;
                 exp->u.ecast.type = new_type;
                 printf ("Change Exp to Exp with cast\n");
@@ -242,8 +246,10 @@ int match_signature (Params *params, Exp *exps)
 
     while (params && exps) {
         type = get_exp_type (exps);
+
         type2 = params->type;
         rc = match (type, type2);
+
         if (rc != 1) {
             return rc;
         }
@@ -360,6 +366,7 @@ int check_declaration_block (Decl *decl)
         *exp_list = NULL;
     Params *function_params;
     Type *type, *type2, *new_type;
+    Var *var;
 
     function_params = decl->u.df.params;
     for (i = 0; function_params; i++) {
@@ -388,6 +395,7 @@ int check_declaration_block (Decl *decl)
                 break;
             case CmdAss:
                 printdebug ("Checking assignment types... \n");
+                var = cmd->u.ca.var;
                 type = get_exp_type (cmd->u.ca.exp);
                 type2 = resolve_type (cmd->u.ca.var);
 
