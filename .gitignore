@@ -9,3 +9,13 @@ monga/monga
 *.zip
 *.class
 *.out
+*~
+monga_spec
+y.tab.c
+y.tab.h
+monga.S
+lex.yy.c
+quicksort
+teste
+y.output
+c_exploration
