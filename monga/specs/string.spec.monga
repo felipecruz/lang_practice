@@ -1,8 +1,51 @@
-char[] func (char[] string) {
-    string = "valid string";
-    string = "valid string with \n like break";
-    string = "valid string with \t tab";
-    string = "valid string with \"";
+extern void print_int (int in);
+extern void print_str (char[] _st);
+extern void print_char (char ch);
 
-    return string;
+void func () {
+    char[] string;
+    string = "valid string";
+    print_str (string);
+    string = "valid string with \n like break";
+    print_str (string);
+    string = "valid string with \t tab";
+    print_str (string);
+    string = "valid string with \"";
+    print_str (string);
+}
+
+int main () {
+    int i;
+    char[] st;
+    char[] msg;
+
+    st = new char[5];
+
+    st[0] = 97;
+    st[1] = 98;
+    st[2] = 99;
+    st[3] = 100;
+    st[4] = 101;
+
+    i = 0;
+    while (i < 5) {
+        print_char (st[i]);
+        i = i + 1;
+    }
+
+    msg = "Alo Mundo";
+    print_str (msg);
+
+    func ();
+
+    print_char (msg[0]);
+    print_char (msg[1]);
+    print_char (msg[2]);
+    print_char (msg[3]);
+    print_char (msg[4]);
+    print_char (msg[5]);
+    print_char (msg[6]);
+    print_char (msg[7]);
+    print_char (msg[8]);
+
 }

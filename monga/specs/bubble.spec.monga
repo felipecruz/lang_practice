@@ -1,0 +1,82 @@
+extern void print_int (int i);
+
+void swap (int[] numbers, int x, int y)
+{
+    int c;
+    c = numbers[x];
+    numbers[x] = numbers[y];
+    numbers[y] = c;
+}
+
+void bubblesort (int[] numbers, int begin, int end) {
+    int n, k;
+
+    while (begin <= end) {
+        n = begin;
+        k = end;
+        while (n < k) {
+            if (numbers[n] > numbers[k]) {
+                swap (numbers, n, k);
+            }
+            n = n + 1;
+        }
+        begin = begin + 1;
+        end = end - 1;
+    }
+}
+
+void test_bubblesort () {
+    int n;
+    int[] numbers;
+    int max;
+
+    max = 50000;
+    n = 0;
+    numbers = new int[max];
+    while (max > 0) {
+        numbers[n] = max;
+        n = n + 1;
+        max = max - 1;
+    }
+    
+    max = 50000;
+
+    bubblesort (numbers, 0, max);
+
+    n = 0;
+    while (n < max) {
+        print_int (numbers [n]);
+        n = n + 1;
+    }
+}
+
+int main() {
+    int x;
+    int[] array;
+    
+    x = 50 / 2;
+    print_int (x);
+
+/*
+    array = new int[3];
+    array[0] = 3;
+    array[1] = 1;
+    array[3] = 2;
+    print_int (array[0]);
+    print_int (array[1]);
+
+    swap (array, 0, 1);
+
+    print_int (array[0]);
+    print_int (array[1]);
+    bubblesort (array, 0, 3);
+
+    print_int (array[0]);
+    print_int (array[1]);
+    print_int (array[2]);
+*/
+
+    test_bubblesort ();
+
+    return 1;
+}

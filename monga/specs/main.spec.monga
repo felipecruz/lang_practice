@@ -24,8 +24,6 @@ int main (int argc, char[] argv) {
     b = 11;
     c = soma (1 + 4, b);
     b = soma (c, a);
-    print_int (c);
-    print_int (b);
 
     arr[0] = 10;
     arr[1] = 1;
@@ -39,6 +37,6 @@ int main (int argc, char[] argv) {
     print_int (arr[3]);
     print_int (arr[4]);
 
-    return a;
+    return arr[0];
 }
 

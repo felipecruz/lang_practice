@@ -1,15 +1,127 @@
-void func (int a, float b, char x) {
-    if (a) { x = 1; }
-    else { return b; }
+extern void print_int (int i);
 
-    if (1 + 2) {
-        a = 1;
-    } else {
-        if (a[b] < 10) {
-            a = 1;
-        } else {
-            a = 1;
-        }
+void blocos_test () {
+    int a, b, c, d;
+    int[] numbers;
+    c = 1 + 10 - 20 + 30;
+    numbers = new int[10];
+
+    print_int (c);
+    print_int (c - 3);
+
+    numbers[0] = 4;
+    print_int (numbers[0]);
+
+    if (numbers[0] > 0) {
+        print_int (1002);
     }
+
+    if (numbers[0] < 0) {
+        print_int (-999);
+    }
+
+    if (0 > numbers[0]) {
+        print_int (-999);
+    }
+
+    if (0 < numbers[0]) {
+        print_int (1001);
+    }
+
+    if (0 && 0) {
+        print_int (-999);
+    }
+
+    if (0 && 1) {
+        print_int (-999);
+    }
+
+    if (1 && 0) {
+        print_int (-999);
+    }
+
+    if (1 && 1) {
+        print_int (1000);
+    }
+
+    if (1 || 0) {
+        print_int (1000);
+    }
+
+    if (0 || 1) {
+        print_int (1000);
+    }
+
+    if (1 || 1) {
+        print_int (1000);
+    }
+
+    if (0 || 0) {
+        print_int (-999);
+    }
+
+    if (0 < 1) {
+        print_int (1000);
+    }
+
+    if (0 <= 1) {
+        print_int (1000);
+    }
+
+    if (2 > 1) {
+        print_int (1005);
+    }
+
+    if (2 >= 1) {
+        print_int (1005);
+    }
+
+    a = 0;
+    b = 0;
+    c = 0;
+    d = 0;
+
+    if (a > b || c > d) {
+        print_int (-1006);
+    }
+
+    a = 1;
+    if (a > b || c > d) {
+        print_int (1006);
+    }
+
+    numbers[2] = a > 0 || 0 < 9;
+    print_int (numbers[2]);
+
+    numbers[3] = 0 > 0 || 0 > 9;
+    print_int (numbers[3]);
+
+    if (3 - c < 0) {
+        c = 11;
+    } else {
+        c = c + 12;
+    }
+
+    print_int (c);
+
+    if (3 - c + 100 > 0) {
+        c = 11;
+    } else {
+        c = c + 12;
+    }
+
+    print_int (c);
+
+    c = 0;
+    if (!c) {
+        print_int (1);
+    }
+
+    print_int (c);
+
 }
 
+int main() {
+    blocos_test ();
+    return 1;
+}
