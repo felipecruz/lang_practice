@@ -60,13 +60,4 @@ void generate_expression (Exp *exp);
 void generate_command (Cmd *cmd);
 void generate_call (Call *call);
 void generate_var (Var *var);
-
-//void error (const char *message);
-//void print_Params (Params *_params, int level);
-//void print_Call (Call *call, int level);
-//void print_Exp (Exp *exp, int level);
-//void print_Cmd (Cmd *cmd, int level);
-//void print_Var (struct Var *var, int level);
-//void print_Type (Type *type, int level);
-//void print_Block (Block *block, int level);
 #endif

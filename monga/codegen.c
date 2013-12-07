@@ -428,6 +428,7 @@ void jmp_if_true (Exp *exp, int label)
         case ExpVar:
             generate_var (exp->u.ev.var);
             inst = new_inst (MOV, operand (EAX, 1, 0), operand (EAX, 0, 0));
+            generate_assembly (inst, "");
             break;
         case ExpCall:
             generate_call (exp->u.ec.call);
