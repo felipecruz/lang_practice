@@ -783,7 +783,17 @@ void generate_command (Cmd *cmd)
                 break;
             case CmdRet:
                 printf ("                                     # Retorno\n");
-                generate_expression (cmd->u.cr.exp);
+                if (cmd->u.cr.exp != NULL)
+                    generate_expression (cmd->u.cr.exp);
+
+                inst = new_inst (MOV, operand (EBP, 0, 0), operand (ESP, 0, 0));
+                generate_assembly (inst, "");
+
+                inst = new_inst (POP, operand (EBP, 0, 0), NULL);
+                generate_assembly (inst, "");
+
+                inst = new_inst (RET, NULL, NULL);
+                generate_assembly (inst, "");
                 break;
             case CmdIf:
                 printf ("                                     # If\n");
