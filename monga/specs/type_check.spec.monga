@@ -1,17 +1,26 @@
+extern void print_int (int _val);
+
 int int_ret_char ()
 {
     char b;
+    b = 97;
     return b;
 }
 
 char char_ret_int ()
 {
     int x;
+    x = 97;
     return x;
 }
 
 void ret_void ()
 {
+    int x;
+    x = 10;
+    if (x > 9) {
+        return;
+    }
     return;
 }
 
@@ -22,21 +31,21 @@ int ret_int (int x)
     int[] q;
 
     x = 3;
-    q = w;
-
     w = new int[10];
-    a = ret_int (1);
-
-    a = ret_int (ret_int (w[0]));
-
-    x = w[1];
-    q[0] = w[1];
-    q[1] = x;
+    w[0] = x;
+    q = w;
+    print_int (q[0]);
+    
 
     a = 1 + 2;
+    print_int (a);
     a = 1 - 2;
-    a = a * 10;
+    print_int (a);
+    a = a * (-10);
+    print_int (a);
+    x = 30;
     a = x / a;
+    print_int (a);
 
     if (a == 10) {}
     if ((x + a) == -10) {}
@@ -49,7 +58,7 @@ int ret_int (int x)
 
     }
 
-    while (-1) {
+    while (0) {
 
     }
 
@@ -62,114 +71,10 @@ int ret_int (int x)
     if (a && 1) {}
     if (0 && x) {}
 
-    ret_float(3.0);
-    {
-        x = 3;
-        q = w;
-
-        w = new int[10];
-        a = ret_int (1);
-
-        a = ret_int (ret_int (w[0]));
-
-        x = w[1];
-        q[0] = w[1];
-        q[1] = x;
-
-        a = 1 + 2;
-        a = a * 10;
-        a = x / a;
-
-        if (a == 10) {}
-        if ((x + a) == -10) {}
-        if (x >= 10) {}
-        if (a <= 10) {}
-        if (a > 10) {}
-        if (a < 10 || (x * 2 + (a / 10))) {}
-
-        if (!1) {
-
-        }
-
-        while (-1) {
-
-        }
-
-        if (-a) {}
-        else {}
-
-        if (!x) {}
-
-        if (a && x) {}
-        if (a && 1) {}
-        if (0 && x) {}
-
-        ret_float(3.0);
-        {
-            x = 3;
-            q = w;
-
-            w = new int[10];
-            a = ret_int (1);
-
-            a = ret_int (ret_int (w[0]));
-
-            x = w[1];
-            q[0] = w[1];
-            q[1] = x;
-
-            a = 1 + 2;
-            a = a * 10;
-            a = x / a;
-
-            if (a == 10) {}
-            if ((x + a) == -10) {}
-            if (x >= 10) {}
-            if (a <= 10) {}
-            if (a > 10) {}
-            if (a < 10 || (x * 2 + (a / 10))) {}
-
-            if (!1) {
-
-            }
-
-            while (-1) {
-
-            }
-
-            if (-a) {}
-            else {}
-
-            if (!x) {}
-
-            if (a && x) {}
-            if (a && 1) {}
-            if (0 && x) {}
-
-            ret_float(3.0);
-        }
-    }
-    return x;
+    return q[0];
 }
 
-float ret_float (float f)
-{
-    float w;
-    w = 1 + 1.0;
-    w = 1.0 + 1 + 2.0;
-    w = 1;
-    w = -1;
-    w = -1.0;
-    f = ret_float (2.0);
-    f = ret_float (1.0);
-
-    if (1 > 0) {
-
-    }
-
-    return ret_float (ret_float (1.0));
-}
-
+/*
 int f_all (int x, float f, char[] st)
 {
     return f_all (x, f, st);
@@ -190,11 +95,22 @@ char[] ret_char_array ()
     x = f_all (1, 2.0, "aa");
     return "abcd";
 }
+*/
 
 int main (int argc, char[] argv)
 {
     int x;
-    x = 1;
-    return ret_int (x + 2);
 
+    x = int_ret_char ();
+    print_int (x);
+
+    x = char_ret_int ();
+    print_int (x);
+
+    ret_void ();
+
+    x = ret_int (100);
+    print_int (x);
+
+    return 1;
 }

@@ -17,6 +17,11 @@ void quicksort (int[] numbers, int begin, int end) {
     size = end - begin;
     middle = begin + (size/2);
 
+    /* return dummy apenas para testes */
+    if (size == 1 || size == 0) {
+        return;
+    }
+
     if (size > 1) {
         pivot = numbers[middle];
         left_size = begin;

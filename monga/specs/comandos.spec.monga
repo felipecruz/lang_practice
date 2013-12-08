@@ -1,25 +1,64 @@
-int foo (int tw)
+extern void print_int (int i);
+
+int test_return_inverse (int w)
 {
-    return 1;
+    if (w > 0) {
+        return -w;
+    }
+    return w * (-1);
+}
+
+int[] get_tuple (int a, int b) {
+    int[] tuple;
+    tuple = new int[2];
+    tuple[0] = a;
+    tuple[1] = b;
+    return tuple;
 }
 
 int[] func (int num) {
+    int x;
     int[] b, c;
-    int x, w;
-    if (0) {} else {}
 
-    while (b[1] > c[0]) {}
-    while (x > c[0]) {
-        b = 1;
+    /* teste de return */
+    x = test_return_inverse (10);
+    print_int (x);
+    x = test_return_inverse (-10);
+    print_int (x);
+
+    /* atribuicao */
+    b = new int [2];
+    b[0] = 1;
+    b[1] = 2;
+    print_int (b[0]);
+    print_int (b[1]);
+    x = 3;
+    print_int (x);
+
+    /* condicionais em condicionais.spec.monga */
+
+    /* comando while */
+    while (x < 10) {
+        print_int (10 * x);
+        x = x + 2;
     }
 
-    x = c[0];
-    func (10);
-    w = foo (b[0]);
-
+    /* comando bloco */
     {
-        b[0] = 1;
+        x = 5;
+        while (x < 10) {
+            print_int (10 * x);
+            x = x + 2;
+        }
     }
 
-    return b;
+    return get_tuple(1, 2);
+}
+
+int main ()
+{
+    int[] tuple;
+    tuple = func (10);
+    print_int (tuple[0]);
+    print_int (tuple[1]);
 }

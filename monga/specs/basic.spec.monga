@@ -1,8 +1,19 @@
+extern void print_int (int _value);
+
 int w;
 
-void x () {
+int[] return_array (int size) {
+    int[] array;
+    array = new int[size];
+    return array;
+}
 
+void x () {
+    int[] array;
     int a;
+    int size;
+
+    size = 10;
     w = -1;
     w = 10;
     {
@@ -11,15 +22,35 @@ void x () {
         b = 1;
         w = 10;
     }
-    a = 1;
+
+    a = 0;
+    array = return_array (size);
+    while (a < size) {
+        array[a] = size - a;
+        a = a + 1;
+    }
+
+    a = 0;
+    while (a < size) {
+        print_int (array[a]);
+        a = a + 1;
+    }
 }
 
-int z () {
+int main () {
     int c;
     int a;
     {
+        w = 1;
         a = 1;
         c = 0;
     }
-    c = a[1];
+
+    print_int (w);
+    print_int (a);
+    print_int (c);
+
+    x ();
+
+    return 1;
 }

@@ -1,23 +1,45 @@
 extern void print_int (int i);
 
-void blocos_test () {
+void blocos_test_2 (int i) {
+    blocos_test (i + 10);
+}
+
+void blocos_test (int x) {
+    int i;
     int a;
+    int[] array;
+
     {
         int w;
+        array = new int[3];
         a = 100;
+        array[2] = 50;
+        array = new int[3];
+        array[2] = 30;
 
     }
+
     {
         int r;
         w = 1;
         print_int (a);
         print_int (w);
+        array[1] = 20;
+        {
+            i = 0;
+        }
     }
+    
+    array[0] = array[3] > array[2];
     a = 2;
-    print_int (a);
+    print_int (array[0]);
+    print_int (array[1]);
+    print_int (array[2]);
+    print_int (i);
 }
 
 int main() {
-    blocos_test ();
+    blocos_test (10);
+    blocos_test_2 (11);
     return 1;
 }

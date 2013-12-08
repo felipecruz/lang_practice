@@ -1,16 +1,10 @@
-./monga specs/basic.spec.monga > specs/basic.spec.expected
-./monga specs/condicionais.spec.monga > specs/condicionais.spec.expected
-./monga specs/numbers.spec.monga > specs/numbers.spec.expected
-./monga specs/main.spec.monga > specs/main.spec.expected
-./monga specs/example.spec.monga > specs/example.spec.expected
-./monga specs/string.spec.monga > specs/string.spec.expected
-./monga specs/errors/error_invalid_integer.monga > specs/errors/error_invalid_integer.expected
-./monga specs/errors/error_invalid_hexa.monga > specs/errors/error_invalid_hexa.expected
-./monga specs/errors/error_invalid_float.monga > specs/errors/error_invalid_float.expected
-./monga specs/errors/error_invalid_string.monga > specs/errors/error_invalid_string.expected
-./monga specs/errors/error_invalid_string_long.monga > specs/errors/error_invalid_string_long.expected
-./monga specs/errors/error_invalid_bloco.monga > specs/errors/error_invalid_bloco.expected
-./monga specs/declaracoes.spec.monga > specs/declaracoes.spec.expected
-./monga specs/blocos.spec.monga > specs/blocos.spec.expected
-./monga specs/comandos.spec.monga > specs/comandos.spec.expected
-./monga specs/type_check.spec.monga > specs/type_check.spec.expected
+./monga specs/basic.spec.monga > monga.S && gcc -m32 -o monga_spec monga.S && ./monga_spec > specs/basic.spec.expected
+./monga specs/condicionais.spec.monga > monga.S && gcc -m32 -o monga_spec monga.S && ./monga_spec > specs/condicionais.spec.expected
+./monga specs/main.spec.monga > monga.S && gcc -m32 -o monga_spec monga.S && ./monga_spec > specs/main.spec.expected
+./monga specs/string.spec.monga > monga.S && gcc -m32 -o monga_spec monga.S && ./monga_spec > specs/string.spec.expected
+./monga specs/loop.spec.monga > monga.S && gcc -m32 -o monga_spec monga.S && ./monga_spec > specs/loop.spec.expected
+./monga specs/blocos.spec.monga > monga.S && gcc -m32 -o monga_spec monga.S && ./monga_spec > specs/blocos.spec.expected
+./monga specs/comandos.spec.monga > monga.S && gcc -m32 -o monga_spec monga.S && ./monga_spec > specs/comandos.spec.expected
+./monga specs/type_check.spec.monga > monga.S && gcc -m32 -o monga_spec monga.S && ./monga_spec > specs/type_check.spec.expected
+./monga specs/quicksort.spec.monga > monga.S && gcc -m32 -o monga_spec monga.S && ./monga_spec > specs/quicksort.spec.expected
+./monga specs/bubble.spec.monga > monga.S && gcc -m32 -o monga_spec monga.S && ./monga_spec > specs/bubble.spec.expected
