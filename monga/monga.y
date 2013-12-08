@@ -16,6 +16,7 @@ static int level = 0;
 
 static Program *__program = NULL;
 static struct Stack *stack = NULL;
+static int extern_parameter = 0;
 
 #define YYDEBUG 1
 %}
@@ -132,6 +133,8 @@ decl_var: type ID
       add_declaration (stack, $$, level);
     };
 
+extern: EXTERN { extern_parameter += 1; }
+
 decl_func: type ID open_scope params CLPAR scope_block
           {  Decl *decl = has_name_same_level (stack, $2, level);
              if (decl)
@@ -147,13 +150,14 @@ decl_func: type ID open_scope params CLPAR scope_block
              $$ = new_Decl_Func (type, $2, $4, $6, 0);
              add_declaration (stack, $$, level);
              }
-         | EXTERN TYPE_VOID ID OPPAR params CLPAR SEMICOL
+         | extern TYPE_VOID ID OPPAR params CLPAR SEMICOL
            { Decl *decl = has_name_same_level (stack, $3, level);
              if (decl)
                  yyerror ("Function Redeclaration\n");
              Type *type = new_Type (TypeVoid, 0);
              $$ = new_Decl_Func (type, $3, $5, NULL, 1);
              add_declaration (stack, $$, level);
+             extern_parameter -= 1;
              };
 
 type : array_type
@@ -200,11 +204,13 @@ params : /* vazio */ { $$ = NULL; }
 
 multi_param: type ID {
              Decl *param = new_Decl_Var ($1, $2, NULL);
-             add_declaration (stack, param, level);
+             if (!extern_parameter)
+                 add_declaration (stack, param, level);
              $$ = new_Param ($1, $2, NULL, param); }
            | type ID COMMA multi_param {
              Decl *param = new_Decl_Var ($1, $2, NULL);
-             add_declaration (stack, param, level);
+             if (!extern_parameter)
+                 add_declaration (stack, param, level);
              $$ = new_Param ($1, $2, $4, param); }
            ;
 
