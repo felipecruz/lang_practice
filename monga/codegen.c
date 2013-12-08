@@ -629,8 +629,8 @@ void generate_expression (Exp *exp)
             generate_assembly (inst, "");
             break;
         case UnaExpArith:
+            generate_expression (exp->u.eu.exp);
             switch (exp->u.eu.op) {
-                generate_expression (exp->u.eu.exp);
                 case UnaArith_Minus:
                     inst = new_inst (NEG, operand (EAX, 0, 0), NULL);
                     generate_assembly (inst, "");
