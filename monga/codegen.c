@@ -65,10 +65,6 @@ char* expand_escapes_alloc(const char* src)
    return dest;
 }
 
-// return dentro de if == BUG
-// parametros de funcoes globais ocupam o nome da var
-// cahamar mallor 2x da erro
-
 char *int_operand (int value)
 {
     char *name = malloc (20);
@@ -600,7 +596,6 @@ void generate_expression (Exp *exp)
             printf ("\nFloat not implemented\n - %f", exp->u.ecf.val);
             break;
         case ExpConstString:
-            // TODO Expressões String
             l1 = new_label ();
             printf (".data\n");
             printf ("    %s: .string \"%s\\0\"\n", get_label (l1),
@@ -609,8 +604,6 @@ void generate_expression (Exp *exp)
             inst = new_inst (MOV, const_operand (get_label (l1)),
                                   operand (EAX, 0, 0));
             generate_assembly (inst, "global");
-            //inst = new_inst (MOV, operand (EAX, 1, 0), operand (EAX, 0, 0));
-            //generate_assembly (inst, "");
             break;
         case ExpVar:
             generate_var (exp->u.ev.var);
