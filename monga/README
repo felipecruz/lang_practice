@@ -1,4 +1,4 @@
-# Compilador Monga 0.1.5
+# Compilador Monga 0.1.6
 
 ## Comandos
 
@@ -8,7 +8,11 @@ $ make
 
 ### Usando
 
-$ ./monga arquivo.monga
+Agora existem 2 passos: Compilar um arquivo .monga e depois rodar o binário gerado.
+Veja um exemplo:
+
+$ ./monga arquivo.monga > monga.S && gcc -m32 -o monga_spec monga.S
+$ ./monga_spec
 
 A saída esperada é vazia ou uma mensagem de erro.
 
@@ -18,6 +22,17 @@ $ make test
 
 Se houver "ERRO" na saída é porque houve algum erro na suíte. Do contrário
 os testes rodaram com sucesso.
+
+## Limitação
+
+Tipos float não foram implementados.
+
+### Ajustes e mudanças anteriores 0.1.5 -> 0.1.6
+
+* Gerador de código
+* Int e char, assim como respectivos arrays implementados (não tem float).
+* Suporte a todos os comandos/Expressões
+* Exemplos: quicksort, bubblesort
 
 ### Ajustes e mudanças anteriores 0.1.4 -> 0.1.5
 
